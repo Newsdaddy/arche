@@ -121,7 +121,7 @@ const SWOT_QUESTIONS: Record<PersonaType, {
 };
 
 // SWOT 믹스 전략 생성 함수
-function generateStrategies(answers: Record<string, string>, personaType: PersonaType) {
+function generateStrategies() {
   const strategies = {
     SO: {
       title: "공격 전략 (SO)",
@@ -160,7 +160,15 @@ export default function SwotTestPage() {
   const [personaType, setPersonaType] = useState<PersonaType | null>(null);
   const [currentCategory, setCurrentCategory] = useState<"strengths" | "weaknesses" | "opportunities" | "threats">("strengths");
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    summary?: string;
+    so?: string;
+    st?: string;
+    wo?: string;
+    wt?: string;
+    strategies?: Record<string, unknown>;
+    recommendations?: string[];
+  } | null>(null);
 
   const categories = ["strengths", "weaknesses", "opportunities", "threats"] as const;
   const categoryNames = {
@@ -222,7 +230,7 @@ export default function SwotTestPage() {
         // 폴백: 기본 결과
         setResult({
           summary: "당신의 SWOT 분석이 완료되었습니다.",
-          strategies: generateStrategies(answers, personaType!),
+          strategies: generateStrategies(),
           recommendations: [
             "강점을 최대한 활용한 콘텐츠 전략을 수립하세요.",
             "약점은 점진적으로 개선하거나 외부 도움을 받으세요.",
@@ -235,7 +243,7 @@ export default function SwotTestPage() {
       console.error("SWOT 분석 실패:", error);
       setResult({
         summary: "당신의 SWOT 분석이 완료되었습니다.",
-        strategies: generateStrategies(answers, personaType!),
+        strategies: generateStrategies(),
       });
     }
 
@@ -368,7 +376,6 @@ export default function SwotTestPage() {
     const questions = getCurrentQuestions();
     const categoryInfo = categoryNames[currentCategory];
     const categoryIndex = categories.indexOf(currentCategory);
-    const progress = ((categoryIndex + 1) / categories.length) * 100;
 
     return (
       <main className="flex-1 px-6 py-8">
