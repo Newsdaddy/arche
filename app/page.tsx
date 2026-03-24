@@ -738,20 +738,31 @@ export default function Home() {
 
       {/* ============ Footer ============ */}
       <footer className="px-6 py-8 bg-primary text-white">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="text-body font-semibold">Arche 아르케</p>
-            <p className="text-small text-gray-400">© 2024 Arche. All rights reserved.</p>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+            <div>
+              <p className="text-body font-semibold">Arche 아르케</p>
+              <p className="text-small text-gray-400">© 2024 Arche. All rights reserved.</p>
+            </div>
+            <div className="flex gap-6">
+              <Link href="/consulting" className="text-body hover:text-accent transition-colors">
+                컨설팅
+              </Link>
+              <Link href="/create" className="text-body hover:text-accent transition-colors">
+                콘텐츠 생성
+              </Link>
+              <Link href="/login" className="text-body hover:text-accent transition-colors">
+                로그인
+              </Link>
+            </div>
           </div>
-          <div className="flex gap-6">
-            <Link href="/consulting" className="text-body hover:text-accent transition-colors">
-              컨설팅
+          <div className="border-t border-white/10 pt-4 flex flex-wrap justify-center gap-4 text-small text-gray-400">
+            <Link href="/terms" className="hover:text-white transition-colors">
+              이용약관
             </Link>
-            <Link href="/create" className="text-body hover:text-accent transition-colors">
-              콘텐츠 생성
-            </Link>
-            <Link href="/login" className="text-body hover:text-accent transition-colors">
-              로그인
+            <span>|</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              개인정보처리방침
             </Link>
           </div>
         </div>
