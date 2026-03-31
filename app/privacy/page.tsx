@@ -31,7 +31,7 @@ export default function PrivacyPage() {
             {/* 서문 */}
             <section>
               <p className="text-gray-700 leading-relaxed">
-                Arche(이하 "회사")는 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등
+                Arche(이하 &quot;회사&quot;)는 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등
                 관련 법령에 따라 이용자의 개인정보를 보호하고, 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록
                 다음과 같이 개인정보처리방침을 수립·공개합니다.
               </p>

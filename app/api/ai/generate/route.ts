@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
 
     // 로그인 여부 확인 (비로그인도 허용하되 사용량 추적 안함)
-    let userId: string | null = user?.id || null;
+    const userId: string | null = user?.id || null;
     let usageCheck = null;
     let persona = null;
 

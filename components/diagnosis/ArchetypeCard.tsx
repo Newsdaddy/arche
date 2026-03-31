@@ -15,11 +15,10 @@ export default function ArchetypeCard({
     <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 overflow-hidden">
       {/* 헤더 */}
       <div className="bg-gradient-to-r from-accent/10 to-accent/5 p-6 text-center">
-        <div className="text-5xl mb-3">{archetype.emoji}</div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">
           {archetype.name}
         </h3>
-        <p className="text-gray-600 italic">"{archetype.tagline}"</p>
+        <p className="text-gray-600 italic">&quot;{archetype.tagline}&quot;</p>
       </div>
 
       {/* 본문 */}
@@ -31,9 +30,8 @@ export default function ArchetypeCard({
 
         {/* 강점 */}
         <div>
-          <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <span>💪</span>
-            <span>핵심 강점</span>
+          <h4 className="font-semibold text-gray-900 mb-2">
+            핵심 강점
           </h4>
           <div className="flex flex-wrap gap-2">
             {archetype.strengths.map((strength, idx) => (
@@ -49,9 +47,8 @@ export default function ArchetypeCard({
 
         {/* 콘텐츠 스타일 */}
         <div>
-          <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <span>✍️</span>
-            <span>콘텐츠 스타일</span>
+          <h4 className="font-semibold text-gray-900 mb-2">
+            콘텐츠 스타일
           </h4>
           <div className="bg-purple-50 text-purple-700 px-4 py-2 rounded-lg text-sm">
             {archetype.contentStyle}
@@ -60,9 +57,8 @@ export default function ArchetypeCard({
 
         {/* 추천 Content Pillars */}
         <div>
-          <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <span>📝</span>
-            <span>추천 Content Pillars</span>
+          <h4 className="font-semibold text-gray-900 mb-2">
+            추천 Content Pillars
           </h4>
           <div className="space-y-2">
             {archetype.recommendedPillars.map((pillar, idx) => (
@@ -82,9 +78,8 @@ export default function ArchetypeCard({
         {/* 콘텐츠 템플릿 */}
         {showTemplates && archetype.templates.length > 0 && (
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <span>📋</span>
-              <span>추천 콘텐츠 템플릿</span>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              추천 콘텐츠 템플릿
             </h4>
             <div className="space-y-4">
               {archetype.templates.map((template, idx) => (
@@ -92,10 +87,7 @@ export default function ArchetypeCard({
                   key={idx}
                   className="bg-gray-50 rounded-xl p-4 border border-gray-100"
                 >
-                  <div className="font-medium text-gray-900 mb-2 flex items-center gap-2">
-                    <span className="text-accent">
-                      {idx === 0 ? "📖" : idx === 1 ? "💭" : "🔗"}
-                    </span>
+                  <div className="font-medium text-gray-900 mb-2">
                     {template.name}
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-gray-200 text-sm text-gray-600 whitespace-pre-line">

@@ -1,11 +1,6 @@
 import {
   DiagnosisResult,
   Archetype,
-  SWOTMix,
-  SkillIntersection,
-  ICP,
-  ContentPillar,
-  ContentTemplate,
 } from "@/types/diagnosis";
 import { ARCHETYPES, getArchetypeById } from "./archetypes";
 

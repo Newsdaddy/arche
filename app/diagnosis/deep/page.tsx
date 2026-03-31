@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import QuestionCard from "@/components/diagnosis/QuestionCard";
 import ProgressTracker from "@/components/diagnosis/ProgressTracker";
-import { QUESTIONS, SECTIONS, getQuestionsBySection, TOTAL_QUESTIONS } from "@/lib/diagnosis/questions";
+import { SECTIONS, getQuestionsBySection, TOTAL_QUESTIONS } from "@/lib/diagnosis/questions";
 
 export default function DeepDiagnosisPage() {
   const router = useRouter();

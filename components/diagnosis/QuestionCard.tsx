@@ -1,7 +1,6 @@
 "use client";
 
-import { Question, Framework } from "@/types/diagnosis";
-import { FRAMEWORK_NAMES } from "@/lib/diagnosis/questions";
+import { Question } from "@/types/diagnosis";
 import MethodologyBadge from "./MethodologyBadge";
 
 interface QuestionCardProps {
@@ -146,7 +145,7 @@ export default function QuestionCard({
       <div className="mb-6">{renderInput()}</div>
 
       <div className="flex items-center gap-2 text-sm text-gray-400 pt-4 border-t border-gray-100">
-        <span>💡 이 질문은</span>
+        <span>이 질문은</span>
         <MethodologyBadge framework={question.framework} size="sm" showTooltip />
         <span>분석에 활용됩니다</span>
       </div>

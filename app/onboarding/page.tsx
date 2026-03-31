@@ -89,11 +89,6 @@ function generatePersonaResult(answers: OnboardingAnswers): PersonaResult {
     influence: "영향력 확대",
   };
 
-  const levelLabels: Record<string, string> = {
-    beginner: "시작자",
-    intermediate: "성장자",
-    advanced: "확장자",
-  };
 
   const contentLabels: Record<string, string> = {
     text: "글 중심",

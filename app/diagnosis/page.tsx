@@ -12,7 +12,6 @@ export default function DiagnosisPage() {
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* 헤더 */}
         <div className="text-center mb-12">
-          <div className="text-6xl mb-4">🎭</div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             나의 소셜 페르소나는?
           </h1>
@@ -23,12 +22,9 @@ export default function DiagnosisPage() {
 
         {/* 심층 진단 카드 */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8 mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">📊</span>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">심층 진단</h2>
-              <p className="text-sm text-gray-500">10-15분 소요</p>
-            </div>
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-gray-900">심층 진단</h2>
+            <p className="text-sm text-gray-500">10-15분 소요</p>
           </div>
 
           <ul className="space-y-3 mb-6 text-gray-700">
@@ -71,14 +67,9 @@ export default function DiagnosisPage() {
 
         {/* 빠른 테스트 카드 */}
         <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">⚡</span>
-              <div>
-                <h3 className="font-semibold text-gray-900">빠른 체험</h3>
-                <p className="text-sm text-gray-500">2분 소요</p>
-              </div>
-            </div>
+          <div className="mb-4">
+            <h3 className="font-semibold text-gray-900">빠른 체험</h3>
+            <p className="text-sm text-gray-500">2분 소요</p>
           </div>
 
           <p className="text-gray-600 mb-4">
@@ -95,10 +86,7 @@ export default function DiagnosisPage() {
 
         {/* 방법론 안내 */}
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">📖</span>
-            <h3 className="font-semibold text-gray-900">사용된 방법론</h3>
-          </div>
+          <h3 className="font-semibold text-gray-900 mb-4">사용된 방법론</h3>
 
           <div className="flex flex-wrap gap-2 mb-4">
             {frameworks.map((fw) => (

@@ -1,6 +1,5 @@
 "use client";
 
-import { Section } from "@/types/diagnosis";
 import { SECTIONS, TOTAL_QUESTIONS } from "@/lib/diagnosis/questions";
 
 interface ProgressTrackerProps {
@@ -34,9 +33,6 @@ export default function ProgressTracker({
 
       {/* 현재 섹션 */}
       <div className="text-center py-2 mb-4">
-        <div className="text-2xl mb-1">
-          {SECTIONS.find((s) => s.id === currentSection)?.icon || "📝"}
-        </div>
         <div className="font-semibold text-gray-900">
           {SECTIONS.find((s) => s.id === currentSection)?.name || ""}
         </div>
@@ -50,7 +46,6 @@ export default function ProgressTracker({
         {SECTIONS.map((section) => {
           const isCompleted = section.id < currentSection;
           const isCurrent = section.id === currentSection;
-          const isPending = section.id > currentSection;
 
           return (
             <div
@@ -110,7 +105,7 @@ export default function ProgressTracker({
                 )}
               </div>
 
-              <div className="text-lg">{section.icon}</div>
+              <div className="text-sm text-gray-400">{section.id}</div>
             </div>
           );
         })}
@@ -122,7 +117,7 @@ export default function ProgressTracker({
         <div className="flex flex-wrap gap-1 text-xs text-gray-500">
           <span>SWOT</span>
           <span>•</span>
-          <span>Hero's Journey</span>
+          <span>Hero&apos;s Journey</span>
           <span>•</span>
           <span>Enneagram</span>
           <span>•</span>

@@ -32,7 +32,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-xl font-semibold text-primary mb-3">제1조 (목적)</h2>
               <p className="text-gray-700 leading-relaxed">
-                이 약관은 Arche(이하 "회사")가 제공하는 소셜미디어 콘텐츠 컨설팅 서비스(이하 "서비스")의
+                이 약관은 Arche(이하 &quot;회사&quot;)가 제공하는 소셜미디어 콘텐츠 컨설팅 서비스(이하 &quot;서비스&quot;)의
                 이용조건 및 절차, 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
               </p>
             </section>
@@ -41,10 +41,10 @@ export default function TermsPage() {
             <section>
               <h2 className="text-xl font-semibold text-primary mb-3">제2조 (용어의 정의)</h2>
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                <li><strong>"서비스"</strong>란 회사가 제공하는 소셜미디어 콘텐츠 컨설팅, AI 콘텐츠 생성, 8주 미션 프로그램 및 관련 부가 서비스를 의미합니다.</li>
-                <li><strong>"회원"</strong>이란 이 약관에 동의하고 회사와 이용계약을 체결한 자를 의미합니다.</li>
-                <li><strong>"콘텐츠"</strong>란 회원이 서비스를 이용하여 생성하거나 제출한 텍스트, 이미지, 영상 등 모든 자료를 의미합니다.</li>
-                <li><strong>"컨설팅"</strong>이란 회사가 제공하는 1:1 소셜미디어 전략 상담 서비스를 의미합니다.</li>
+                <li><strong>&quot;서비스&quot;</strong>란 회사가 제공하는 소셜미디어 콘텐츠 컨설팅, AI 콘텐츠 생성, 8주 미션 프로그램 및 관련 부가 서비스를 의미합니다.</li>
+                <li><strong>&quot;회원&quot;</strong>이란 이 약관에 동의하고 회사와 이용계약을 체결한 자를 의미합니다.</li>
+                <li><strong>&quot;콘텐츠&quot;</strong>란 회원이 서비스를 이용하여 생성하거나 제출한 텍스트, 이미지, 영상 등 모든 자료를 의미합니다.</li>
+                <li><strong>&quot;컨설팅&quot;</strong>이란 회사가 제공하는 1:1 소셜미디어 전략 상담 서비스를 의미합니다.</li>
               </ol>
             </section>
 

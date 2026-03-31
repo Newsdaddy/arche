@@ -7,26 +7,10 @@ interface ContentTemplatesProps {
 }
 
 export default function ContentTemplates({ templates }: ContentTemplatesProps) {
-  const templateIcons: Record<string, string> = {
-    "hero-narrative": "📖",
-    "lesson-learned": "📚",
-    "growth-diary": "🌱",
-    "beginner-perspective": "👀",
-    "insight-analysis": "🔍",
-    "deep-dive": "🏊",
-    "empathy-connect": "💬",
-    "community-voice": "👥",
-    "experiment-log": "🧪",
-    "creative-twist": "🎨",
-    "practical-guide": "🧭",
-    "tool-recommendation": "🛠️",
-  };
-
   return (
     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
-      <h4 className="font-semibold text-gray-900 flex items-center gap-2 mb-4">
-        <span>✍️</span>
-        <span>추천 콘텐츠 템플릿</span>
+      <h4 className="font-semibold text-gray-900 mb-4">
+        추천 콘텐츠 템플릿
       </h4>
 
       <p className="text-sm text-gray-600 mb-4">
@@ -34,17 +18,14 @@ export default function ContentTemplates({ templates }: ContentTemplatesProps) {
       </p>
 
       <div className="space-y-4">
-        {templates.map((template, idx) => {
-          const icon = templateIcons[template.id] || "📋";
-
+        {templates.map((template) => {
           return (
             <div
               key={template.id}
               className="bg-white rounded-xl overflow-hidden border border-purple-100 shadow-sm"
             >
               {/* 템플릿 헤더 */}
-              <div className="bg-purple-50 px-4 py-2 border-b border-purple-100 flex items-center gap-2">
-                <span className="text-xl">{icon}</span>
+              <div className="bg-purple-50 px-4 py-2 border-b border-purple-100">
                 <span className="font-medium text-purple-800">
                   {template.name}
                 </span>
@@ -58,9 +39,8 @@ export default function ContentTemplates({ templates }: ContentTemplatesProps) {
 
                 {template.example && (
                   <div className="mt-3">
-                    <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
-                      <span>💡</span>
-                      <span>예시</span>
+                    <div className="text-xs text-gray-500 mb-1">
+                      예시
                     </div>
                     <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-line">
                       {template.example}

@@ -13,9 +13,8 @@ export default function SkillIntersection({
 }: SkillIntersectionProps) {
   return (
     <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100">
-      <h4 className="font-semibold text-gray-900 flex items-center gap-2 mb-6">
-        <span>🎯</span>
-        <span>능력 교차점</span>
+      <h4 className="font-semibold text-gray-900 mb-6">
+        능력 교차점
       </h4>
 
       {/* 스킬 조합 시각화 */}
@@ -65,7 +64,7 @@ export default function SkillIntersection({
             당신만의 유니크 포지션
           </div>
           <div className="text-lg font-bold text-gray-900">
-            "{uniquePosition}"
+            &quot;{uniquePosition}&quot;
           </div>
         </div>
       </div>

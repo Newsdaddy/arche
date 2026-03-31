@@ -356,9 +356,9 @@ export default function CreatePage() {
               fullWidth
               size="lg"
               onClick={handleGenerate}
-              disabled={isGenerating || !formData.topic || (isLoggedIn && usageInfo && usageInfo.remaining <= 0)}
+              disabled={isGenerating || !formData.topic || Boolean(isLoggedIn && usageInfo && usageInfo.remaining <= 0)}
             >
-              {isGenerating ? "생성 중..." : `콘텐츠 생성하기 ✨ ${usageInfo ? `(${usageInfo.remaining}회 남음)` : ""}`}
+              {isGenerating ? "생성 중..." : `콘텐츠 생성하기 ${usageInfo ? `(${usageInfo.remaining}회 남음)` : ""}`}
             </Button>
           </div>
         )}
@@ -399,7 +399,7 @@ export default function CreatePage() {
                 fullWidth
                 variant="outline"
                 onClick={handleGenerate}
-                disabled={isLoggedIn && usageInfo && usageInfo.remaining <= 0}
+                disabled={Boolean(isLoggedIn && usageInfo && usageInfo.remaining <= 0)}
               >
                 다시 생성 {usageInfo ? `(${usageInfo.remaining}회)` : ""}
               </Button>

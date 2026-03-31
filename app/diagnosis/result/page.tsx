@@ -51,6 +51,7 @@ function DiagnosisResultContent() {
   }, [router, searchParams]);
 
   // 기존 답변을 새 결과 형식으로 변환
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const convertLegacyAnswers = (answers: Record<string, any>): DiagnosisResult => {
     // 기본 아키타입 선택
     const archetype = ARCHETYPES[0];

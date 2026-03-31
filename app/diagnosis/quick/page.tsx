@@ -10,43 +10,33 @@ const QUICK_QUESTIONS = [
     id: "quick1",
     question: "콘텐츠를 만드는 주된 이유는 무엇인가요?",
     options: [
-      { value: "share-story", label: "내 이야기와 경험을 나누고 싶어서", emoji: "📖" },
-      { value: "share-knowledge", label: "알고 있는 지식을 나누고 싶어서", emoji: "📚" },
-      { value: "connect-people", label: "비슷한 사람들과 연결되고 싶어서", emoji: "🤝" },
-      { value: "build-business", label: "사업이나 브랜드를 키우고 싶어서", emoji: "💼" },
+      { value: "share-story", label: "내 이야기와 경험을 나누고 싶어서" },
+      { value: "share-knowledge", label: "알고 있는 지식을 나누고 싶어서" },
+      { value: "connect-people", label: "비슷한 사람들과 연결되고 싶어서" },
+      { value: "build-business", label: "사업이나 브랜드를 키우고 싶어서" },
     ],
   },
   {
     id: "quick2",
     question: "당신의 가장 큰 강점은 무엇인가요?",
     options: [
-      { value: "recovery", label: "어려움을 극복한 경험이 있다", emoji: "⚔️" },
-      { value: "curiosity", label: "새로운 것을 배우는 걸 좋아한다", emoji: "🌱" },
-      { value: "expertise", label: "특정 분야에 깊은 지식이 있다", emoji: "📚" },
-      { value: "empathy", label: "사람들의 마음을 잘 이해한다", emoji: "💕" },
+      { value: "recovery", label: "어려움을 극복한 경험이 있다" },
+      { value: "curiosity", label: "새로운 것을 배우는 걸 좋아한다" },
+      { value: "expertise", label: "특정 분야에 깊은 지식이 있다" },
+      { value: "empathy", label: "사람들의 마음을 잘 이해한다" },
     ],
   },
   {
     id: "quick3",
     question: "콘텐츠를 통해 어떤 변화를 만들고 싶나요?",
     options: [
-      { value: "courage", label: "힘든 사람에게 용기를 주고 싶다", emoji: "💪" },
-      { value: "practical", label: "실용적인 도움을 주고 싶다", emoji: "🧭" },
-      { value: "inspiration", label: "새로운 시각과 영감을 주고 싶다", emoji: "✨" },
-      { value: "community", label: "따뜻한 커뮤니티를 만들고 싶다", emoji: "🏡" },
+      { value: "courage", label: "힘든 사람에게 용기를 주고 싶다" },
+      { value: "practical", label: "실용적인 도움을 주고 싶다" },
+      { value: "inspiration", label: "새로운 시각과 영감을 주고 싶다" },
+      { value: "community", label: "따뜻한 커뮤니티를 만들고 싶다" },
     ],
   },
 ];
-
-// 답변에 따른 아키타입 매핑
-const ARCHETYPE_MAPPING: Record<string, string> = {
-  "share-story_recovery_courage": "warrior",
-  "share-story_curiosity_courage": "latestarter",
-  "share-knowledge_expertise_practical": "collector",
-  "connect-people_empathy_community": "connector",
-  "share-knowledge_curiosity_inspiration": "experimenter",
-  "build-business_expertise_practical": "guide",
-};
 
 export default function QuickDiagnosisPage() {
   const router = useRouter();
@@ -142,13 +132,12 @@ export default function QuickDiagnosisPage() {
               <button
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className={`w-full p-4 rounded-xl border-2 text-left transition-all flex items-center gap-4 ${
+                className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
                   currentAnswer === option.value
                     ? "border-accent bg-accent/5"
                     : "border-gray-100 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
-                <span className="text-2xl">{option.emoji}</span>
                 <span className="font-medium text-gray-700">{option.label}</span>
               </button>
             ))}
@@ -162,7 +151,7 @@ export default function QuickDiagnosisPage() {
             disabled={currentIndex === 0}
             className="px-6 py-3 text-gray-500 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            ← 이전
+            이전
           </button>
 
           <button
@@ -197,7 +186,7 @@ export default function QuickDiagnosisPage() {
             ) : currentIndex === QUICK_QUESTIONS.length - 1 ? (
               "결과 보기"
             ) : (
-              "다음 →"
+              "다음"
             )}
           </button>
         </div>
@@ -208,7 +197,7 @@ export default function QuickDiagnosisPage() {
             더 정확한 분석을 원하시나요?
           </p>
           <Link href="/diagnosis/deep" className="text-accent hover:underline text-sm">
-            심층 진단 시작하기 →
+            심층 진단 시작하기
           </Link>
         </div>
       </div>

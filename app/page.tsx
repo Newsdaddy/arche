@@ -14,104 +14,92 @@ const TEST_QUESTIONS = [
     id: "goal",
     question: "콘텐츠를 만드는 목표는?",
     options: [
-      { value: "brand", label: "개인 브랜딩", emoji: "🌟" },
-      { value: "business", label: "비즈니스/수익", emoji: "💰" },
-      { value: "hobby", label: "취미/재미", emoji: "🎨" },
-      { value: "influence", label: "영향력 확대", emoji: "📢" },
+      { value: "brand", label: "개인 브랜딩" },
+      { value: "business", label: "비즈니스/수익" },
+      { value: "hobby", label: "취미/재미" },
+      { value: "influence", label: "영향력 확대" },
     ],
   },
   {
     id: "level",
     question: "현재 콘텐츠 제작 경험은?",
     options: [
-      { value: "beginner", label: "처음이에요", emoji: "🌱" },
-      { value: "intermediate", label: "가끔 올려봤어요", emoji: "🌿" },
-      { value: "advanced", label: "꾸준히 해요", emoji: "🌳" },
+      { value: "beginner", label: "처음이에요" },
+      { value: "intermediate", label: "가끔 올려봤어요" },
+      { value: "advanced", label: "꾸준히 해요" },
     ],
   },
   {
     id: "challenge",
     question: "가장 큰 어려움은?",
     options: [
-      { value: "idea", label: "아이디어 부족", emoji: "💭" },
-      { value: "time", label: "시간 부족", emoji: "⏰" },
-      { value: "quality", label: "퀄리티 고민", emoji: "📊" },
-      { value: "consistency", label: "꾸준함 유지", emoji: "📅" },
+      { value: "idea", label: "아이디어 부족" },
+      { value: "time", label: "시간 부족" },
+      { value: "quality", label: "퀄리티 고민" },
+      { value: "consistency", label: "꾸준함 유지" },
     ],
   },
 ];
 
 // 테스트 결과 페르소나
-const PERSONAS: Record<string, { name: string; emoji: string; description: string; tip: string }> = {
+const PERSONAS: Record<string, { name: string; description: string; tip: string }> = {
   "brand-beginner": {
     name: "브랜딩 새싹",
-    emoji: "🌱✨",
     description: "나만의 색깔을 찾아가는 여정의 시작점에 있어요!",
     tip: "먼저 롤모델 3명을 정하고 그들의 콘텐츠를 관찰해보세요.",
   },
   "brand-intermediate": {
     name: "성장하는 크리에이터",
-    emoji: "🚀",
     description: "기본기는 갖췄지만 더 높이 날고 싶은 당신!",
     tip: "일관된 콘텐츠 시리즈를 기획해보세요. 팬덤이 생겨요.",
   },
   "brand-advanced": {
     name: "브랜드 빌더",
-    emoji: "👑",
     description: "이미 방향을 잡은 당신, 이제 영향력을 키울 차례!",
     tip: "협업과 네트워킹으로 시너지를 만들어보세요.",
   },
   "business-beginner": {
     name: "예비 사업가",
-    emoji: "💡",
     description: "콘텐츠로 수익을 만들고 싶은 야망가!",
     tip: "먼저 가치 있는 콘텐츠를 쌓고, 신뢰를 구축하세요.",
   },
   "business-intermediate": {
     name: "콘텐츠 마케터",
-    emoji: "📈",
     description: "콘텐츠와 비즈니스의 연결고리를 찾는 중!",
     tip: "CTA와 퍼널을 명확히 설계해보세요.",
   },
   "business-advanced": {
     name: "수익 크리에이터",
-    emoji: "💎",
     description: "이미 수익화의 길에 들어선 프로!",
     tip: "자동화와 팀 빌딩으로 스케일업 해보세요.",
   },
   "hobby-beginner": {
     name: "즐거운 시작자",
-    emoji: "🎉",
     description: "재미있게 시작하려는 당신, 완벽해요!",
     tip: "부담 없이 하루 10분, 관찰부터 시작해보세요.",
   },
   "hobby-intermediate": {
     name: "취미 크리에이터",
-    emoji: "🎨",
     description: "좋아하는 것을 기록하는 즐거움을 아는 당신!",
     tip: "나만의 스타일을 더 강화해보세요.",
   },
   "hobby-advanced": {
     name: "라이프 아티스트",
-    emoji: "🌈",
     description: "일상을 콘텐츠로 만드는 진정한 아티스트!",
     tip: "커뮤니티를 만들어 같은 취미를 공유해보세요.",
   },
   "influence-beginner": {
     name: "영향력 씨앗",
-    emoji: "🌟",
     description: "세상에 목소리를 내고 싶은 당신!",
     tip: "작은 커뮤니티부터 시작해 팬을 만들어보세요.",
   },
   "influence-intermediate": {
     name: "오피니언 리더",
-    emoji: "🎤",
     description: "이미 사람들이 당신의 말에 귀 기울여요!",
     tip: "명확한 메시지와 일관된 관점을 유지하세요.",
   },
   "influence-advanced": {
     name: "인플루언서",
-    emoji: "⭐",
     description: "영향력을 행사하는 당신, 이제 확장할 때!",
     tip: "다양한 플랫폼으로 영향력을 확대해보세요.",
   },
@@ -198,11 +186,11 @@ const CONSULTING_PLANS = [
 
 // 플랫폼 지원
 const PLATFORMS = [
-  { emoji: "📸", name: "인스타그램" },
-  { emoji: "🎬", name: "유튜브" },
-  { emoji: "✍️", name: "블로그" },
-  { emoji: "🧵", name: "스레드/X" },
-  { emoji: "📧", name: "뉴스레터" },
+  { name: "인스타그램" },
+  { name: "유튜브" },
+  { name: "블로그" },
+  { name: "스레드/X" },
+  { name: "뉴스레터" },
 ];
 
 // FAQ
@@ -285,13 +273,12 @@ export default function Home() {
               </div>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                 5개 검증된 프레임워크로 나만의 콘텐츠 전략을 발견하세요.<br className="hidden md:block" />
-                SWOT, Hero's Journey, Enneagram, VPC, Ikigai를 활용합니다.
+                SWOT, Hero&apos;s Journey, Enneagram, VPC, Ikigai를 활용합니다.
               </p>
 
               {/* 심층 진단 카드 */}
               <Card className="max-w-md mx-auto bg-white shadow-xl border-2 border-accent/20">
                 <CardContent className="text-center space-y-4 py-8">
-                  <span className="text-5xl">🎭</span>
                   <h2 className="text-h2 text-primary">소셜 페르소나 진단</h2>
                   <p className="text-body text-gray-600">
                     당신만의 콘텐츠 아이덴티티를 찾아보세요.<br />
@@ -315,7 +302,7 @@ export default function Home() {
                   onClick={() => setTestStarted(true)}
                   className="inline-flex items-center gap-2 text-accent font-semibold hover:underline"
                 >
-                  ⚡ 30초 빠른 테스트 →
+                  30초 빠른 테스트 →
                 </button>
               </div>
 
@@ -354,7 +341,7 @@ export default function Home() {
                         }}
                         className="text-gray-400 hover:text-primary"
                       >
-                        ✕ 닫기
+                        닫기
                       </button>
                     </div>
                     <ProgressBar
@@ -387,13 +374,12 @@ export default function Home() {
                             setTimeout(() => setTestComplete(true), 200);
                           }
                         }}
-                        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 flex items-center gap-4
+                        className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200
                           ${testAnswers[TEST_QUESTIONS[testStep].id] === option.value
                             ? "border-accent bg-accent/5"
                             : "border-gray-100 hover:border-accent/50 hover:bg-gray-50"
                           }`}
                       >
-                        <span className="text-2xl">{option.emoji}</span>
                         <span className="text-body font-medium">{option.label}</span>
                       </button>
                     ))}
@@ -416,10 +402,6 @@ export default function Home() {
           {/* 테스트 결과 */}
           {testComplete && (
             <div className="max-w-lg mx-auto text-center space-y-6">
-              <div className="text-6xl animate-bounce">
-                {getPersona(testAnswers).emoji}
-              </div>
-
               <div>
                 <p className="text-small text-accent font-semibold mb-2">당신의 콘텐츠 유형</p>
                 <h2 className="text-3xl font-bold text-primary">
@@ -433,7 +415,7 @@ export default function Home() {
                     {getPersona(testAnswers).description}
                   </p>
                   <div className="bg-white rounded-lg p-4">
-                    <p className="text-small text-gray-500 mb-1">💡 맞춤 추천 팁</p>
+                    <p className="text-small text-gray-500 mb-1">맞춤 추천 팁</p>
                     <p className="text-body font-medium text-primary">
                       {getPersona(testAnswers).tip}
                     </p>
@@ -461,7 +443,7 @@ export default function Home() {
                     href="/diagnosis"
                     className="text-accent font-semibold hover:underline"
                   >
-                    📖 더 깊은 심층 진단 받기 (17분)
+                    더 깊은 심층 진단 받기 (17분)
                   </Link>
                   <button
                     onClick={() => {
@@ -489,7 +471,7 @@ export default function Home() {
             <Card className="text-center border-0 shadow-lg">
               <CardContent className="pt-8">
                 <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">📝</span>
+                  <span className="text-xl font-bold text-accent">01</span>
                 </div>
                 <h3 className="text-h2 text-primary mb-2">8주 미션 프로그램</h3>
                 <p className="text-body text-gray-600">
@@ -500,7 +482,7 @@ export default function Home() {
             <Card className="text-center border-0 shadow-lg">
               <CardContent className="pt-8">
                 <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🤖</span>
+                  <span className="text-xl font-bold text-accent">02</span>
                 </div>
                 <h3 className="text-h2 text-primary mb-2">AI 콘텐츠 생성</h3>
                 <p className="text-body text-gray-600">
@@ -511,7 +493,7 @@ export default function Home() {
             <Card className="text-center border-0 shadow-lg">
               <CardContent className="pt-8">
                 <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🔥</span>
+                  <span className="text-xl font-bold text-accent">03</span>
                 </div>
                 <h3 className="text-h2 text-primary mb-2">스트릭 동기부여</h3>
                 <p className="text-body text-gray-600">
@@ -565,10 +547,9 @@ export default function Home() {
                 {PLATFORMS.map((platform) => (
                   <span
                     key={platform.name}
-                    className="flex items-center gap-2 bg-secondary px-4 py-2 rounded-full"
+                    className="bg-secondary px-4 py-2 rounded-full text-body"
                   >
-                    <span>{platform.emoji}</span>
-                    <span className="text-body">{platform.name}</span>
+                    {platform.name}
                   </span>
                 ))}
               </div>
@@ -580,12 +561,12 @@ export default function Home() {
               <CardContent className="font-mono text-small">
                 <p className="text-gray-400 mb-2"># AI가 생성한 인스타그램 캡션</p>
                 <p className="mb-4">
-                  ✨ 콘텐츠 초보자를 위한 꿀팁 3가지
+                  콘텐츠 초보자를 위한 꿀팁 3가지
                 </p>
                 <p className="text-gray-300 mb-4">
-                  1️⃣ 매일 10분 관찰하기<br />
-                  2️⃣ 아이디어 메모 습관<br />
-                  3️⃣ 완벽보다 꾸준함
+                  1. 매일 10분 관찰하기<br />
+                  2. 아이디어 메모 습관<br />
+                  3. 완벽보다 꾸준함
                 </p>
                 <p className="text-accent">
                   #콘텐츠크리에이터 #인스타그램팁 #성장
@@ -700,8 +681,8 @@ export default function Home() {
           <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-0">
             <CardContent>
               <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center text-5xl">
-                  👨‍💼
+                <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center">
+                  <span className="text-2xl font-bold text-accent">BJ</span>
                 </div>
                 <div className="flex-1 text-center md:text-left">
                   <h2 className="text-h2 text-primary">병진 컨설턴트</h2>
