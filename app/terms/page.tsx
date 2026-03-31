@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "이용약관 - Arche 아르케",
-  description: "Arche 서비스 이용약관",
+  title: "이용약관 - 아르케인텔리전스",
+  description: "아르케인텔리전스 서비스 이용약관",
 };
 
 export default function TermsPage() {
@@ -25,7 +25,7 @@ export default function TermsPage() {
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-8 md:p-12">
           <h1 className="text-3xl font-bold text-primary mb-2">이용약관</h1>
-          <p className="text-gray-500 mb-8">시행일: 2024년 1월 1일</p>
+          <p className="text-gray-500 mb-8">시행일: 2026년 3월 1일</p>
 
           <div className="prose prose-gray max-w-none space-y-8">
             {/* 제1조 */}
@@ -168,7 +168,7 @@ export default function TermsPage() {
             {/* 부칙 */}
             <section className="border-t pt-6">
               <h2 className="text-xl font-semibold text-primary mb-3">부칙</h2>
-              <p className="text-gray-700">이 약관은 2024년 1월 1일부터 시행합니다.</p>
+              <p className="text-gray-700">이 약관은 2026년 3월 1일부터 시행합니다.</p>
             </section>
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function TermsPage() {
 
       {/* Footer */}
       <footer className="px-6 py-6 bg-gray-100 text-center">
-        <p className="text-sm text-gray-500">© 2024 Arche. All rights reserved.</p>
+        <p className="text-sm text-gray-500">© 2026 아르케인텔리전스. All rights reserved.</p>
       </footer>
     </main>
   );

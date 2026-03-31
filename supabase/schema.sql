@@ -161,5 +161,177 @@ CREATE TRIGGER update_consulting_requests_updated_at
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- =============================================
+-- 8. subscriptions 테이블 (구독 정보)
+-- =============================================
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE UNIQUE,
+
+  -- 구독 상태
+  plan TEXT NOT NULL DEFAULT 'free', -- 'free', 'pro'
+  status TEXT NOT NULL DEFAULT 'active', -- 'active', 'cancelled', 'expired'
+
+  -- 결제 정보
+  payment_provider TEXT, -- 'stripe', 'toss'
+  external_subscription_id TEXT,
+
+  -- 기간
+  current_period_start TIMESTAMPTZ,
+  current_period_end TIMESTAMPTZ,
+  cancelled_at TIMESTAMPTZ,
+
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- =============================================
+-- 9. usage_logs 테이블 (일일 사용량 추적)
+-- =============================================
+CREATE TABLE IF NOT EXISTS usage_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+
+  -- 사용 유형
+  usage_type TEXT NOT NULL, -- 'content_generation', 'diagnosis'
+
+  -- 날짜별 카운트
+  usage_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  count INTEGER NOT NULL DEFAULT 1,
+
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+
+  UNIQUE(user_id, usage_type, usage_date)
+);
+
+-- =============================================
+-- 10. persona_results 테이블 (진단 결과 저장)
+-- =============================================
+CREATE TABLE IF NOT EXISTS persona_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+
+  -- 진단 유형
+  diagnosis_type TEXT NOT NULL, -- 'quick', 'deep'
+
+  -- 진단 결과
+  archetype TEXT,
+  archetype_name TEXT,
+  archetype_description TEXT,
+
+  -- SWOT 분석 결과
+  strengths JSONB,
+  weaknesses JSONB,
+  opportunities JSONB,
+  threats JSONB,
+
+  -- 능력 조합
+  skills TEXT[],
+  unique_position TEXT,
+
+  -- 콘텐츠 추천
+  content_style TEXT,
+  recommended_hooks JSONB,
+  recommended_topics JSONB,
+
+  -- 원본 답변
+  raw_answers JSONB,
+
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- =============================================
+-- 11. content_generations 테이블 (생성 기록)
+-- =============================================
+CREATE TABLE IF NOT EXISTS content_generations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+
+  -- 생성 정보
+  platform TEXT NOT NULL,
+  topic TEXT NOT NULL,
+  additional_inputs JSONB,
+
+  -- 페르소나 연동
+  persona_result_id UUID REFERENCES persona_results(id) ON DELETE SET NULL,
+
+  -- 생성 결과
+  generated_content TEXT NOT NULL,
+
+  -- 사용자 피드백
+  rating INTEGER,
+  saved BOOLEAN DEFAULT FALSE,
+
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- =============================================
+-- 12. profiles 테이블 업데이트 (페르소나 연동)
+-- =============================================
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS active_persona_result_id UUID
+  REFERENCES persona_results(id) ON DELETE SET NULL;
+
+-- =============================================
+-- 13. 새 테이블 인덱스
+-- =============================================
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_usage_logs_user_date ON usage_logs(user_id, usage_date);
+CREATE INDEX IF NOT EXISTS idx_persona_results_user_id ON persona_results(user_id);
+CREATE INDEX IF NOT EXISTS idx_content_generations_user_id ON content_generations(user_id);
+
+-- =============================================
+-- 14. 새 테이블 RLS 정책
+-- =============================================
+
+-- subscriptions RLS
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own subscription" ON subscriptions
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own subscription" ON subscriptions
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own subscription" ON subscriptions
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- usage_logs RLS
+ALTER TABLE usage_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own usage" ON usage_logs
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own usage" ON usage_logs
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own usage" ON usage_logs
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- persona_results RLS
+ALTER TABLE persona_results ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own persona" ON persona_results
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own persona" ON persona_results
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- content_generations RLS
+ALTER TABLE content_generations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own generations" ON content_generations
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own generations" ON content_generations
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- =============================================
+-- 15. subscriptions updated_at 트리거
+-- =============================================
+DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON subscriptions;
+CREATE TRIGGER update_subscriptions_updated_at
+  BEFORE UPDATE ON subscriptions
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =============================================
 -- 실행 완료!
 -- =============================================

@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 import Groq from "groq-sdk";
+import { createClient } from "@/lib/supabase/server";
+import {
+  checkUsageLimitServer,
+  incrementUsageServer,
+  getActivePersonaResult,
+  saveContentGeneration,
+} from "@/lib/usage/server";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -8,7 +15,7 @@ const groq = new Groq({
 const PLATFORM_PROMPTS: Record<string, string> = {
   instagram: `인스타그램 피드/릴스용 캡션을 작성해주세요.
 요구사항:
-- 첫 줄은 임팩트 있는 훅으로 시작
+- 첫 줄은 임팩트 있는 훅으로 시작 (스크롤을 멈추게 하는 문장)
 - 이모지를 적절히 활용
 - 핵심 포인트 3-5개를 불릿 포인트로
 - CTA(Call to Action) 포함
@@ -24,11 +31,12 @@ const PLATFORM_PROMPTS: Record<string, string> = {
 
   blog: `블로그 글 초안을 작성해주세요.
 요구사항:
-- SEO 최적화된 제목
+- SEO/AEO 최적화된 제목
 - 서론, 본론(2-3개 섹션), 결론 구조
 - 각 섹션에 소제목 포함
 - 자연스러운 키워드 배치
-- 독자 참여 유도 문구`,
+- 독자 참여 유도 문구
+- AI 검색 최적화를 위한 명확한 답변 구조`,
 
   thread: `스레드/X(트위터)용 스레드를 작성해주세요.
 요구사항:
@@ -48,16 +56,75 @@ const PLATFORM_PROMPTS: Record<string, string> = {
 - CTA 버튼 문구`,
 };
 
+// 페르소나 컨텍스트 생성
+function buildPersonaContext(persona: Record<string, unknown> | null): string {
+  if (!persona) return "";
+
+  const strengths = Array.isArray(persona.strengths)
+    ? persona.strengths.join(", ")
+    : "";
+
+  return `
+[크리에이터 페르소나 정보]
+유형: ${persona.archetype_name || ""}
+설명: ${persona.archetype_description || ""}
+강점: ${strengths}
+콘텐츠 스타일: ${persona.content_style || ""}
+고유 포지션: ${persona.unique_position || ""}
+
+이 크리에이터의 톤앤매너와 스타일에 맞게 콘텐츠를 작성하세요.
+강점을 살리고, 고유한 관점이 드러나도록 해주세요.
+`;
+}
+
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // 로그인 여부 확인 (비로그인도 허용하되 사용량 추적 안함)
+    let userId: string | null = user?.id || null;
+    let usageCheck = null;
+    let persona = null;
+
+    // 로그인한 사용자: 사용량 체크
+    if (userId) {
+      usageCheck = await checkUsageLimitServer(userId, "content_generation");
+
+      if (!usageCheck.allowed) {
+        return NextResponse.json(
+          {
+            error: "오늘 생성 횟수를 모두 사용했습니다.",
+            usageInfo: {
+              remaining: 0,
+              limit: usageCheck.limit,
+              plan: usageCheck.plan,
+            }
+          },
+          { status: 429 }
+        );
+      }
+
+      // 활성 페르소나 조회
+      persona = await getActivePersonaResult(userId);
+    }
+
     const { platform, topic, tone, keywords, target, additionalInfo } = await request.json();
 
+    if (!topic) {
+      return NextResponse.json(
+        { error: "주제를 입력해주세요." },
+        { status: 400 }
+      );
+    }
+
     const platformPrompt = PLATFORM_PROMPTS[platform] || PLATFORM_PROMPTS.instagram;
+    const personaContext = buildPersonaContext(persona);
 
     const prompt = `당신은 전문 콘텐츠 크리에이터입니다. 아래 정보를 바탕으로 콘텐츠를 작성해주세요.
-
+${personaContext}
 플랫폼: ${platform}
-주제: ${topic}
+주제/이야기: ${topic}
 ${tone ? `톤앤매너: ${tone}` : ""}
 ${keywords ? `포함할 키워드: ${keywords}` : ""}
 ${target ? `타겟 독자: ${target}` : ""}
@@ -65,7 +132,12 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ""}
 
 ${platformPrompt}
 
-바로 사용할 수 있는 완성된 콘텐츠를 작성해주세요. 한국어로 작성하세요.`;
+중요:
+- 첫 줄은 반드시 스크롤을 멈추게 하는 강력한 훅으로 시작하세요.
+- 명확한 메인 아이디어가 전달되어야 합니다.
+- 마지막에는 독자가 행동하게 만드는 CTA를 포함하세요.
+- 바로 사용할 수 있는 완성된 콘텐츠를 작성해주세요.
+- 한국어로 작성하세요.`;
 
     const completion = await groq.chat.completions.create({
       messages: [
@@ -80,6 +152,32 @@ ${platformPrompt}
     });
 
     const content = completion.choices[0]?.message?.content || "";
+
+    // 로그인한 사용자: 사용량 증가 및 기록 저장
+    if (userId) {
+      await incrementUsageServer(userId, "content_generation");
+
+      await saveContentGeneration(userId, {
+        platform,
+        topic,
+        additionalInputs: { tone, keywords, target, additionalInfo },
+        personaResultId: persona?.id,
+        generatedContent: content,
+      });
+
+      // 업데이트된 사용량 정보
+      const updatedUsage = await checkUsageLimitServer(userId, "content_generation");
+
+      return NextResponse.json({
+        content,
+        usageInfo: {
+          remaining: updatedUsage.remaining,
+          limit: updatedUsage.limit,
+          plan: updatedUsage.plan,
+        },
+        hasPersona: !!persona,
+      });
+    }
 
     return NextResponse.json({ content });
   } catch (error) {

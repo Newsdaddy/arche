@@ -279,39 +279,55 @@ export default function Home() {
               <div className="space-y-2">
                 <p className="text-accent font-semibold tracking-widest">ARCHE</p>
                 <h1 className="text-4xl md:text-5xl font-bold text-primary leading-tight">
-                  당신의 콘텐츠,<br />
-                  <span className="text-accent">시작의 근원</span>을<br />
-                  찾아드립니다
+                  나의<br />
+                  <span className="text-accent">소셜 페르소나</span>는?
                 </h1>
               </div>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                정밀한 진단과 분석으로 나만의 소셜미디어 콘셉트를 잡고,<br className="hidden md:block" />
-                그 첫 시작을 함께합니다.
+                5개 검증된 프레임워크로 나만의 콘텐츠 전략을 발견하세요.<br className="hidden md:block" />
+                SWOT, Hero's Journey, Enneagram, VPC, Ikigai를 활용합니다.
               </p>
 
-              {/* 테스트 시작 카드 */}
+              {/* 심층 진단 카드 */}
               <Card className="max-w-md mx-auto bg-white shadow-xl border-2 border-accent/20">
                 <CardContent className="text-center space-y-4 py-8">
-                  <span className="text-5xl">🧪</span>
-                  <h2 className="text-h2 text-primary">나의 콘텐츠 유형은?</h2>
+                  <span className="text-5xl">🎭</span>
+                  <h2 className="text-h2 text-primary">소셜 페르소나 진단</h2>
                   <p className="text-body text-gray-600">
-                    30초 테스트로 나에게 맞는<br />콘텐츠 전략을 알아보세요!
+                    당신만의 콘텐츠 아이덴티티를 찾아보세요.<br />
+                    SWOT + 스토리 + 능력 교차점 분석
                   </p>
-                  <Button size="lg" onClick={() => setTestStarted(true)}>
-                    무료 테스트 시작하기
-                  </Button>
+                  <Link
+                    href="/diagnosis"
+                    className="inline-block w-full py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    진단 시작하기
+                  </Link>
                 </CardContent>
               </Card>
 
+              {/* 빠른 테스트 */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-body text-gray-600 mb-2">
+                  시간이 부족하신가요?
+                </p>
+                <button
+                  onClick={() => setTestStarted(true)}
+                  className="inline-flex items-center gap-2 text-accent font-semibold hover:underline"
+                >
+                  ⚡ 30초 빠른 테스트 →
+                </button>
+              </div>
+
               {isLoggedIn ? (
-                <p className="text-body text-gray-500">
+                <p className="text-body text-gray-500 mt-4">
                   이미 회원이시네요!{" "}
                   <button onClick={() => router.push("/dashboard")} className="text-accent font-semibold hover:underline">
                     대시보드로 이동 →
                   </button>
                 </p>
               ) : (
-                <p className="text-body text-gray-500">
+                <p className="text-body text-gray-500 mt-4">
                   이미 계정이 있으신가요?{" "}
                   <Link href="/login" className="text-accent font-semibold hover:underline">
                     로그인
@@ -440,17 +456,25 @@ export default function Home() {
                     </p>
                   </>
                 )}
-                <button
-                  onClick={() => {
-                    setTestStarted(false);
-                    setTestStep(0);
-                    setTestAnswers({});
-                    setTestComplete(false);
-                  }}
-                  className="text-body text-gray-400 hover:text-primary"
-                >
-                  테스트 다시 하기
-                </button>
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href="/diagnosis"
+                    className="text-accent font-semibold hover:underline"
+                  >
+                    📖 더 깊은 심층 진단 받기 (17분)
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setTestStarted(false);
+                      setTestStep(0);
+                      setTestAnswers({});
+                      setTestComplete(false);
+                    }}
+                    className="text-body text-gray-400 hover:text-primary"
+                  >
+                    테스트 다시 하기
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -736,37 +760,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ Footer ============ */}
-      <footer className="px-6 py-8 bg-primary text-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-            <div>
-              <p className="text-body font-semibold">Arche 아르케</p>
-              <p className="text-small text-gray-400">© 2024 Arche. All rights reserved.</p>
-            </div>
-            <div className="flex gap-6">
-              <Link href="/consulting" className="text-body hover:text-accent transition-colors">
-                컨설팅
-              </Link>
-              <Link href="/create" className="text-body hover:text-accent transition-colors">
-                콘텐츠 생성
-              </Link>
-              <Link href="/login" className="text-body hover:text-accent transition-colors">
-                로그인
-              </Link>
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-4 flex flex-wrap justify-center gap-4 text-small text-gray-400">
-            <Link href="/terms" className="hover:text-white transition-colors">
-              이용약관
-            </Link>
-            <span>|</span>
-            <Link href="/privacy" className="hover:text-white transition-colors">
-              개인정보처리방침
-            </Link>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

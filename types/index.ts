@@ -71,3 +71,82 @@ export interface WeeklyProgress {
   completedDays: number;
   totalDays: number;
 }
+
+// 구독 타입
+export interface Subscription {
+  id: string;
+  userId: string;
+  plan: "free" | "pro";
+  status: "active" | "cancelled" | "expired";
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
+}
+
+// 사용량 타입
+export interface UsageLog {
+  id: string;
+  userId: string;
+  usageType: "content_generation" | "diagnosis";
+  usageDate: string;
+  count: number;
+}
+
+// 사용량 제한
+export interface UsageLimits {
+  content_generation: number;
+  diagnosis: number;
+}
+
+// 사용량 체크 결과
+export interface UsageCheckResult {
+  allowed: boolean;
+  remaining: number;
+  limit: number;
+  plan: "free" | "pro";
+}
+
+// 심층 진단 결과 타입
+export interface PersonaResult {
+  id: string;
+  userId: string;
+  diagnosisType: "quick" | "deep";
+  archetype: string;
+  archetypeName: string;
+  archetypeDescription: string;
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+  skills: string[];
+  uniquePosition: string;
+  contentStyle: string;
+  recommendedHooks: string[];
+  recommendedTopics: string[];
+  rawAnswers: Record<string, string>;
+  createdAt: string;
+}
+
+// 콘텐츠 생성 기록
+export interface ContentGeneration {
+  id: string;
+  userId: string;
+  platform: string;
+  topic: string;
+  additionalInputs?: Record<string, string>;
+  personaResultId?: string;
+  generatedContent: string;
+  rating?: number;
+  saved: boolean;
+  createdAt: string;
+}
+
+// 8주 커리큘럼 타입
+export interface CurriculumWeek {
+  week: number;
+  title: string;
+  subtitle: string;
+  category: "self-analysis" | "market-analysis" | "persona-design" | "content-creation";
+  topics: string[];
+  outcomes: string[];
+  exercises: number;
+}

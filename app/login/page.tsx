@@ -49,17 +49,6 @@ export default function LoginPage() {
     });
   };
 
-  const handleKakaoLogin = async () => {
-    const supabase = createClient();
-
-    await supabase.auth.signInWithOAuth({
-      provider: "kakao",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  };
-
   return (
     <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
       <div className="max-w-md w-full space-y-6">
@@ -85,16 +74,6 @@ export default function LoginPage() {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
                 <span className="text-body font-medium">Google로 계속하기</span>
-              </button>
-
-              <button
-                onClick={handleKakaoLogin}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#000000" d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3z"/>
-                </svg>
-                <span className="text-body font-medium text-black">카카오로 계속하기</span>
               </button>
             </div>
 

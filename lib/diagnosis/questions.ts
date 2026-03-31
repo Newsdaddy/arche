@@ -1,0 +1,487 @@
+import { Question, Section, Framework } from "@/types/diagnosis";
+
+// 프레임워크 이름 매핑
+export const FRAMEWORK_NAMES: Record<Framework, string> = {
+  swot: "SWOT 분석",
+  hero: "Hero's Journey",
+  enneagram: "Enneagram",
+  vpc: "VPC + ICP",
+  ikigai: "능력 교차점",
+};
+
+// 프레임워크 아이콘 매핑
+export const FRAMEWORK_ICONS: Record<Framework, string> = {
+  swot: "📊",
+  hero: "📖",
+  enneagram: "💭",
+  vpc: "🎯",
+  ikigai: "🔗",
+};
+
+// 7개 섹션 정의
+export const SECTIONS: Section[] = [
+  {
+    id: 1,
+    name: "현재 나",
+    description: "지금의 나를 이해합니다",
+    icon: "👤",
+    frameworks: ["swot", "hero", "vpc"],
+    questionCount: 5,
+  },
+  {
+    id: 2,
+    name: "과거 경험",
+    description: "나의 이야기를 발굴합니다",
+    icon: "📖",
+    frameworks: ["hero", "swot"],
+    questionCount: 4,
+  },
+  {
+    id: 3,
+    name: "성격과 동기",
+    description: "왜 콘텐츠를 만드는지 탐구합니다",
+    icon: "💭",
+    frameworks: ["enneagram"],
+    questionCount: 5,
+  },
+  {
+    id: 4,
+    name: "능력과 강점",
+    description: "나만의 무기를 찾습니다",
+    icon: "💪",
+    frameworks: ["ikigai", "swot"],
+    questionCount: 5,
+  },
+  {
+    id: 5,
+    name: "비즈니스와 타겟",
+    description: "누구에게 말할지 정합니다",
+    icon: "🎯",
+    frameworks: ["vpc"],
+    questionCount: 4,
+  },
+  {
+    id: 6,
+    name: "비전과 소명",
+    description: "전하고 싶은 메시지를 정리합니다",
+    icon: "🚀",
+    frameworks: ["hero"],
+    questionCount: 3,
+  },
+  {
+    id: 7,
+    name: "콘텐츠 선호",
+    description: "실행 전략을 수립합니다",
+    icon: "📱",
+    frameworks: ["vpc"],
+    questionCount: 3,
+  },
+];
+
+// 29개 질문 정의
+export const QUESTIONS: Question[] = [
+  // ========== Section 1: 현재 나 (5문항) ==========
+  {
+    id: "q1",
+    section: 1,
+    sectionName: "현재 나",
+    order: 1,
+    question: "현재 하고 있는 일은 무엇인가요?",
+    placeholder: "예: 마케팅 매니저, 프리랜서 디자이너, 스타트업 대표, 대학생 등",
+    type: "text",
+    framework: "swot",
+    required: true,
+  },
+  {
+    id: "q2",
+    section: 1,
+    sectionName: "현재 나",
+    order: 2,
+    question: "이 일을 하게 된 계기는 무엇인가요?",
+    description: "어떤 경험이나 이유로 이 길을 선택했나요?",
+    placeholder: "예: 우연히 시작했는데 재미있어서, 어릴 때부터 꿈꿔왔던 일이라서...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+  {
+    id: "q3",
+    section: 1,
+    sectionName: "현재 나",
+    order: 3,
+    question: "지금 일에서 가장 만족스러운 점은 무엇인가요?",
+    placeholder: "예: 자유로운 시간 관리, 성장하는 느낌, 사람들과의 교류...",
+    type: "textarea",
+    framework: "swot",
+    required: true,
+  },
+  {
+    id: "q4",
+    section: 1,
+    sectionName: "현재 나",
+    order: 4,
+    question: "지금 일에서 가장 어려운 점은 무엇인가요?",
+    placeholder: "예: 불안정한 수입, 업무량 과다, 인간관계 스트레스...",
+    type: "textarea",
+    framework: "swot",
+    required: true,
+  },
+  {
+    id: "q5",
+    section: 1,
+    sectionName: "현재 나",
+    order: 5,
+    question: "앞으로 하고 싶은 일이 있나요?",
+    description: "현재와 같을 수도, 다를 수도 있습니다",
+    placeholder: "예: 지금 일을 더 발전시키고 싶다, 완전히 다른 분야에 도전하고 싶다...",
+    type: "textarea",
+    framework: "vpc",
+    required: true,
+  },
+
+  // ========== Section 2: 과거 경험 (4문항) ==========
+  {
+    id: "q6",
+    section: 2,
+    sectionName: "과거 경험",
+    order: 1,
+    question: "인생에서 가장 큰 시련은 무엇이었나요?",
+    description: "공유하고 싶은 만큼만 적어주세요",
+    placeholder: "예: 사업 실패, 이직 고민, 건강 문제, 관계 문제 등...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+  {
+    id: "q7",
+    section: 2,
+    sectionName: "과거 경험",
+    order: 2,
+    question: "그 시련을 어떻게 극복했나요? (또는 극복 중인가요?)",
+    placeholder: "예: 멘토의 조언, 새로운 시각, 포기하지 않는 마음...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+  {
+    id: "q8",
+    section: 2,
+    sectionName: "과거 경험",
+    order: 3,
+    question: "그 경험에서 얻은 가장 큰 깨달음은 무엇인가요?",
+    placeholder: "예: 실패해도 괜찮다는 것, 도움을 요청하는 것의 중요성...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+  {
+    id: "q9",
+    section: 2,
+    sectionName: "과거 경험",
+    order: 4,
+    question: "그 경험이 지금의 나에게 어떤 영향을 미쳤나요?",
+    placeholder: "예: 더 강해졌다, 다른 사람을 이해하게 됐다, 가치관이 바뀌었다...",
+    type: "textarea",
+    framework: "swot",
+    required: true,
+  },
+
+  // ========== Section 3: 성격과 동기 (5문항) ==========
+  {
+    id: "q10",
+    section: 3,
+    sectionName: "성격과 동기",
+    order: 1,
+    question: "콘텐츠를 만들고 싶은 진짜 이유는 무엇인가요?",
+    description: "돈, 인정, 영향력, 자기표현, 도움 등 솔직하게 적어주세요",
+    placeholder: "예: 나의 경험이 누군가에게 도움이 되면 좋겠다, 수익을 만들고 싶다...",
+    type: "textarea",
+    framework: "enneagram",
+    required: true,
+  },
+  {
+    id: "q11",
+    section: 3,
+    sectionName: "성격과 동기",
+    order: 2,
+    question: "새로운 일을 시작할 때 당신은 어떤 스타일인가요?",
+    type: "select",
+    options: [
+      { value: "thorough", label: "철저히 준비한 후 시작한다" },
+      { value: "action", label: "일단 시작하고 배워나간다" },
+      { value: "observe", label: "다른 사람들이 하는 걸 먼저 관찰한다" },
+      { value: "intuition", label: "느낌이 올 때까지 기다린다" },
+    ],
+    framework: "enneagram",
+    required: true,
+  },
+  {
+    id: "q12",
+    section: 3,
+    sectionName: "성격과 동기",
+    order: 3,
+    question: "일할 때 가장 싫은 것은 무엇인가요?",
+    type: "select",
+    options: [
+      { value: "disorder", label: "혼란스럽고 체계가 없는 것" },
+      { value: "rejection", label: "내 노력을 인정받지 못하는 것" },
+      { value: "restriction", label: "자유롭게 하지 못하는 것" },
+      { value: "conflict", label: "갈등이 생기는 것" },
+    ],
+    framework: "enneagram",
+    required: true,
+  },
+  {
+    id: "q13",
+    section: 3,
+    sectionName: "성격과 동기",
+    order: 4,
+    question: "스트레스를 받으면 어떻게 반응하나요?",
+    type: "select",
+    options: [
+      { value: "control", label: "더 열심히 일하며 통제하려 한다" },
+      { value: "withdraw", label: "혼자만의 시간이 필요하다" },
+      { value: "seek-help", label: "주변 사람에게 도움을 요청한다" },
+      { value: "distract", label: "다른 재미있는 것을 찾는다" },
+    ],
+    framework: "enneagram",
+    required: true,
+  },
+  {
+    id: "q14",
+    section: 3,
+    sectionName: "성격과 동기",
+    order: 5,
+    question: "당신이 가장 두려워하는 것은 무엇인가요?",
+    description: "콘텐츠 활동과 관련해서",
+    type: "select",
+    options: [
+      { value: "failure", label: "실패하거나 무능해 보이는 것" },
+      { value: "rejection", label: "사람들에게 거부당하는 것" },
+      { value: "insignificance", label: "존재감 없이 무시당하는 것" },
+      { value: "loss", label: "잘못된 선택으로 기회를 잃는 것" },
+    ],
+    framework: "enneagram",
+    required: true,
+  },
+
+  // ========== Section 4: 능력과 강점 (5문항) ==========
+  {
+    id: "q15",
+    section: 4,
+    sectionName: "능력과 강점",
+    order: 1,
+    question: "당신이 가장 잘하는 것 3가지는 무엇인가요?",
+    description: "직업적 스킬, 성격적 강점, 취미 등 모두 포함",
+    placeholder: "예: 글쓰기, 사람들과 대화하기, 문제 해결하기, 요리...",
+    type: "textarea",
+    framework: "ikigai",
+    required: true,
+  },
+  {
+    id: "q16",
+    section: 4,
+    sectionName: "능력과 강점",
+    order: 2,
+    question: "시간 가는 줄 모르고 몰입하는 활동은 무엇인가요?",
+    placeholder: "예: 책 읽기, 새로운 도구 배우기, 사람들과 이야기하기...",
+    type: "textarea",
+    framework: "ikigai",
+    required: true,
+  },
+  {
+    id: "q17",
+    section: 4,
+    sectionName: "능력과 강점",
+    order: 3,
+    question: "주변 사람들이 당신에게 자주 묻는 것이 있나요?",
+    description: "당신의 숨겨진 강점일 수 있습니다",
+    placeholder: "예: 맛집 추천, 커리어 조언, 기술 문제 해결, 인간관계 고민...",
+    type: "textarea",
+    framework: "ikigai",
+    required: true,
+  },
+  {
+    id: "q18",
+    section: 4,
+    sectionName: "능력과 강점",
+    order: 4,
+    question: "요즘 관심 있는 트렌드나 분야가 있나요?",
+    placeholder: "예: AI, 1인 창업, 디지털 노마드, 명상, 지속가능성...",
+    type: "textarea",
+    framework: "ikigai",
+    required: true,
+  },
+  {
+    id: "q19",
+    section: 4,
+    sectionName: "능력과 강점",
+    order: 5,
+    question: "다른 사람보다 오래/깊게 해온 경험이 있나요?",
+    description: "3년 이상 꾸준히 해온 것",
+    placeholder: "예: 10년간 개발, 5년간 유튜브 구독자로 트렌드 분석...",
+    type: "textarea",
+    framework: "swot",
+    required: true,
+  },
+
+  // ========== Section 5: 비즈니스와 타겟 (4문항) ==========
+  {
+    id: "q20",
+    section: 5,
+    sectionName: "비즈니스와 타겟",
+    order: 1,
+    question: "판매하거나 제공하고 싶은 서비스/제품이 있나요?",
+    description: "아직 없어도 괜찮습니다. 상상해서 적어도 됩니다.",
+    placeholder: "예: 온라인 강의, 컨설팅, 핸드메이드 제품, 전자책...",
+    type: "textarea",
+    framework: "vpc",
+    required: false,
+  },
+  {
+    id: "q21",
+    section: 5,
+    sectionName: "비즈니스와 타겟",
+    order: 2,
+    question: "이상적인 팔로워/고객은 어떤 사람인가요?",
+    description: "나이, 직업, 상황 등 구체적으로",
+    placeholder: "예: 20-30대 직장인 중 퇴사를 꿈꾸는 사람, 육아와 일을 병행하는 워킹맘...",
+    type: "textarea",
+    framework: "vpc",
+    required: true,
+  },
+  {
+    id: "q22",
+    section: 5,
+    sectionName: "비즈니스와 타겟",
+    order: 3,
+    question: "그 사람들이 가장 힘들어하는 문제는 무엇일까요?",
+    description: "그들의 고통점(Pain Point)을 상상해보세요",
+    placeholder: "예: 뭘 해야 할지 모른다, 시작이 두렵다, 시간이 없다...",
+    type: "textarea",
+    framework: "vpc",
+    required: true,
+  },
+  {
+    id: "q23",
+    section: 5,
+    sectionName: "비즈니스와 타겟",
+    order: 4,
+    question: "그들이 가장 원하는 것은 무엇일까요?",
+    description: "그들이 꿈꾸는 상태나 결과",
+    placeholder: "예: 자유로운 삶, 인정받는 느낌, 안정적인 수입, 성장하는 느낌...",
+    type: "textarea",
+    framework: "vpc",
+    required: true,
+  },
+
+  // ========== Section 6: 비전과 소명 (3문항) ==========
+  {
+    id: "q24",
+    section: 6,
+    sectionName: "비전과 소명",
+    order: 1,
+    question: "콘텐츠를 통해 세상에 전하고 싶은 메시지가 있나요?",
+    placeholder: "예: 실패해도 괜찮다, 늦은 시작도 가치 있다, 작은 것부터 시작하자...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+  {
+    id: "q25",
+    section: 6,
+    sectionName: "비전과 소명",
+    order: 2,
+    question: "3년 후, 어떤 콘텐츠 크리에이터가 되고 싶나요?",
+    placeholder: "예: 1만 팔로워의 신뢰받는 전문가, 책을 출간한 작가...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+  {
+    id: "q26",
+    section: 6,
+    sectionName: "비전과 소명",
+    order: 3,
+    question: "당신의 콘텐츠를 본 사람이 어떤 변화를 경험하길 바라나요?",
+    placeholder: "예: 용기를 얻었으면, 실질적인 도움이 됐으면, 웃음을 줬으면...",
+    type: "textarea",
+    framework: "hero",
+    required: true,
+  },
+
+  // ========== Section 7: 콘텐츠 선호 (3문항) ==========
+  {
+    id: "q27",
+    section: 7,
+    sectionName: "콘텐츠 선호",
+    order: 1,
+    question: "선호하는 콘텐츠 형식은 무엇인가요?",
+    type: "multiselect",
+    options: [
+      { value: "short-text", label: "짧은 글 (X, 스레드)" },
+      { value: "long-text", label: "긴 글 (블로그, 뉴스레터)" },
+      { value: "short-video", label: "숏폼 영상 (릴스, 쇼츠)" },
+      { value: "long-video", label: "롱폼 영상 (유튜브)" },
+      { value: "image", label: "이미지/카드뉴스" },
+      { value: "audio", label: "오디오 (팟캐스트)" },
+    ],
+    framework: "vpc",
+    required: true,
+  },
+  {
+    id: "q28",
+    section: 7,
+    sectionName: "콘텐츠 선호",
+    order: 2,
+    question: "콘텐츠에 얼마나 시간을 투자할 수 있나요?",
+    type: "select",
+    options: [
+      { value: "minimal", label: "하루 30분 이내" },
+      { value: "moderate", label: "하루 1-2시간" },
+      { value: "dedicated", label: "하루 3시간 이상" },
+      { value: "fulltime", label: "전업으로 할 예정" },
+    ],
+    framework: "vpc",
+    required: true,
+  },
+  {
+    id: "q29",
+    section: 7,
+    sectionName: "콘텐츠 선호",
+    order: 3,
+    question: "콘텐츠 톤은 어떤 스타일을 원하나요?",
+    type: "select",
+    options: [
+      { value: "professional", label: "전문적이고 신뢰감 있는" },
+      { value: "friendly", label: "친근하고 편안한" },
+      { value: "witty", label: "재치있고 유머러스한" },
+      { value: "inspiring", label: "영감을 주고 동기부여하는" },
+    ],
+    framework: "vpc",
+    required: true,
+  },
+];
+
+// 섹션별 질문 가져오기
+export function getQuestionsBySection(sectionId: number): Question[] {
+  return QUESTIONS.filter((q) => q.section === sectionId).sort(
+    (a, b) => a.order - b.order
+  );
+}
+
+// 특정 질문 가져오기
+export function getQuestionById(questionId: string): Question | undefined {
+  return QUESTIONS.find((q) => q.id === questionId);
+}
+
+// 프레임워크별 질문 가져오기
+export function getQuestionsByFramework(framework: Framework): Question[] {
+  return QUESTIONS.filter((q) => q.framework === framework);
+}
+
+// 전체 질문 수
+export const TOTAL_QUESTIONS = QUESTIONS.length;
+
+// 총 섹션 수
+export const TOTAL_SECTIONS = SECTIONS.length;

@@ -1,0 +1,43 @@
+{
+  "currentFeature": "persona-diagnosis-v2",
+  "phase": "check",
+  "features": {
+    "persona-diagnosis-v2": {
+      "phase": "check",
+      "planCreatedAt": "2026-03-31T00:00:00Z",
+      "designCreatedAt": "2026-03-31T00:00:00Z",
+      "doStartedAt": "2026-03-31T00:00:00Z",
+      "checkCompletedAt": "2026-03-31T00:00:00Z",
+      "matchRate": 94,
+      "frameworks": [
+        "SWOT",
+        "Hero's Journey",
+        "Enneagram",
+        "Value Proposition Canvas + ICP",
+        "능력 교차점 (Ikigai)"
+      ],
+      "questionCount": 29,
+      "archetypes": 6,
+      "implementedItems": [
+        "types/diagnosis.ts",
+        "lib/diagnosis/questions.ts",
+        "lib/diagnosis/archetypes.ts",
+        "lib/diagnosis/methodologies.ts",
+        "lib/diagnosis/analyzer.ts",
+        "components/diagnosis/* (10 components)",
+        "app/diagnosis/page.tsx",
+        "app/diagnosis/deep/page.tsx",
+        "app/diagnosis/quick/page.tsx",
+        "app/diagnosis/result/page.tsx",
+        "app/diagnosis/methodology/page.tsx",
+        "app/api/diagnosis/analyze/route.ts",
+        "app/api/diagnosis/save/route.ts",
+        "app/page.tsx (hero section update)"
+      ],
+      "missingItems": [
+        "lib/diagnosis/report.ts (optional - PDF generation)",
+        "GET /api/diagnosis/result/:id (using save route)"
+      ]
+    }
+  }
+}

@@ -22,12 +22,24 @@ export async function GET(request: Request) {
           .eq("id", user.id)
           .single();
 
+        // 프로필이 있고 온보딩 완료면 대시보드로
         if (profile?.onboarding_completed) {
+          return NextResponse.redirect(`${origin}/dashboard`);
+        }
+
+        // 프로필이 없으면 생성 시도
+        if (!profile) {
+          await supabase.from("profiles").insert({
+            id: user.id,
+            email: user.email,
+            onboarding_completed: true, // 임시로 true 설정
+          });
           return NextResponse.redirect(`${origin}/dashboard`);
         }
       }
 
-      return NextResponse.redirect(`${origin}${next}`);
+      // 온보딩 안 했으면 온보딩으로 (또는 대시보드로 바꿔도 됨)
+      return NextResponse.redirect(`${origin}/dashboard`);
     }
   }
 
