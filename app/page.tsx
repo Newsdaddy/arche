@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
-import Card, { CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import Card, { CardContent } from "@/components/ui/Card";
 import ProgressBar from "@/components/ProgressBar";
 
 // 적성 테스트 질문
@@ -112,85 +112,11 @@ function getPersona(answers: Record<string, string>) {
   return PERSONAS[key] || PERSONAS["brand-beginner"];
 }
 
-// 8주 커리큘럼 미리보기
-const CURRICULUM_PREVIEW = [
-  { week: 1, title: "콘텐츠 마인드셋", description: "관찰력 키우기, 아이디어 수집" },
-  { week: 2, title: "나만의 주제 찾기", description: "강점 발견, 틈새 시장 탐색" },
-  { week: 3, title: "콘텐츠 기획", description: "시리즈 기획, 콘텐츠 캘린더" },
-  { week: 4, title: "글쓰기 훈련", description: "후킹, 스토리텔링, CTA" },
-  { week: 5, title: "비주얼 콘텐츠", description: "이미지, 영상, 디자인 기초" },
-  { week: 6, title: "플랫폼 최적화", description: "알고리즘 이해, SEO 기초" },
-  { week: 7, title: "커뮤니티 빌딩", description: "팔로워 소통, 협업 전략" },
-  { week: 8, title: "브랜딩 완성", description: "일관성 유지, 장기 전략" },
-];
-
-// 컨설팅 후기
-const TESTIMONIALS = [
-  {
-    id: "1",
-    name: "김지은",
-    platform: "인스타그램",
-    before: "팔로워 800명",
-    after: "팔로워 1.2만명",
-    review: "막연하게 올리던 콘텐츠에 방향이 생겼어요. 3개월 만에 팔로워가 15배 늘었습니다!",
-  },
-  {
-    id: "2",
-    name: "박준혁",
-    platform: "유튜브",
-    before: "구독자 2,000명",
-    after: "구독자 3.5만명",
-    review: "혼자서는 절대 못 찾았을 성장 포인트를 짚어주셨어요. 투자 대비 최고의 결과!",
-  },
-  {
-    id: "3",
-    name: "이수아",
-    platform: "블로그",
-    before: "일 방문자 50명",
-    after: "일 방문자 800명",
-    review: "30분 상담이었는데 핵심만 콕콕 짚어주셔서 바로 실행할 수 있었어요.",
-  },
-];
-
-// 컨설팅 플랜
-const CONSULTING_PLANS = [
-  {
-    id: "total-combat",
-    name: "Total Combat",
-    subtitle: "토탈 컴뱃",
-    price: "50만원",
-    duration: "2달 코스",
-    description: "소셜 페르소나 설계부터 콘텐츠 발행까지",
-    features: ["페르소나 분석", "소셜 페르소나 설계", "콘텐츠 제작 & 발행", "온라인 컨설팅 3회", "매주 3회 인증 관리", "성과 리뷰 미팅 1회"],
-  },
-  {
-    id: "total-scale",
-    name: "Total + Scale",
-    subtitle: "토탈 + 스케일 패키지",
-    price: "79만원",
-    duration: "4달 풀코스",
-    popular: true,
-    description: "콘텐츠 시작부터 비즈니스 확장까지 올인원",
-    features: ["Total Combat 전체 포함", "Scale or Die 전체 포함", "온라인 컨설팅 총 6회", "21만원 할인 혜택", "매주 3회 인증 관리", "독립 선언 미팅 포함"],
-  },
-  {
-    id: "scale-or-die",
-    name: "Scale or Die",
-    subtitle: "스케일 오어 다이",
-    price: "50만원",
-    duration: "2달 코스",
-    description: "콘텐츠를 비즈니스로 확장하는 단계",
-    features: ["콘텐츠 반응 & 성과 분석", "비즈니스 모델 리브러싱", "메시지 관리 & PR", "온라인 컨설팅 3회", "매주 3회 인증 관리", "독립 선언 미팅 1회"],
-  },
-];
-
-// 플랫폼 지원
-const PLATFORMS = [
-  { name: "인스타그램" },
-  { name: "유튜브" },
-  { name: "블로그" },
-  { name: "스레드/X" },
-  { name: "뉴스레터" },
+// 콘텐츠 생성 플랫폼
+const CONTENT_PLATFORMS = [
+  { id: "thread", name: "스레드" },
+  { id: "linkedin", name: "링크드인" },
+  { id: "newsletter", name: "뉴스레터" },
 ];
 
 // FAQ
@@ -224,6 +150,13 @@ export default function Home() {
   const [testAnswers, setTestAnswers] = useState<Record<string, string>>({});
   const [testComplete, setTestComplete] = useState(false);
 
+  // 콘텐츠 생성기 상태
+  const [contentOpen, setContentOpen] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [contentTopic, setContentTopic] = useState("");
+  const [generatedContent, setGeneratedContent] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+
   useEffect(() => {
     const checkUser = async () => {
       const supabase = createClient();
@@ -247,6 +180,31 @@ export default function Home() {
 
     checkUser();
   }, []);
+
+  const handleGenerateContent = async () => {
+    if (!selectedPlatform || !contentTopic) return;
+
+    setIsGenerating(true);
+    try {
+      const response = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform: selectedPlatform,
+          topic: contentTopic,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.content) {
+        setGeneratedContent(data.content);
+      }
+    } catch (error) {
+      console.error("콘텐츠 생성 실패:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -276,22 +234,125 @@ export default function Home() {
                 SWOT, Hero&apos;s Journey, Enneagram, VPC, Ikigai를 활용합니다.
               </p>
 
-              {/* 심층 진단 카드 */}
-              <Card className="max-w-md mx-auto bg-white shadow-xl border-2 border-accent/20">
-                <CardContent className="text-center space-y-4 py-8">
-                  <h2 className="text-h2 text-primary">소셜 페르소나 진단</h2>
-                  <p className="text-body text-gray-600">
-                    당신만의 콘텐츠 아이덴티티를 찾아보세요.<br />
-                    SWOT + 스토리 + 능력 교차점 분석
-                  </p>
-                  <Link
-                    href="/diagnosis"
-                    className="inline-block w-full py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
-                  >
-                    진단 시작하기
-                  </Link>
-                </CardContent>
-              </Card>
+              {/* 두 개의 카드 */}
+              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                {/* 소셜 페르소나 진단 카드 */}
+                <Card className="bg-white shadow-xl border-2 border-accent/20">
+                  <CardContent className="text-center space-y-4 py-8">
+                    <h2 className="text-h2 text-primary">소셜 페르소나 진단</h2>
+                    <p className="text-body text-gray-600">
+                      당신만의 콘텐츠 아이덴티티를 찾아보세요.<br />
+                      SWOT + 스토리 + 능력 교차점 분석
+                    </p>
+                    <Link
+                      href="/diagnosis"
+                      className="inline-block w-full py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
+                    >
+                      진단 시작하기
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                {/* 콘텐츠 생성 카드 */}
+                <Card className="bg-white shadow-xl border-2 border-accent/20">
+                  <CardContent className="text-center space-y-4 py-8">
+                    {!contentOpen ? (
+                      <>
+                        <h2 className="text-h2 text-primary">AI 콘텐츠 생성</h2>
+                        <p className="text-body text-gray-600">
+                          주제만 입력하면 플랫폼에 맞는<br />
+                          콘텐츠가 자동으로 생성됩니다.
+                        </p>
+                        <button
+                          onClick={() => setContentOpen(true)}
+                          className="inline-block w-full py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
+                        >
+                          콘텐츠 생성하기
+                        </button>
+                      </>
+                    ) : !generatedContent ? (
+                      <div className="space-y-4 text-left">
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-h2 text-primary">콘텐츠 생성</h2>
+                          <button
+                            onClick={() => {
+                              setContentOpen(false);
+                              setSelectedPlatform("");
+                              setContentTopic("");
+                            }}
+                            className="text-gray-400 hover:text-primary text-small"
+                          >
+                            닫기
+                          </button>
+                        </div>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="text-small text-gray-500 block mb-1">플랫폼 선택</label>
+                            <div className="flex gap-2">
+                              {CONTENT_PLATFORMS.map((p) => (
+                                <button
+                                  key={p.id}
+                                  onClick={() => setSelectedPlatform(p.id)}
+                                  className={`flex-1 py-2 px-3 rounded-lg text-small font-medium transition-colors ${
+                                    selectedPlatform === p.id
+                                      ? "bg-accent text-white"
+                                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                  }`}
+                                >
+                                  {p.name}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-small text-gray-500 block mb-1">주제 입력</label>
+                            <textarea
+                              value={contentTopic}
+                              onChange={(e) => setContentTopic(e.target.value)}
+                              placeholder="예: 직장인 퇴사 후 프리랜서 도전기"
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleGenerateContent}
+                          disabled={!selectedPlatform || !contentTopic || isGenerating}
+                          className="w-full py-4 bg-accent hover:bg-accent/90 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors"
+                        >
+                          {isGenerating ? "생성 중..." : "생성하기"}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-4 text-left">
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-h2 text-primary">생성 완료!</h2>
+                          <button
+                            onClick={() => {
+                              setGeneratedContent("");
+                              setContentTopic("");
+                            }}
+                            className="text-accent hover:underline text-small"
+                          >
+                            다시 생성
+                          </button>
+                        </div>
+                        <div className="bg-gray-50 rounded-xl p-4 max-h-48 overflow-y-auto">
+                          <p className="text-body text-gray-700 whitespace-pre-wrap">{generatedContent}</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(generatedContent);
+                          }}
+                          className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-primary font-medium rounded-xl transition-colors"
+                        >
+                          복사하기
+                        </button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
 
               {/* 빠른 테스트 */}
               <div className="mt-6 pt-6 border-t border-gray-200">
@@ -460,246 +521,6 @@ export default function Home() {
               </div>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* ============ 핵심 기능 3가지 ============ */}
-      <section className="px-6 py-16 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-h1 text-primary text-center mb-12">왜 Arche인가요?</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="pt-8">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-xl font-bold text-accent">01</span>
-                </div>
-                <h3 className="text-h2 text-primary mb-2">8주 미션 프로그램</h3>
-                <p className="text-body text-gray-600">
-                  체계적인 커리큘럼으로 콘텐츠 제작의 A to Z를 배워요
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="pt-8">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-xl font-bold text-accent">02</span>
-                </div>
-                <h3 className="text-h2 text-primary mb-2">AI 콘텐츠 생성</h3>
-                <p className="text-body text-gray-600">
-                  플랫폼별 맞춤 콘텐츠를 AI가 뚝딱 만들어줘요
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="pt-8">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-xl font-bold text-accent">03</span>
-                </div>
-                <h3 className="text-h2 text-primary mb-2">스트릭 동기부여</h3>
-                <p className="text-body text-gray-600">
-                  매일 미션을 완료하고 스트릭을 쌓아 습관을 만들어요
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ 8주 커리큘럼 ============ */}
-      <section className="px-6 py-16 bg-secondary">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-h1 text-primary mb-4">8주 완성 커리큘럼</h2>
-            <p className="text-body text-gray-600">
-              매주 새로운 주제, 매일 실천 가능한 미션
-            </p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-4">
-            {CURRICULUM_PREVIEW.map((week) => (
-              <Card key={week.week} hoverable className="bg-white">
-                <CardContent>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center text-small font-bold">
-                      {week.week}
-                    </span>
-                    <span className="text-small text-gray-500">Week</span>
-                  </div>
-                  <h3 className="text-body font-semibold text-primary">{week.title}</h3>
-                  <p className="text-small text-gray-500 mt-1">{week.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ AI 콘텐츠 생성기 ============ */}
-      <section className="px-6 py-16 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-h1 text-primary">AI 콘텐츠 생성기</h2>
-              <p className="text-body text-gray-600">
-                주제만 입력하면 플랫폼에 맞는 콘텐츠가 자동으로 생성됩니다.
-                인스타그램 캡션, 유튜브 설명, 블로그 글까지 한 번에!
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {PLATFORMS.map((platform) => (
-                  <span
-                    key={platform.name}
-                    className="bg-secondary px-4 py-2 rounded-full text-body"
-                  >
-                    {platform.name}
-                  </span>
-                ))}
-              </div>
-              <Button onClick={() => router.push(isLoggedIn ? "/create" : "/signup")}>
-                콘텐츠 생성하러 가기 →
-              </Button>
-            </div>
-            <Card className="bg-gray-900 text-white">
-              <CardContent className="font-mono text-small">
-                <p className="text-gray-400 mb-2"># AI가 생성한 인스타그램 캡션</p>
-                <p className="mb-4">
-                  콘텐츠 초보자를 위한 꿀팁 3가지
-                </p>
-                <p className="text-gray-300 mb-4">
-                  1. 매일 10분 관찰하기<br />
-                  2. 아이디어 메모 습관<br />
-                  3. 완벽보다 꾸준함
-                </p>
-                <p className="text-accent">
-                  #콘텐츠크리에이터 #인스타그램팁 #성장
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ 컨설팅 후기 ============ */}
-      <section className="px-6 py-16 bg-accent/5">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-h1 text-primary mb-4">실제 수강생 후기</h2>
-            <p className="text-body text-gray-600">
-              이미 많은 분들이 성장을 경험했어요
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t) => (
-              <Card key={t.id} className="bg-white">
-                <CardContent className="space-y-4">
-                  <div className="flex gap-1 text-yellow-400">
-                    {"★★★★★".split("").map((star, i) => (
-                      <span key={i}>{star}</span>
-                    ))}
-                  </div>
-                  <p className="text-body text-gray-700">&ldquo;{t.review}&rdquo;</p>
-                  <div className="flex items-center gap-3 bg-secondary rounded-lg p-3">
-                    <div className="flex-1 text-center">
-                      <p className="text-small text-gray-500">Before</p>
-                      <p className="text-small font-medium">{t.before}</p>
-                    </div>
-                    <span className="text-accent">→</span>
-                    <div className="flex-1 text-center">
-                      <p className="text-small text-gray-500">After</p>
-                      <p className="text-small font-semibold text-accent">{t.after}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-2 border-t">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-small">
-                      {t.name[0]}
-                    </div>
-                    <span className="text-body font-medium">{t.name}</span>
-                    <span className="text-small text-gray-400 ml-auto">{t.platform}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ 컨설팅 플랜 ============ */}
-      <section className="px-6 py-16 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-h1 text-primary mb-4">1:1 컨설팅</h2>
-            <p className="text-body text-gray-600">
-              더 빠른 성장을 원한다면 전문가와 함께하세요
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {CONSULTING_PLANS.map((plan) => (
-              <Card
-                key={plan.id}
-                className={`relative ${plan.popular ? "border-accent border-2" : ""}`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-accent text-white text-small px-3 py-1 rounded-full">
-                      BEST
-                    </span>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
-                  <p className="text-small text-gray-400">{plan.subtitle}</p>
-                  <CardDescription>{plan.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <p className="text-h1 text-accent">{plan.price}</p>
-                    <p className="text-small text-gray-500">{plan.duration}</p>
-                  </div>
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-small">
-                        <span className="text-success">✓</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    fullWidth
-                    variant={plan.popular ? "primary" : "outline"}
-                    onClick={() => router.push("/consulting")}
-                  >
-                    상담 신청하기
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ 컨설턴트 소개 ============ */}
-      <section className="px-6 py-16 bg-secondary">
-        <div className="max-w-3xl mx-auto">
-          <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-0">
-            <CardContent>
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-bold text-accent">BJ</span>
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h2 className="text-h2 text-primary">병진 컨설턴트</h2>
-                  <p className="text-body text-gray-600 mt-2">
-                    5년차 콘텐츠 크리에이터 & 마케터<br />
-                    100+ 크리에이터 성장 컨설팅 경험<br />
-                    SNS 총 팔로워 10만+
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-                    <span className="bg-white px-3 py-1 rounded-full text-small">인스타그램 전문</span>
-                    <span className="bg-white px-3 py-1 rounded-full text-small">유튜브 성장</span>
-                    <span className="bg-white px-3 py-1 rounded-full text-small">브랜딩</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 

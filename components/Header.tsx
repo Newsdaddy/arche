@@ -34,10 +34,9 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: "/diagnosis", label: "페르소나 진단", emoji: "🔍" },
-    { href: "/create", label: "콘텐츠 생성", emoji: "✨" },
-    { href: "/pricing", label: "가격", emoji: "💎" },
-    { href: "/consulting", label: "컨설팅", emoji: "💼" },
+    { href: "/diagnosis", label: "크리에이팅" },
+    { href: "/pricing", label: "플랜" },
+    { href: "/consulting", label: "코칭" },
   ];
 
   return (
@@ -47,9 +46,9 @@ export default function Header() {
           {/* 로고 */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl text-primary"
+            className="font-bold text-xl text-primary"
           >
-            <span className="text-accent">A</span>rche
+            Arche
           </Link>
 
           {/* 데스크톱 네비게이션 */}
@@ -64,7 +63,6 @@ export default function Header() {
                     : "text-gray-600 hover:bg-gray-50 hover:text-primary"
                 }`}
               >
-                <span className="hidden lg:inline mr-1">{link.emoji}</span>
                 {link.label}
               </Link>
             ))}
@@ -145,7 +143,7 @@ export default function Header() {
                       : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  {link.emoji} {link.label}
+                  {link.label}
                 </Link>
               ))}
 

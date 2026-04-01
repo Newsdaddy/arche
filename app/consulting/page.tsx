@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 
@@ -213,7 +214,7 @@ export default function ConsultingPage() {
         {/* 헤더 */}
         <div className="text-center space-y-4">
           <p className="text-accent font-semibold tracking-widest">ARCHE</p>
-          <h1 className="text-h1 text-primary">소셜미디어 컨설팅</h1>
+          <h1 className="text-h1 text-primary">소셜미디어 코칭</h1>
           <p className="text-body text-gray-600 max-w-xl mx-auto">
             정밀한 진단과 분석으로 나만의 소셜미디어 콘셉트를 찾고,<br />
             그 첫 시작을 함께합니다.
@@ -224,27 +225,89 @@ export default function ConsultingPage() {
         <Card className="bg-gradient-to-br from-accent/5 to-accent/10">
           <CardContent>
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center text-4xl">
-                👨‍💼
+              <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
+                <Image
+                  src="/profile-byungjin.jpg"
+                  alt="병진 컨설턴트"
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-h2 text-primary">병진 컨설턴트</h2>
                 <p className="text-body text-gray-600 mt-2">
-                  5년차 콘텐츠 크리에이터 & 마케터<br />
-                  100+ 크리에이터 성장 컨설팅 경험<br />
-                  SNS 총 팔로워 10만+
+                  인스타 인플루언서 &apos;Newsdaddy.ai&apos;, 유튜버 &apos;Newsdaddy mit AI&apos;, 링크드인 등 활동<br />
+                  YTN 뉴스앵커, 부산MBC 아나운서, 매일경제TV 앵커
                 </p>
                 <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-                  <span className="bg-white px-3 py-1 rounded-full text-small">인스타그램 전문</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-small">유튜브 성장</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-small">브랜딩</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-small">인스타그램</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-small">유튜브</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-small">링크드인</span>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* 컨설팅 후기 */}
+        {/* 8주 커리큘럼 */}
+        {!selectedPlan && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-h2 text-primary">8주 코칭 커리큘럼</h2>
+              <p className="text-body text-gray-500 mt-2">체계적인 단계별 코칭으로 소셜미디어 콘텐츠 전문가가 됩니다</p>
+            </div>
+            <div className="grid md:grid-cols-5 gap-4">
+              <Card className="bg-white border-2 border-accent/20">
+                <CardContent className="text-center py-6">
+                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                    1
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">상품/서비스 분석</h3>
+                  <p className="text-small text-gray-500">내 상품과 서비스의 핵심 가치를 파악하고 콘텐츠 소재 발굴</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white border-2 border-accent/20">
+                <CardContent className="text-center py-6">
+                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                    2
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">SWOT 분석</h3>
+                  <p className="text-small text-gray-500">나 자신의 강점, 약점, 기회, 위협 요인을 체계적으로 분석</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white border-2 border-accent/20">
+                <CardContent className="text-center py-6">
+                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                    3
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">소셜 글쓰기</h3>
+                  <p className="text-small text-gray-500">소셜미디어 글쓰기의 기본부터 심화까지 훈련</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white border-2 border-accent/20">
+                <CardContent className="text-center py-6">
+                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                    4
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">실전 게시</h3>
+                  <p className="text-small text-gray-500">실제 콘텐츠 작성 및 플랫폼 게시 실습</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white border-2 border-accent/20">
+                <CardContent className="text-center py-6">
+                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                    5
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">파인튜닝</h3>
+                  <p className="text-small text-gray-500">성과 분석 후 소재 발굴 및 콘텐츠 디벨롭</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* 코칭 후기 */}
         {!selectedPlan && (
           <div className="space-y-6">
             <div className="text-center">
@@ -491,6 +554,48 @@ export default function ConsultingPage() {
             <p className="text-small text-gray-400 text-center">
               신청 후 24시간 내에 연락드립니다.
             </p>
+          </div>
+        )}
+
+        {/* 왜 Arche인가요? */}
+        {!selectedPlan && (
+          <div className="space-y-6">
+            <h2 className="text-h2 text-primary text-center">왜 Arche인가요?</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="text-center border-0 shadow-lg">
+                <CardContent className="pt-8">
+                  <div className="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-lg font-bold text-accent">01</span>
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">8주 코칭 프로그램</h3>
+                  <p className="text-small text-gray-600">
+                    체계적인 커리큘럼으로 콘텐츠 제작의 A to Z를 배워요
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="text-center border-0 shadow-lg">
+                <CardContent className="pt-8">
+                  <div className="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-lg font-bold text-accent">02</span>
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">AI 콘텐츠 생성</h3>
+                  <p className="text-small text-gray-600">
+                    플랫폼별 맞춤 콘텐츠를 AI가 뚝딱 만들어줘요
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="text-center border-0 shadow-lg">
+                <CardContent className="pt-8">
+                  <div className="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-lg font-bold text-accent">03</span>
+                  </div>
+                  <h3 className="text-body font-semibold text-primary mb-2">1:1 밀착 코칭</h3>
+                  <p className="text-small text-gray-600">
+                    성과가 날 때까지 함께하는 맞춤형 코칭
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
 
