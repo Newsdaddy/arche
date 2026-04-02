@@ -122,6 +122,10 @@ const CONTENT_PLATFORMS = [
 // FAQ
 const FAQS = [
   {
+    q: "페르소나 진단과 글쓰기는 어떤 방법론을 사용하나요?",
+    a: "페르소나 진단은 SWOT, Hero's Journey, Enneagram, Value Proposition Canvas, Ikigai 등 5개 검증된 프레임워크를 활용해요. 글쓰기는 '뉴스대디 7코드 프레임워크'를 적용합니다. 독자가 주인공이 되고, 글쓴이는 조력자가 되는 구조예요. 난관 공감 → 솔루션 제시 → 행동 촉구 → 성공 비전의 서사로 독자가 '이건 내 얘기다'라고 느끼게 만들어요.",
+  },
+  {
     q: "완전 초보자도 할 수 있나요?",
     a: "네! 오히려 초보자를 위해 설계된 프로그램이에요. 하루 10분이면 충분합니다.",
   },
@@ -135,7 +139,7 @@ const FAQS = [
   },
   {
     q: "AI 콘텐츠 생성기는 어떻게 사용하나요?",
-    a: "플랫폼을 선택하고 주제만 입력하면 바로 사용할 수 있는 콘텐츠 초안이 생성됩니다.",
+    a: "에피소드나 생각을 브레인스토밍처럼 적어주시면, AI가 7코드 프레임워크에 맞춰 완성된 글로 정리해드려요. 팩트 나열이 아닌, 독자가 공감하고 행동하게 만드는 스토리텔링 구조로 변환됩니다.",
   },
 ];
 
@@ -229,8 +233,8 @@ export default function Home() {
                 </h1>
               </div>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                5개 검증된 프레임워크로 나만의 콘텐츠 전략을 발견하세요.<br className="hidden md:block" />
-                SWOT, Hero&apos;s Journey, Enneagram, VPC, Ikigai를 활용합니다.
+                당신만의 콘텐츠 아이덴티티를 발견하고,<br className="hidden md:block" />
+                바로 쓸 수 있는 글로 만들어드려요.
               </p>
 
               {/* 진단 워딩 만들기 메인 카드 */}
@@ -515,12 +519,23 @@ export default function Home() {
           <h2 className="text-h1 text-primary text-center mb-12">자주 묻는 질문</h2>
           <div className="space-y-4">
             {FAQS.map((faq, i) => (
-              <Card key={i}>
-                <CardContent>
-                  <p className="text-body font-semibold text-primary">Q. {faq.q}</p>
-                  <p className="text-body text-gray-600 mt-2">{faq.a}</p>
-                </CardContent>
-              </Card>
+              <div
+                key={i}
+                className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                <div className="px-6 py-5">
+                  <p className="text-body font-semibold text-primary cursor-default">
+                    Q. {faq.q}
+                  </p>
+                  <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
+                    <div className="overflow-hidden">
+                      <p className="text-body text-gray-600 pt-3">
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
