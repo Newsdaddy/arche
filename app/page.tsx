@@ -151,7 +151,6 @@ export default function Home() {
   const [testComplete, setTestComplete] = useState(false);
 
   // 콘텐츠 생성기 상태
-  const [contentOpen, setContentOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [contentTopic, setContentTopic] = useState("");
   const [generatedContent, setGeneratedContent] = useState("");
@@ -234,12 +233,11 @@ export default function Home() {
                 SWOT, Hero&apos;s Journey, Enneagram, VPC, Ikigai를 활용합니다.
               </p>
 
-              {/* 두 개의 카드 */}
-              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                {/* 소셜 페르소나 진단 카드 */}
+              {/* 진단 워딩 만들기 메인 카드 */}
+              <div className="max-w-lg mx-auto">
                 <Card className="bg-white shadow-xl border-2 border-accent/20">
                   <CardContent className="text-center space-y-4 py-8">
-                    <h2 className="text-h2 text-primary">소셜 페르소나 진단</h2>
+                    <h2 className="text-h2 text-primary">진단 워딩 만들기</h2>
                     <p className="text-body text-gray-600">
                       당신만의 콘텐츠 아이덴티티를 찾아보세요.<br />
                       SWOT + 스토리 + 능력 교차점 분석
@@ -250,106 +248,6 @@ export default function Home() {
                     >
                       진단 시작하기
                     </Link>
-                  </CardContent>
-                </Card>
-
-                {/* 콘텐츠 생성 카드 */}
-                <Card className="bg-white shadow-xl border-2 border-accent/20">
-                  <CardContent className="text-center space-y-4 py-8">
-                    {!contentOpen ? (
-                      <>
-                        <h2 className="text-h2 text-primary">AI 콘텐츠 생성</h2>
-                        <p className="text-body text-gray-600">
-                          주제만 입력하면 플랫폼에 맞는<br />
-                          콘텐츠가 자동으로 생성됩니다.
-                        </p>
-                        <button
-                          onClick={() => setContentOpen(true)}
-                          className="inline-block w-full py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
-                        >
-                          콘텐츠 생성하기
-                        </button>
-                      </>
-                    ) : !generatedContent ? (
-                      <div className="space-y-4 text-left">
-                        <div className="flex justify-between items-center">
-                          <h2 className="text-h2 text-primary">콘텐츠 생성</h2>
-                          <button
-                            onClick={() => {
-                              setContentOpen(false);
-                              setSelectedPlatform("");
-                              setContentTopic("");
-                            }}
-                            className="text-gray-400 hover:text-primary text-small"
-                          >
-                            닫기
-                          </button>
-                        </div>
-                        <div className="space-y-3">
-                          <div>
-                            <label className="text-small text-gray-500 block mb-1">플랫폼 선택</label>
-                            <div className="flex gap-2">
-                              {CONTENT_PLATFORMS.map((p) => (
-                                <button
-                                  key={p.id}
-                                  onClick={() => setSelectedPlatform(p.id)}
-                                  className={`flex-1 py-2 px-3 rounded-lg text-small font-medium transition-colors ${
-                                    selectedPlatform === p.id
-                                      ? "bg-accent text-white"
-                                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                  }`}
-                                >
-                                  {p.name}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <label className="text-small text-gray-500 block mb-1">주제 입력</label>
-                            <textarea
-                              value={contentTopic}
-                              onChange={(e) => setContentTopic(e.target.value)}
-                              placeholder="예: 직장인 퇴사 후 프리랜서 도전기"
-                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none"
-                              rows={2}
-                            />
-                          </div>
-                        </div>
-                        <button
-                          onClick={handleGenerateContent}
-                          disabled={!selectedPlatform || !contentTopic || isGenerating}
-                          className="w-full py-4 bg-accent hover:bg-accent/90 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors"
-                        >
-                          {isGenerating ? "생성 중..." : "생성하기"}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="space-y-4 text-left">
-                        <div className="flex justify-between items-center">
-                          <h2 className="text-h2 text-primary">생성 완료!</h2>
-                          <button
-                            onClick={() => {
-                              setGeneratedContent("");
-                              setContentTopic("");
-                            }}
-                            className="text-accent hover:underline text-small"
-                          >
-                            다시 생성
-                          </button>
-                        </div>
-                        <div className="bg-gray-50 rounded-xl p-4 max-h-48 overflow-y-auto">
-                          <p className="text-body text-gray-700 whitespace-pre-wrap">{generatedContent}</p>
-                        </div>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(generatedContent);
-                          }}
-                          className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-primary font-medium rounded-xl transition-colors"
-                        >
-                          복사하기
-                        </button>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -524,8 +422,90 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ FAQ ============ */}
+      {/* ============ AI Content Generation Section ============ */}
       <section className="px-6 py-16 bg-white">
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-h1 text-primary mb-2">AI 콘텐츠 생성</h2>
+            <p className="text-body text-gray-600">
+              주제만 입력하면 플랫폼에 맞는 콘텐츠가 자동으로 생성됩니다.
+            </p>
+          </div>
+
+          <Card className="bg-white shadow-xl border-2 border-accent/20">
+            <CardContent className="py-8">
+              {!generatedContent ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-small text-gray-500 block mb-2">플랫폼 선택</label>
+                    <div className="flex gap-2">
+                      {CONTENT_PLATFORMS.map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => setSelectedPlatform(p.id)}
+                          className={`flex-1 py-3 px-4 rounded-xl text-body font-medium transition-colors ${
+                            selectedPlatform === p.id
+                              ? "bg-accent text-white"
+                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          }`}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-small text-gray-500 block mb-2">주제 입력</label>
+                    <textarea
+                      value={contentTopic}
+                      onChange={(e) => setContentTopic(e.target.value)}
+                      placeholder="예: 직장인 퇴사 후 프리랜서 도전기"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none"
+                      rows={3}
+                    />
+                  </div>
+                  <button
+                    onClick={handleGenerateContent}
+                    disabled={!selectedPlatform || !contentTopic || isGenerating}
+                    className="w-full py-4 bg-accent hover:bg-accent/90 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    {isGenerating ? "생성 중..." : "콘텐츠 생성하기"}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-h2 text-primary">생성 완료!</h3>
+                    <button
+                      onClick={() => {
+                        setGeneratedContent("");
+                        setContentTopic("");
+                      }}
+                      className="text-accent hover:underline text-small"
+                    >
+                      다시 생성
+                    </button>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4 max-h-64 overflow-y-auto">
+                    <p className="text-body text-gray-700 whitespace-pre-wrap">{generatedContent}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedContent);
+                    }}
+                    className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-primary font-medium rounded-xl transition-colors"
+                  >
+                    복사하기
+                  </button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* ============ FAQ ============ */}
+      <section className="px-6 py-16 bg-secondary">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-h1 text-primary text-center mb-12">자주 묻는 질문</h2>
           <div className="space-y-4">
