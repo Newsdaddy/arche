@@ -6,10 +6,30 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 
+// 서비스 드롭다운 메뉴 아이템
+const serviceItems = [
+  {
+    label: "페르소나 진단",
+    href: "/diagnosis",
+    description: "5개 프레임워크로 나만의 콘텐츠 전략 발견",
+  },
+  {
+    label: "AI 콘텐츠 생성",
+    href: "/create",
+    description: "브레인스토밍을 완성된 글로 변환",
+  },
+  {
+    label: "8주 프로그램",
+    href: "/consulting/curriculum",
+    description: "체계적인 커리큘럼으로 콘텐츠 성장",
+  },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServiceOpen, setIsServiceOpen] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
@@ -17,7 +37,6 @@ export default function Header() {
       const { data: { user } } = await supabase.auth.getUser();
       setIsLoggedIn(!!user);
     }
-
     checkAuth();
   }, []);
 
@@ -33,53 +52,81 @@ export default function Header() {
     return pathname.startsWith(path);
   };
 
-  const navLinks = [
-    { href: "/diagnosis", label: "크리에이팅" },
-    { href: "/pricing", label: "플랜" },
-    { href: "/consulting", label: "코칭" },
-  ];
-
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 relative">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center h-16">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-primary-100">
+      <div className="container-wide">
+        <div className="flex items-center justify-between h-20">
           {/* 로고 */}
           <Link
             href="/"
-            className="font-bold text-xl text-primary"
+            className="font-bold text-2xl text-primary flex items-center gap-1"
           >
-            Arche
+            <span className="text-accent">A</span>rche
           </Link>
 
-          {/* 데스크톱 네비게이션 - 뷰포트 정중앙 */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-[calc(50%-25px)] -translate-x-1/2 top-1/2 -translate-y-1/2 z-10">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-body font-medium transition-colors ${
-                  isActive(link.href)
-                    ? "bg-accent/10 text-accent"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-primary"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          {/* 데스크톱 네비게이션 */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {/* 서비스 드롭다운 */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsServiceOpen(true)}
+              onMouseLeave={() => setIsServiceOpen(false)}
+            >
+              <button className="flex items-center gap-1 px-1 py-2 text-body font-medium text-primary-600 hover:text-primary transition-colors">
+                서비스
+                <svg className={`w-4 h-4 transition-transform ${isServiceOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* 드롭다운 메뉴 */}
+              <div className={`absolute top-full left-0 pt-2 transition-all duration-200 ${isServiceOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                <div className="bg-white rounded-2xl shadow-soft border border-primary-100 p-2 min-w-[280px]">
+                  {serviceItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex flex-col gap-1 px-4 py-3 rounded-xl hover:bg-primary-50 transition-colors"
+                    >
+                      <span className="text-body font-semibold text-primary">{item.label}</span>
+                      <span className="text-small text-primary-500">{item.description}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Link
+              href="/pricing"
+              className={`px-1 py-2 text-body font-medium transition-colors ${
+                isActive("/pricing") ? "text-accent" : "text-primary-600 hover:text-primary"
+              }`}
+            >
+              가격
+            </Link>
+
+            <Link
+              href="/consulting"
+              className={`px-1 py-2 text-body font-medium transition-colors ${
+                isActive("/consulting") ? "text-accent" : "text-primary-600 hover:text-primary"
+              }`}
+            >
+              컨설팅
+            </Link>
           </nav>
 
-          {/* 데스크톱 로그인/대시보드 */}
-          <div className="hidden md:flex items-center gap-3 ml-auto">
+          {/* 데스크톱 CTA */}
+          <div className="hidden lg:flex items-center gap-3">
             {isLoggedIn ? (
               <>
                 <Link href="/dashboard">
-                  <Button variant="outline" size="sm">
+                  <Button variant="ghost" size="md">
                     대시보드
                   </Button>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="text-small text-gray-400 hover:text-primary transition-colors"
+                  className="text-small text-primary-400 hover:text-primary transition-colors"
                 >
                   로그아웃
                 </button>
@@ -87,12 +134,12 @@ export default function Header() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="outline" size="sm">
+                  <Button variant="ghost" size="md">
                     로그인
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button size="sm">시작하기</Button>
+                  <Button size="md">무료로 시작하기</Button>
                 </Link>
               </>
             )}
@@ -101,28 +148,13 @@ export default function Header() {
           {/* 모바일 메뉴 버튼 */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-primary ml-auto"
+            className="lg:hidden p-2 text-primary-600 hover:text-primary rounded-lg hover:bg-primary-50 transition-colors"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
           </button>
@@ -130,37 +162,52 @@ export default function Header() {
 
         {/* 모바일 메뉴 */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
+          <div className="lg:hidden py-4 border-t border-primary-100 animate-fade-in">
             <nav className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
-                    isActive(link.href)
-                      ? "bg-accent/10 text-accent"
-                      : "text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {/* 서비스 서브메뉴 */}
+              <div className="px-4 py-2">
+                <p className="text-caption text-primary-400 uppercase tracking-wider mb-2">서비스</p>
+                {serviceItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-body text-primary-600 hover:bg-primary-50"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
+              <Link
+                href="/pricing"
+                onClick={() => setIsMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
+                  isActive("/pricing") ? "bg-accent/10 text-accent" : "text-primary-600 hover:bg-primary-50"
+                }`}
+              >
+                가격
+              </Link>
+
+              <Link
+                href="/consulting"
+                onClick={() => setIsMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
+                  isActive("/consulting") ? "bg-accent/10 text-accent" : "text-primary-600 hover:bg-primary-50"
+                }`}
+              >
+                컨설팅
+              </Link>
+
+              <div className="mt-4 pt-4 border-t border-primary-100 flex flex-col gap-2 px-4">
                 {isLoggedIn ? (
                   <>
                     <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                      <Button fullWidth variant="outline">
-                        대시보드
-                      </Button>
+                      <Button fullWidth variant="outline">대시보드</Button>
                     </Link>
                     <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="text-center py-2 text-small text-gray-400 hover:text-primary transition-colors"
+                      onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                      className="text-center py-2 text-small text-primary-400 hover:text-primary"
                     >
                       로그아웃
                     </button>
@@ -168,12 +215,10 @@ export default function Header() {
                 ) : (
                   <>
                     <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                      <Button fullWidth variant="outline">
-                        로그인
-                      </Button>
+                      <Button fullWidth variant="outline">로그인</Button>
                     </Link>
                     <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
-                      <Button fullWidth>시작하기</Button>
+                      <Button fullWidth>무료로 시작하기</Button>
                     </Link>
                   </>
                 )}
