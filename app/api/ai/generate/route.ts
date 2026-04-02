@@ -127,7 +127,7 @@ export async function POST(request: Request) {
 
     if (!topic) {
       return NextResponse.json(
-        { error: "주제를 입력해주세요." },
+        { error: "에피소드나 생각을 입력해주세요." },
         { status: 400 }
       );
     }
@@ -135,23 +135,34 @@ export async function POST(request: Request) {
     const platformPrompt = PLATFORM_PROMPTS[platform] || PLATFORM_PROMPTS.instagram;
     const personaContext = buildPersonaContext(persona);
 
-    const prompt = `당신은 전문 콘텐츠 크리에이터입니다. 아래 정보를 바탕으로 콘텐츠를 작성해주세요.
+    const prompt = `당신은 브레인스토밍을 완성된 콘텐츠로 변환하는 전문 에디터입니다.
+
+사용자가 날것의 생각, 에피소드, 브레인스토밍을 적어주면:
+1. 핵심 스토리와 메시지를 추출하세요
+2. 누가, 언제, 어디서, 무엇을, 어떻게, 왜의 요소를 파악하세요
+3. 이슈 → 결과 또는 문제 → 해결의 서사 구조를 찾으세요
+4. 플랫폼에 맞는 완성된 글로 정리하세요
+
 ${personaContext}
-플랫폼: ${platform}
-주제/이야기: ${topic}
+
+[사용자의 브레인스토밍]
+${topic}
+
+[플랫폼: ${platform}]
+${platformPrompt}
+
 ${tone ? `톤앤매너: ${tone}` : ""}
 ${keywords ? `포함할 키워드: ${keywords}` : ""}
 ${target ? `타겟 독자: ${target}` : ""}
 ${additionalInfo ? `추가 정보: ${additionalInfo}` : ""}
 
-${platformPrompt}
-
-중요:
-- 첫 줄은 반드시 스크롤을 멈추게 하는 강력한 훅으로 시작하세요.
-- 명확한 메인 아이디어가 전달되어야 합니다.
-- 마지막에는 독자가 행동하게 만드는 CTA를 포함하세요.
-- 바로 사용할 수 있는 완성된 콘텐츠를 작성해주세요.
-- 한국어로 작성하세요.`;
+중요 규칙:
+- 사용자의 날것의 생각을 그대로 쓰지 말고, 정리된 콘텐츠로 재구성하세요
+- 첫 줄은 반드시 스크롤을 멈추게 하는 강력한 훅으로 시작하세요
+- 사용자의 경험과 인사이트가 자연스럽게 녹아들게 하세요
+- 독자가 공감하고 행동하게 만드는 CTA를 포함하세요
+- 바로 올릴 수 있는 완성된 콘텐츠를 작성하세요
+- 한국어로 작성하세요`;
 
     const completion = await groq.chat.completions.create({
       messages: [

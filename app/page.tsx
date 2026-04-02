@@ -428,7 +428,7 @@ export default function Home() {
           <div className="text-center mb-8">
             <h2 className="text-h1 text-primary mb-2">AI 콘텐츠 생성</h2>
             <p className="text-body text-gray-600">
-              주제만 입력하면 플랫폼에 맞는 콘텐츠가 자동으로 생성됩니다.
+              브레인스토밍만 하면, AI가 글 한 편으로 정리해드려요.
             </p>
           </div>
 
@@ -455,13 +455,18 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-small text-gray-500 block mb-2">주제 입력</label>
+                    <label className="text-small text-gray-500 block mb-2">
+                      무슨 에피소드가 있었나요? 어떤 생각이 드셨나요?
+                    </label>
+                    <p className="text-xs text-gray-400 mb-2">
+                      누가, 언제, 어디서, 무엇을, 어떻게, 왜? 생각나는 대로 막 적어보세요.
+                    </p>
                     <textarea
                       value={contentTopic}
                       onChange={(e) => setContentTopic(e.target.value)}
-                      placeholder="예: 직장인 퇴사 후 프리랜서 도전기"
+                      placeholder="예: 오늘 카페에서 일하다가 옆 테이블 대화를 들었는데, 40대 직장인이 퇴사하고 싶다고 하더라. 근데 용기가 없대. 나도 그랬거든. 3년 전에 퇴사할 때 정말 무서웠는데 지금은 잘 살고 있음. 그때 내가 뭘 했더라..."
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none"
-                      rows={3}
+                      rows={5}
                     />
                   </div>
                   <button
@@ -469,7 +474,7 @@ export default function Home() {
                     disabled={!selectedPlatform || !contentTopic || isGenerating}
                     className="w-full py-4 bg-accent hover:bg-accent/90 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors"
                   >
-                    {isGenerating ? "생성 중..." : "콘텐츠 생성하기"}
+                    {isGenerating ? "정리하는 중..." : "글로 정리하기"}
                   </button>
                 </div>
               ) : (
