@@ -41,8 +41,25 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+      {/* 데스크톱 네비게이션 - 뷰포트 정중앙 (왼쪽 보정) */}
+      <nav className="hidden md:flex items-center gap-1 absolute left-[calc(50%-25px)] -translate-x-1/2 top-1/2 -translate-y-1/2 z-10">
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`px-4 py-2 rounded-lg text-body font-medium transition-colors ${
+              isActive(link.href)
+                ? "bg-accent/10 text-accent"
+                : "text-gray-600 hover:bg-gray-50 hover:text-primary"
+            }`}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center h-16">
           {/* 로고 */}
           <Link
             href="/"
@@ -51,25 +68,11 @@ export default function Header() {
             Arche
           </Link>
 
-          {/* 데스크톱 네비게이션 */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-body font-medium transition-colors ${
-                  isActive(link.href)
-                    ? "bg-accent/10 text-accent"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-primary"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          {/* 빈 공간 (데스크톱 네비는 absolute로 이동) */}
+          <div className="hidden md:block flex-1"></div>
 
           {/* 데스크톱 로그인/대시보드 */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 ml-auto">
             {isLoggedIn ? (
               <>
                 <Link href="/dashboard">
@@ -101,7 +104,7 @@ export default function Header() {
           {/* 모바일 메뉴 버튼 */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-primary"
+            className="md:hidden p-2 text-gray-600 hover:text-primary ml-auto"
           >
             <svg
               className="w-6 h-6"

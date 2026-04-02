@@ -226,7 +226,7 @@ export default function Home() {
           {!testStarted && !testComplete && (
             <div className="text-center space-y-8">
               <div className="space-y-2">
-                <p className="text-accent font-semibold tracking-widest">ARCHE</p>
+                <p className="text-accent font-semibold tracking-widest">ARCHE PERSONA</p>
                 <h1 className="text-4xl md:text-5xl font-bold text-primary leading-tight">
                   나의<br />
                   <span className="text-accent">소셜 페르소나</span>는?
@@ -240,12 +240,7 @@ export default function Home() {
               {/* 진단 워딩 만들기 메인 카드 */}
               <div className="max-w-lg mx-auto">
                 <Card className="bg-white shadow-xl border-2 border-accent/20">
-                  <CardContent className="text-center space-y-4 py-8">
-                    <h2 className="text-h2 text-primary">진단 워딩 만들기</h2>
-                    <p className="text-body text-gray-600">
-                      당신만의 콘텐츠 아이덴티티를 찾아보세요.<br />
-                      SWOT + 스토리 + 능력 교차점 분석
-                    </p>
+                  <CardContent className="text-center py-8">
                     <Link
                       href="/diagnosis"
                       className="inline-block w-full py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
@@ -427,15 +422,20 @@ export default function Home() {
       </section>
 
       {/* ============ AI Content Generation Section ============ */}
-      <section className="px-6 py-16 bg-white">
-        <div className="max-w-lg mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-h1 text-primary mb-2">AI 콘텐츠 생성</h2>
-            <p className="text-body text-gray-600">
+      <section className="bg-gradient-to-b from-white to-accent/5 px-6 py-16 md:py-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center space-y-4 mb-10">
+            <p className="text-accent font-semibold tracking-widest">ARCHE WRITER</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-primary leading-tight">
+              글쓰기,<br />
+              <span className="text-accent">AI에게 맡기세요</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               브레인스토밍만 하면, AI가 글 한 편으로 정리해드려요.
             </p>
           </div>
 
+          <div className="max-w-lg mx-auto">
           <Card className="bg-white shadow-xl border-2 border-accent/20">
             <CardContent className="py-8">
               {!generatedContent ? (
@@ -510,6 +510,7 @@ export default function Home() {
               )}
             </CardContent>
           </Card>
+          </div>
         </div>
       </section>
 
