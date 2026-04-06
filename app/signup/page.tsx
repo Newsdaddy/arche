@@ -7,6 +7,14 @@ import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 import Card, { CardContent } from "@/components/ui/Card";
 
+// 프로덕션에서는 커스텀 도메인 사용
+const getBaseUrl = () => {
+  if (typeof window === "undefined") return "https://arche.ai.kr";
+  return process.env.NODE_ENV === "production"
+    ? "https://arche.ai.kr"
+    : window.location.origin;
+};
+
 export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -38,7 +46,7 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${getBaseUrl()}/auth/callback`,
       },
     });
 
@@ -57,7 +65,7 @@ export default function SignupPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${getBaseUrl()}/auth/callback`,
       },
     });
   };
@@ -68,7 +76,7 @@ export default function SignupPage() {
     await supabase.auth.signInWithOAuth({
       provider: "kakao",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${getBaseUrl()}/auth/callback`,
       },
     });
   };

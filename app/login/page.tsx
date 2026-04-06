@@ -53,10 +53,15 @@ function LoginForm() {
   const handleGoogleLogin = async () => {
     const supabase = createClient();
 
+    // 프로덕션에서는 커스텀 도메인 사용
+    const baseUrl = process.env.NODE_ENV === "production"
+      ? "https://arche.ai.kr"
+      : window.location.origin;
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+        redirectTo: `${baseUrl}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
       },
     });
   };
