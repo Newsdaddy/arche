@@ -1,5 +1,6 @@
 import { createClient } from "./client";
 import { Feedback, OnboardingAnswers } from "@/types";
+import { CreateShowcaseInput, ShowcaseWithProfile } from "@/types/showcase";
 
 // ==================== Profile ====================
 
@@ -326,4 +327,131 @@ export async function createConsultingRequest(data: {
   }
 
   return result;
+}
+
+// ==================== Showcases (회원 성과) ====================
+
+export async function getShowcases(options?: {
+  limit?: number;
+  featured?: boolean;
+}): Promise<ShowcaseWithProfile[]> {
+  const supabase = createClient();
+
+  let query = supabase
+    .from("member_showcases")
+    .select(
+      `
+      *,
+      profiles:user_id (nickname, avatar_url)
+    `
+    )
+    .eq("is_approved", true)
+    .order("created_at", { ascending: false });
+
+  if (options?.featured) {
+    query = query.eq("is_featured", true);
+  }
+
+  if (options?.limit) {
+    query = query.limit(options.limit);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("쇼케이스 조회 실패:", error);
+    return [];
+  }
+
+  return (data as ShowcaseWithProfile[]) || [];
+}
+
+export async function getMyShowcases() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("member_showcases")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("내 쇼케이스 조회 실패:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function createShowcase(input: CreateShowcaseInput) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("member_showcases")
+    .insert({
+      user_id: user.id,
+      platform: input.platform,
+      post_url: input.post_url,
+      likes_before: input.likes_before || 0,
+      likes_after: input.likes_after || 0,
+      comments_before: input.comments_before || 0,
+      comments_after: input.comments_after || 0,
+      followers_before: input.followers_before || 0,
+      followers_after: input.followers_after || 0,
+      comment: input.comment,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("쇼케이스 생성 실패:", error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function deleteShowcase(showcaseId: string) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return false;
+
+  const { error } = await supabase
+    .from("member_showcases")
+    .delete()
+    .eq("id", showcaseId)
+    .eq("user_id", user.id);
+
+  return !error;
+}
+
+export async function checkHasCheer(showcaseId: string) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return false;
+
+  const { data } = await supabase
+    .from("showcase_cheers")
+    .select("id")
+    .eq("showcase_id", showcaseId)
+    .eq("user_id", user.id)
+    .single();
+
+  return !!data;
 }
