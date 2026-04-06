@@ -182,18 +182,19 @@ export default function DashboardPage() {
           </Card>
         )}
 
-        {/* 성과 공유 버튼 */}
+        {/* 과제 제출 버튼 */}
         <Card
           hoverable
           onClick={() => router.push("/dashboard/showcase/new")}
-          className="bg-gradient-to-r from-primary-600 to-primary-500 border-none"
+          className="bg-gradient-to-r from-accent to-accent/80 border-none"
         >
           <CardContent className="flex items-center gap-4">
-            <span className="text-4xl">🏆</span>
+            <span className="text-4xl">📝</span>
             <div>
-              <p className="text-body font-semibold text-white">내 성과 공유하기</p>
-              <p className="text-small text-white/70">커뮤니티에 성장 스토리를 공유하고 응원받아보세요</p>
+              <p className="text-body font-semibold text-white">과제 제출하기</p>
+              <p className="text-small text-white/70">소셜미디어 콘텐츠 링크와 성과를 보고하세요</p>
             </div>
+            <span className="ml-auto text-white text-2xl">→</span>
           </CardContent>
         </Card>
 

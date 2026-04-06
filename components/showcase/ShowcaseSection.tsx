@@ -38,16 +38,25 @@ export default function ShowcaseSection() {
       <div className="container-wide">
         <div className="max-w-3xl mx-auto">
           {/* 헤더 */}
-          <div className="mb-8">
-            <p className="text-accent text-sm font-medium tracking-wider mb-2">
-              COMMUNITY RANKING
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              회원들의 콘텐츠 랭킹
-            </h2>
-            <p className="text-primary-400 mt-2">
-              총 {total}개의 콘텐츠가 경쟁 중
-            </p>
+          <div className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p className="text-accent text-sm font-medium tracking-wider mb-2">
+                COMMUNITY RANKING
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
+                구독자 소셜 콘텐츠 랭킹
+              </h2>
+              <p className="text-primary-400 mt-2">
+                총 {total}개의 콘텐츠가 경쟁 중
+              </p>
+            </div>
+            <a
+              href="/dashboard/showcase/new"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent/80 text-white font-semibold rounded-xl transition-colors whitespace-nowrap"
+            >
+              과제 제출하기
+              <span>→</span>
+            </a>
           </div>
 
           {/* 리더보드 */}
