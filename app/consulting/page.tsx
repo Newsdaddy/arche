@@ -227,23 +227,25 @@ export default function ConsultingPage() {
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
                 <Image
-                  src="/profile-byungjin.jpg"
-                  alt="병진 컨설턴트"
+                  src="/profile-byungjin.png"
+                  alt="정병진 파트너"
                   width={96}
                   height={96}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-h2 text-primary">병진 컨설턴트</h2>
+                <h2 className="text-h2 text-primary">정병진 파트너</h2>
                 <p className="text-body text-gray-600 mt-2">
-                  인스타 인플루언서 &apos;Newsdaddy.ai&apos;, 유튜버 &apos;Newsdaddy mit AI&apos;, 링크드인 등 활동<br />
-                  YTN 뉴스앵커, 부산MBC 아나운서, 매일경제TV 앵커
+                  2019년부터 닉네임 &apos;뉴스대디&apos;로 활동.<br />
+                  인스타그램, 뉴스레터, 유튜브, 링크드인에서 총 1.2만 팔로워와 함께 성장 중입니다.<br />
+                  독일 IT기업 B2B 솔루션 컨설턴트, YTN 뉴스앵커, 부산MBC 아나운서, 매일경제TV 앵커 역임
                 </p>
-                <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-                  <span className="bg-white px-3 py-1 rounded-full text-small">인스타그램</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-small">유튜브</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-small">링크드인</span>
+                <div className="flex flex-wrap gap-3 mt-4 justify-center md:justify-start">
+                  <a href="https://www.instagram.com/newsdaddy.ai/" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">인스타그램</a>
+                  <a href="https://maily.so/newsdaddyai" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">뉴스레터</a>
+                  <a href="https://www.youtube.com/@newsdaddy" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">유튜브</a>
+                  <a href="https://www.linkedin.com/in/valueforyourbiz" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">링크드인</a>
                 </div>
               </div>
             </div>
@@ -260,7 +262,7 @@ export default function ConsultingPage() {
             <div className="grid md:grid-cols-5 gap-4">
               <Card className="bg-white border-2 border-accent/20">
                 <CardContent className="text-center py-6">
-                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
                     1
                   </div>
                   <h3 className="text-body font-semibold text-primary mb-2">상품/서비스 분석</h3>
@@ -269,7 +271,7 @@ export default function ConsultingPage() {
               </Card>
               <Card className="bg-white border-2 border-accent/20">
                 <CardContent className="text-center py-6">
-                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
                     2
                   </div>
                   <h3 className="text-body font-semibold text-primary mb-2">SWOT 분석</h3>
@@ -278,7 +280,7 @@ export default function ConsultingPage() {
               </Card>
               <Card className="bg-white border-2 border-accent/20">
                 <CardContent className="text-center py-6">
-                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
                     3
                   </div>
                   <h3 className="text-body font-semibold text-primary mb-2">소셜 글쓰기</h3>
@@ -287,7 +289,7 @@ export default function ConsultingPage() {
               </Card>
               <Card className="bg-white border-2 border-accent/20">
                 <CardContent className="text-center py-6">
-                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
                     4
                   </div>
                   <h3 className="text-body font-semibold text-primary mb-2">실전 게시</h3>
@@ -296,7 +298,7 @@ export default function ConsultingPage() {
               </Card>
               <Card className="bg-white border-2 border-accent/20">
                 <CardContent className="text-center py-6">
-                  <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
+                  <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-3 text-body font-bold">
                     5
                   </div>
                   <h3 className="text-body font-semibold text-primary mb-2">파인튜닝</h3>
@@ -349,7 +351,7 @@ export default function ConsultingPage() {
                     {/* 작성자 정보 */}
                     <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-small">
+                        <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-small text-accent font-medium">
                           {testimonial.name[0]}
                         </div>
                         <span className="text-body font-medium">{testimonial.name}</span>
