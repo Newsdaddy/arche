@@ -5,9 +5,17 @@ import { useRouter } from "next/navigation";
 import { getPersonaResults } from "@/lib/supabase/database";
 import Card, { CardContent } from "@/components/ui/Card";
 
+interface PersonaResult {
+  id: string;
+  archetype_name?: string;
+  archetype?: string;
+  enneagram_type?: string;
+  created_at: string;
+}
+
 export default function DiagnosisHistoryPage() {
   const router = useRouter();
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<PersonaResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

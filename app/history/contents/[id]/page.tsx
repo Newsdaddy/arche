@@ -6,6 +6,15 @@ import { getContentGeneration } from "@/lib/supabase/database";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
+interface ContentGeneration {
+  id: string;
+  platform?: string;
+  content?: string;
+  prompt?: string;
+  rating?: number;
+  created_at: string;
+}
+
 const PLATFORM_LABELS: Record<string, string> = {
   instagram: "인스타그램",
   youtube: "유튜브",
@@ -20,7 +29,7 @@ export default function ContentDetailPage() {
   const params = useParams();
   const contentId = params.id as string;
 
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState<ContentGeneration | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -79,7 +88,7 @@ export default function ContentDetailPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <span className="text-small font-medium text-accent">
-                {PLATFORM_LABELS[content.platform] || content.platform || "콘텐츠"}
+                {(content.platform && PLATFORM_LABELS[content.platform]) || content.platform || "콘텐츠"}
               </span>
               <span className="text-small text-gray-500">
                 {new Date(content.created_at).toLocaleDateString("ko-KR", {
@@ -113,13 +122,13 @@ export default function ContentDetailPage() {
               </div>
             </div>
 
-            {content.rating && (
+            {content.rating != null && (
               <div className="flex items-center gap-2">
                 <span className="text-small text-gray-500">평가:</span>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-xl ${star <= content.rating ? "text-yellow-400" : "text-gray-300"}`}
+                    className={`text-xl ${star <= (content.rating ?? 0) ? "text-yellow-400" : "text-gray-300"}`}
                   >
                     ★
                   </span>

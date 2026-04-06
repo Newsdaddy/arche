@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { getContentGenerations } from "@/lib/supabase/database";
 import Card, { CardContent } from "@/components/ui/Card";
 
+interface ContentGeneration {
+  id: string;
+  platform?: string;
+  content?: string;
+  prompt?: string;
+  rating?: number;
+  created_at: string;
+}
+
 const PLATFORM_LABELS: Record<string, string> = {
   instagram: "인스타그램",
   youtube: "유튜브",
@@ -16,7 +25,7 @@ const PLATFORM_LABELS: Record<string, string> = {
 
 export default function ContentsHistoryPage() {
   const router = useRouter();
-  const [contents, setContents] = useState<any[]>([]);
+  const [contents, setContents] = useState<ContentGeneration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -77,7 +86,7 @@ export default function ContentsHistoryPage() {
                 <CardContent>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-small font-medium text-accent">
-                      {PLATFORM_LABELS[content.platform] || content.platform || "콘텐츠"}
+                      {(content.platform && PLATFORM_LABELS[content.platform]) || content.platform || "콘텐츠"}
                     </span>
                     <span className="text-small text-gray-500">
                       {new Date(content.created_at).toLocaleDateString("ko-KR")}
@@ -86,12 +95,12 @@ export default function ContentsHistoryPage() {
                   <p className="text-body text-primary line-clamp-3">
                     {content.content?.substring(0, 150) || content.prompt?.substring(0, 150) || "생성된 콘텐츠"}...
                   </p>
-                  {content.rating && (
+                  {content.rating != null && (
                     <div className="mt-2 flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
-                          className={star <= content.rating ? "text-yellow-400" : "text-gray-300"}
+                          className={star <= (content.rating ?? 0) ? "text-yellow-400" : "text-gray-300"}
                         >
                           ★
                         </span>
