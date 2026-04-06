@@ -15,9 +15,11 @@ type ApiPlan = {
   daily_limit: number;
 };
 
-// 할인 정보 (3개월 한정)
-const DISCOUNT_INFO: Record<string, { originalPrice: number; label: string }> = {
-  pass_1m: { originalPrice: 29000, label: "런칭 특가" },
+// 할인 정보 (런칭 특가) - 3개월 한정
+const DISCOUNT_INFO: Record<string, { originalPrice: number; discountPrice: number; label: string }> = {
+  pass_1m: { originalPrice: 12000, discountPrice: 9000, label: "런칭 특가" },
+  pass_3m: { originalPrice: 45000, discountPrice: 21000, label: "런칭 특가" },
+  pass_12m: { originalPrice: 98000, discountPrice: 79000, label: "런칭 특가" },
 };
 
 const FREE_FEATURES = [
@@ -173,7 +175,9 @@ export default function PricingPage() {
           {paidPlans.map((plan) => {
             const popular = plan.id === "pass_3m";
             const discount = DISCOUNT_INFO[plan.id];
-            const hasDiscount = discount && discount.originalPrice > plan.price;
+            const hasDiscount = !!discount;
+            const displayPrice = hasDiscount ? discount.discountPrice : plan.price;
+            const originalPrice = hasDiscount ? discount.originalPrice : plan.price;
             return (
               <Card
                 key={plan.id}
@@ -203,23 +207,23 @@ export default function PricingPage() {
                 <CardContent className="space-y-6 pt-8">
                   <div className="text-center">
                     <h2 className="text-h2 text-primary">{plan.name}</h2>
-                    <div className="mt-2">
+                    <div className="mt-2 flex items-center justify-center flex-wrap gap-2">
                       {hasDiscount && (
-                        <span className="text-lg text-gray-400 line-through mr-2">
-                          {discount.originalPrice.toLocaleString("ko-KR")}원
+                        <span className="text-lg text-gray-400 line-through whitespace-nowrap">
+                          {originalPrice.toLocaleString("ko-KR")}
                         </span>
                       )}
-                      <span className={`text-3xl font-bold ${hasDiscount ? "text-red-500" : "text-primary"}`}>
-                        {plan.price.toLocaleString("ko-KR")}원
+                      <span className={`text-3xl font-bold whitespace-nowrap ${hasDiscount ? "text-red-500" : "text-primary"}`}>
+                        {displayPrice.toLocaleString("ko-KR")}
                       </span>
                       {hasDiscount && (
-                        <span className="ml-2 text-small bg-red-100 text-red-600 px-2 py-0.5 rounded">
-                          {Math.round((1 - plan.price / discount.originalPrice) * 100)}% OFF
+                        <span className="text-small bg-red-100 text-red-600 px-2 py-0.5 rounded whitespace-nowrap">
+                          {Math.round((1 - displayPrice / originalPrice) * 100)}% OFF
                         </span>
                       )}
                     </div>
                     <p className="text-small text-gray-500 mt-2">
-                      {plan.duration_days}일 이용 · 하루 {plan.daily_limit}회 생성
+                      {plan.duration_days}일 이용 · 하루 {plan.daily_limit}회 생성 · 단위: 원
                     </p>
                     {hasDiscount && (
                       <p className="text-small text-red-500 mt-1 font-medium">

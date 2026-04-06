@@ -53,26 +53,26 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-primary-100">
+    <header className="sticky top-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
       <div className="container-wide">
         <div className="flex items-center justify-between h-20">
           {/* 로고 */}
           <Link
             href="/"
-            className="font-bold text-2xl text-primary flex items-center gap-1"
+            className="font-bold text-2xl text-white"
           >
-            <span className="text-accent">A</span>rche
+            <span className="text-primary-400">A</span>rche
           </Link>
 
           {/* 데스크톱 네비게이션 */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8 ml-36">
             {/* 서비스 드롭다운 */}
             <div
               className="relative"
               onMouseEnter={() => setIsServiceOpen(true)}
               onMouseLeave={() => setIsServiceOpen(false)}
             >
-              <button className="flex items-center gap-1 px-1 py-2 text-body font-medium text-primary-600 hover:text-primary transition-colors">
+              <button className="flex items-center gap-1 px-1 py-2 text-body font-medium text-primary-400 hover:text-white transition-colors">
                 서비스
                 <svg className={`w-4 h-4 transition-transform ${isServiceOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -81,15 +81,15 @@ export default function Header() {
 
               {/* 드롭다운 메뉴 */}
               <div className={`absolute top-full left-0 pt-2 transition-all duration-200 ${isServiceOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-                <div className="bg-white rounded-2xl shadow-soft border border-primary-100 p-2 min-w-[280px]">
+                <div className="bg-dark-lighter rounded-2xl shadow-soft border border-white/10 p-2 min-w-[280px]">
                   {serviceItems.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex flex-col gap-1 px-4 py-3 rounded-xl hover:bg-primary-50 transition-colors"
+                      className="flex flex-col gap-1 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors"
                     >
-                      <span className="text-body font-semibold text-primary">{item.label}</span>
-                      <span className="text-small text-primary-500">{item.description}</span>
+                      <span className="text-body font-semibold text-white">{item.label}</span>
+                      <span className="text-small text-primary-400">{item.description}</span>
                     </Link>
                   ))}
                 </div>
@@ -99,7 +99,7 @@ export default function Header() {
             <Link
               href="/pricing"
               className={`px-1 py-2 text-body font-medium transition-colors ${
-                isActive("/pricing") ? "text-accent" : "text-primary-600 hover:text-primary"
+                isActive("/pricing") ? "text-white" : "text-primary-400 hover:text-white"
               }`}
             >
               가격
@@ -108,7 +108,7 @@ export default function Header() {
             <Link
               href="/consulting"
               className={`px-1 py-2 text-body font-medium transition-colors ${
-                isActive("/consulting") ? "text-accent" : "text-primary-600 hover:text-primary"
+                isActive("/consulting") ? "text-white" : "text-primary-400 hover:text-white"
               }`}
             >
               컨설팅
@@ -126,7 +126,7 @@ export default function Header() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="text-small text-primary-400 hover:text-primary transition-colors"
+                  className="text-small text-primary-500 hover:text-white transition-colors"
                 >
                   로그아웃
                 </button>
@@ -148,7 +148,7 @@ export default function Header() {
           {/* 모바일 메뉴 버튼 */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-primary-600 hover:text-primary rounded-lg hover:bg-primary-50 transition-colors"
+            className="lg:hidden p-2 text-primary-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMenuOpen ? (
@@ -162,17 +162,17 @@ export default function Header() {
 
         {/* 모바일 메뉴 */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-primary-100 animate-fade-in">
+          <div className="lg:hidden py-4 border-t border-white/10 animate-fade-in">
             <nav className="flex flex-col gap-1">
               {/* 서비스 서브메뉴 */}
               <div className="px-4 py-2">
-                <p className="text-caption text-primary-400 uppercase tracking-wider mb-2">서비스</p>
+                <p className="text-caption text-primary-500 uppercase tracking-wider mb-2">서비스</p>
                 {serviceItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-body text-primary-600 hover:bg-primary-50"
+                    className="block px-3 py-2 rounded-lg text-body text-primary-400 hover:bg-white/5 hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -183,7 +183,7 @@ export default function Header() {
                 href="/pricing"
                 onClick={() => setIsMenuOpen(false)}
                 className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
-                  isActive("/pricing") ? "bg-accent/10 text-accent" : "text-primary-600 hover:bg-primary-50"
+                  isActive("/pricing") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
                 가격
@@ -193,13 +193,13 @@ export default function Header() {
                 href="/consulting"
                 onClick={() => setIsMenuOpen(false)}
                 className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
-                  isActive("/consulting") ? "bg-accent/10 text-accent" : "text-primary-600 hover:bg-primary-50"
+                  isActive("/consulting") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
                 컨설팅
               </Link>
 
-              <div className="mt-4 pt-4 border-t border-primary-100 flex flex-col gap-2 px-4">
+              <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2 px-4">
                 {isLoggedIn ? (
                   <>
                     <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
@@ -207,7 +207,7 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={() => { handleLogout(); setIsMenuOpen(false); }}
-                      className="text-center py-2 text-small text-primary-400 hover:text-primary"
+                      className="text-center py-2 text-small text-primary-500 hover:text-white"
                     >
                       로그아웃
                     </button>

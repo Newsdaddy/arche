@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 import Card, { CardContent } from "@/components/ui/Card";
 import ProgressBar from "@/components/ProgressBar";
+import { ShowcaseSection } from "@/components/showcase";
 
 // 적성 테스트 질문
 const TEST_QUESTIONS = [
@@ -201,7 +202,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center bg-dark">
         <div className="animate-pulse text-primary-400">로딩 중...</div>
       </div>
     );
@@ -210,66 +211,66 @@ export default function Home() {
   return (
     <main className="flex-1">
       {/* ============ Hero Section - 페르소나 진단 ============ */}
-      <section className="relative bg-gradient-hero overflow-hidden">
-        {/* 배경 데코 */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 -left-20 w-[400px] h-[400px] bg-accent/5 rounded-full blur-3xl" />
-        </div>
-
-        <div className="container-wide relative section-sm">
+      <section className="relative overflow-hidden min-h-screen pt-20" style={{ backgroundColor: '#000000' }}>
+        <div className="container-wide py-20 md:py-32 relative z-10">
           {/* 테스트 시작 전 */}
           {!testStarted && !testComplete && (
-            <div className="text-center space-y-8 max-w-4xl mx-auto">
-              <div className="space-y-4">
-                <p className="text-caption text-accent uppercase tracking-widest">ARCHE PERSONA</p>
-                <h1 className="text-h1 md:text-display text-primary leading-tight">
-                  나의<br />
-                  <span className="text-gradient">소셜 페르소나</span>는?
-                </h1>
+            <div className="max-w-3xl">
+              {/* 브랜드 뱃지 - 그리스어 의미 통합 */}
+              <div className="mb-10">
+                <p className="text-accent text-lg font-semibold tracking-wider mb-2">ARCHE</p>
+                <p className="text-white/50 text-sm tracking-wide">
+                  <span style={{ fontFamily: 'Georgia, serif' }}>ἀρχή</span>
+                  <span className="mx-2 text-white/30">|</span>
+                  기원, 제1원리
+                </p>
               </div>
-              <p className="text-body-lg text-primary-500 max-w-2xl mx-auto">
-                당신 혹은 브랜드의 소셜미디어 정체성을 발견하세요.
+
+              {/* 질문형 헤드라인 */}
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+                나를 모르면서<br />
+                콘텐츠를 만든다고요?
+              </h1>
+
+              {/* 구분선 */}
+              <div className="w-12 h-[2px] bg-white/30 mb-6" />
+
+              {/* 서브 카피 */}
+              <p className="text-lg text-white/60 mb-10 max-w-xl">
+                Arche는 당신의 콘텐츠 DNA를 찾아드립니다.<br />
+                당신의 기원에서 시작하는 진짜 브랜딩.
               </p>
 
-              {/* 진단 시작 카드 */}
-              <div className="max-w-lg mx-auto">
-                <Card variant="elevated" className="border-2 border-accent/20">
-                  <CardContent className="text-center py-8">
-                    <Link
-                      href="/diagnosis"
-                      className="inline-block w-full py-4 bg-accent hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-accent/25"
-                    >
-                      진단 시작하기
-                    </Link>
-                  </CardContent>
-                </Card>
-              </div>
+              {/* CTA 버튼 */}
+              <Link
+                href="/diagnosis"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors"
+              >
+                진단 시작하기
+                <span className="text-lg">→</span>
+              </Link>
 
-              {/* 빠른 테스트 */}
-              <div className="mt-6 pt-6 border-t border-primary-200">
-                <p className="text-body text-primary-500 mb-2">
-                  시간이 부족하신가요?
-                </p>
+              {/* 빠른 테스트 링크 */}
+              <div className="mt-8">
                 <button
                   onClick={() => setTestStarted(true)}
-                  className="inline-flex items-center gap-2 text-accent font-semibold hover:underline"
+                  className="text-white/50 hover:text-white text-sm transition-colors"
                 >
-                  30초 빠른 테스트 →
+                  30초 빠른 테스트로 먼저 체험하기 →
                 </button>
               </div>
 
               {isLoggedIn ? (
-                <p className="text-body text-primary-400 mt-4">
+                <p className="text-sm text-white/40 mt-6">
                   이미 회원이시네요!{" "}
-                  <button onClick={() => router.push("/dashboard")} className="text-accent font-semibold hover:underline">
-                    대시보드로 이동 →
+                  <button onClick={() => router.push("/dashboard")} className="text-white/60 hover:text-white underline">
+                    대시보드로 이동
                   </button>
                 </p>
               ) : (
-                <p className="text-body text-primary-400 mt-4">
+                <p className="text-sm text-white/40 mt-6">
                   이미 계정이 있으신가요?{" "}
-                  <Link href="/login" className="text-accent font-semibold hover:underline">
+                  <Link href="/login" className="text-white/60 hover:text-white underline">
                     로그인
                   </Link>
                 </p>
@@ -279,12 +280,12 @@ export default function Home() {
 
           {/* 테스트 진행 중 */}
           {testStarted && !testComplete && (
-            <div className="max-w-md mx-auto">
-              <Card variant="elevated">
+            <div className="max-w-md mx-auto w-full">
+              <Card variant="elevated" className="bg-dark-lighter/90 backdrop-blur-sm border border-white/10">
                 <CardContent className="py-8 space-y-6">
                   {/* 진행 상태 */}
                   <div className="space-y-2">
-                    <div className="flex justify-between text-small text-primary-500">
+                    <div className="flex justify-between text-small text-primary-400">
                       <span>질문 {testStep + 1} / {TEST_QUESTIONS.length}</span>
                       <button
                         onClick={() => {
@@ -292,7 +293,7 @@ export default function Home() {
                           setTestStep(0);
                           setTestAnswers({});
                         }}
-                        className="text-primary-400 hover:text-primary"
+                        className="text-primary-500 hover:text-white"
                       >
                         닫기
                       </button>
@@ -307,7 +308,7 @@ export default function Home() {
 
                   {/* 질문 */}
                   <div className="text-center">
-                    <h2 className="text-h2 text-primary">
+                    <h2 className="text-h2 text-white">
                       {TEST_QUESTIONS[testStep].question}
                     </h2>
                   </div>
@@ -329,11 +330,11 @@ export default function Home() {
                         }}
                         className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200
                           ${testAnswers[TEST_QUESTIONS[testStep].id] === option.value
-                            ? "border-accent bg-accent/5"
-                            : "border-primary-100 hover:border-accent/50 hover:bg-primary-50"
+                            ? "border-white bg-white/10"
+                            : "border-white/20 hover:border-white/50 hover:bg-white/5"
                           }`}
                       >
-                        <span className="text-body font-medium">{option.label}</span>
+                        <span className="text-body font-medium text-white">{option.label}</span>
                       </button>
                     ))}
                   </div>
@@ -342,7 +343,7 @@ export default function Home() {
                   {testStep > 0 && (
                     <button
                       onClick={() => setTestStep(testStep - 1)}
-                      className="text-primary-400 hover:text-primary text-body"
+                      className="text-primary-400 hover:text-white text-body"
                     >
                       ← 이전 질문
                     </button>
@@ -356,20 +357,20 @@ export default function Home() {
           {testComplete && (
             <div className="max-w-lg mx-auto text-center space-y-6">
               <div>
-                <p className="text-small text-accent font-semibold mb-2">당신의 콘텐츠 유형</p>
-                <h2 className="text-h1 font-bold text-primary">
+                <p className="text-small text-primary-400 font-semibold mb-2">당신의 콘텐츠 유형</p>
+                <h2 className="text-h1 font-bold text-white">
                   {getPersona(testAnswers).name}
                 </h2>
               </div>
 
-              <Card variant="muted">
+              <Card variant="muted" className="bg-dark-lighter/80 backdrop-blur-sm border border-white/10">
                 <CardContent className="space-y-4">
-                  <p className="text-body text-primary-600">
+                  <p className="text-body text-primary-300">
                     {getPersona(testAnswers).description}
                   </p>
-                  <div className="bg-white rounded-lg p-4">
-                    <p className="text-small text-primary-400 mb-1">맞춤 추천 팁</p>
-                    <p className="text-body font-medium text-primary">
+                  <div className="bg-dark rounded-lg p-4 border border-white/10">
+                    <p className="text-small text-primary-500 mb-1">맞춤 추천 팁</p>
+                    <p className="text-body font-medium text-white">
                       {getPersona(testAnswers).tip}
                     </p>
                   </div>
@@ -386,7 +387,7 @@ export default function Home() {
                     <Button size="lg" fullWidth onClick={() => router.push("/signup")}>
                       무료로 8주 미션 시작하기
                     </Button>
-                    <p className="text-small text-primary-400">
+                    <p className="text-small text-primary-500">
                       가입하면 맞춤 미션과 AI 피드백을 받을 수 있어요!
                     </p>
                   </>
@@ -394,7 +395,7 @@ export default function Home() {
                 <div className="flex flex-col gap-2">
                   <Link
                     href="/diagnosis"
-                    className="text-accent font-semibold hover:underline"
+                    className="text-white font-semibold hover:text-primary-300"
                   >
                     더 깊은 심층 진단 받기 (17분)
                   </Link>
@@ -405,7 +406,7 @@ export default function Home() {
                       setTestAnswers({});
                       setTestComplete(false);
                     }}
-                    className="text-body text-primary-400 hover:text-primary"
+                    className="text-body text-primary-500 hover:text-white"
                   >
                     테스트 다시 하기
                   </button>
@@ -417,35 +418,34 @@ export default function Home() {
       </section>
 
       {/* ============ AI Content Generation Section ============ */}
-      <section className="bg-gradient-section section-sm">
+      <section className="section-sm" style={{ backgroundColor: '#ffffff' }}>
         <div className="container-wide">
-          <div className="text-center space-y-4 mb-10 max-w-4xl mx-auto">
-            <p className="text-caption text-accent uppercase tracking-widest">ARCHE WRITER</p>
-            <h2 className="text-h1 md:text-display text-primary leading-tight">
-              글쓰기,<br />
-              <span className="text-gradient">AI에게 맡기세요</span>
+          <div className="max-w-3xl mb-12">
+            <p className="text-accent text-sm font-medium tracking-wider mb-4">ARCHE WRITER</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
+              글쓰기는 올리는데<br />
+              시간이 너무 오래 걸린다면
             </h2>
-            <p className="text-body-lg text-primary-500 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-500">
               브레인스토밍만 하면, AI가 글 한 편으로 정리해드려요.
             </p>
           </div>
 
           <div className="max-w-lg mx-auto">
-            <Card variant="elevated" className="border-2 border-accent/20">
-              <CardContent className="py-8">
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
                 {!generatedContent ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="text-small text-primary-500 block mb-2">플랫폼 선택</label>
+                      <label className="text-sm text-gray-600 block mb-2">플랫폼 선택</label>
                       <div className="flex gap-2">
                         {CONTENT_PLATFORMS.map((p) => (
                           <button
                             key={p.id}
                             onClick={() => setSelectedPlatform(p.id)}
-                            className={`flex-1 py-3 px-4 rounded-xl text-body font-medium transition-colors ${
+                            className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-colors ${
                               selectedPlatform === p.id
                                 ? "bg-accent text-white"
-                                : "bg-primary-50 text-primary-600 hover:bg-primary-100"
+                                : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
                             }`}
                           >
                             {p.name}
@@ -454,24 +454,24 @@ export default function Home() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-small text-primary-500 block mb-2">
+                      <label className="text-sm text-gray-600 block mb-2">
                         무슨 에피소드가 있었나요? 어떤 생각이 드셨나요?
                       </label>
-                      <p className="text-caption text-primary-400 mb-2">
+                      <p className="text-xs text-gray-400 mb-2">
                         누가, 언제, 어디서, 무엇을, 어떻게, 왜? 생각나는 대로 막 적어보세요.
                       </p>
                       <textarea
                         value={contentTopic}
                         onChange={(e) => setContentTopic(e.target.value)}
                         placeholder="예: 오늘 카페에서 일하다가 옆 테이블 대화를 들었는데, 40대 직장인이 퇴사하고 싶다고 하더라. 근데 용기가 없대. 나도 그랬거든..."
-                        className="w-full px-4 py-3 border-2 border-primary-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-gray-900 placeholder-gray-400 resize-none"
                         rows={5}
                       />
                     </div>
                     <button
                       onClick={handleGenerateContent}
                       disabled={!selectedPlatform || !contentTopic || isGenerating}
-                      className="w-full py-4 bg-accent hover:bg-accent-600 disabled:bg-primary-200 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-accent/25 disabled:shadow-none"
+                      className="w-full py-4 bg-[#0891B2] hover:bg-[#0E7490] disabled:bg-gray-300 text-white font-semibold transition-colors disabled:text-gray-500"
                     >
                       {isGenerating ? "정리하는 중..." : "글로 정리하기"}
                     </button>
@@ -479,59 +479,59 @@ export default function Home() {
                 ) : (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-h3 text-primary">생성 완료!</h3>
+                      <h3 className="text-xl font-bold text-gray-900">생성 완료!</h3>
                       <button
                         onClick={() => {
                           setGeneratedContent("");
                           setContentTopic("");
                         }}
-                        className="text-accent hover:underline text-small"
+                        className="text-accent hover:text-accent-600 text-sm"
                       >
                         다시 생성
                       </button>
                     </div>
-                    <div className="bg-primary-50 rounded-xl p-4 max-h-64 overflow-y-auto">
-                      <p className="text-body text-primary-600 whitespace-pre-wrap">{generatedContent}</p>
+                    <div className="bg-white rounded-xl p-4 max-h-64 overflow-y-auto border border-gray-200">
+                      <p className="text-gray-700 whitespace-pre-wrap">{generatedContent}</p>
                     </div>
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(generatedContent);
                       }}
-                      className="w-full py-3 bg-primary-100 hover:bg-primary-200 text-primary font-medium rounded-xl transition-colors"
+                      className="w-full py-3 bg-[#0891B2] hover:bg-[#0E7490] text-white font-medium transition-colors"
                     >
                       복사하기
                     </button>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ============ Why Section ============ */}
-      <section className="section-sm bg-white">
+      <section className="section-sm" style={{ backgroundColor: '#000000' }}>
         <div className="container-wide">
-          <div className="max-w-3xl mx-auto text-center space-y-8">
-            <p className="text-caption text-accent uppercase tracking-widest">Why Arche?</p>
-            <h2 className="text-h1 md:text-h1 text-primary leading-tight">
-              앞으로는 자기 브랜드를 구축한<br />
-              사람만이 살아남습니다
+          <div className="max-w-3xl">
+            <p className="text-accent text-sm font-medium tracking-wider mb-4">WHY ARCHE?</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-8">
+              콘텐츠 공식은 배웠는데<br />
+              왜 나한텐 안 먹힐까요?
             </h2>
-            <div className="space-y-6 text-left">
-              <div className="bg-primary-50 rounded-2xl p-6">
-                <p className="text-body-lg text-primary-600 leading-relaxed">
-                  모두가 인플루언서가 되는 시대. 나도 콘텐츠를 만들어야 하는데, 막상 어떤 콘셉트를 잡고 올려야 할지 막막하지 않으셨나요?
+            <div className="space-y-6">
+              <div className="border-l-2 border-white/20 pl-6">
+                <p className="text-lg text-white/60 leading-relaxed">
+                  모두가 인플루언서가 되는 시대. 막상 어떤 콘셉트를 잡고 올려야 할지 막막하지 않으셨나요?
                 </p>
               </div>
-              <div className="bg-primary-50 rounded-2xl p-6">
-                <p className="text-body-lg text-primary-600 leading-relaxed">
-                  릴스 만드는 법, 소셜미디어 글 잘 쓰는 법... 얘기는 많이 듣고 공부도 꽤 했지만, 막상 혼자서 나 자신을 분석하고 소화해서 글을 쓰거나 영상을 찍는 건 어렵습니다.
+              <div className="border-l-2 border-white/20 pl-6">
+                <p className="text-lg text-white/60 leading-relaxed">
+                  릴스 만드는 법, 글 잘 쓰는 법... 공부는 했지만, 막상 나 자신을 분석하고 소화하는 건 어렵습니다.
                 </p>
               </div>
-              <div className="bg-accent/5 border-2 border-accent/20 rounded-2xl p-6">
-                <p className="text-body-lg text-primary font-medium leading-relaxed">
-                  Arche는 검증된 프레임워크로 당신의 강점과 콘텐츠 방향을 분석하고, AI가 바로 쓸 수 있는 글로 만들어드립니다.
+              <div className="border-l-2 border-accent pl-6 bg-accent/10 py-4 -ml-6 pl-12 rounded-r-xl">
+                <p className="text-lg text-white font-medium leading-relaxed">
+                  Arche는 검증된 프레임워크로 당신의 강점과 콘텐츠 방향을 분석하고,<br />
+                  AI가 바로 쓸 수 있는 글로 만들어드립니다.
                 </p>
               </div>
             </div>
@@ -539,23 +539,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ============ Member Showcase ============ */}
+      <ShowcaseSection />
+
       {/* ============ FAQ ============ */}
-      <section className="section-sm bg-primary-50">
+      <section className="section-sm" style={{ backgroundColor: '#ffffff' }}>
         <div className="container-narrow">
-          <h2 className="text-h1 text-primary text-center mb-12">자주 묻는 질문</h2>
+          <p className="text-accent text-sm font-medium tracking-wider mb-4">FAQ</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">자주 묻는 질문</h2>
           <div className="space-y-4">
             {FAQS.map((faq, i) => (
               <div
                 key={i}
-                className="group bg-white rounded-2xl border border-primary-100 hover:border-accent/30 hover:shadow-soft transition-all duration-300"
+                className="group border border-gray-200 rounded-2xl hover:border-gray-400 transition-all duration-300"
               >
                 <div className="px-6 py-5">
-                  <p className="text-body font-semibold text-primary cursor-default">
+                  <p className="font-semibold text-gray-900 cursor-default">
                     Q. {faq.q}
                   </p>
                   <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
                     <div className="overflow-hidden">
-                      <p className="text-body text-primary-500 pt-3">
+                      <p className="text-gray-600 pt-3">
                         {faq.a}
                       </p>
                     </div>
@@ -568,22 +572,31 @@ export default function Home() {
       </section>
 
       {/* ============ Final CTA ============ */}
-      <section className="section-sm bg-primary">
-        <div className="container-wide text-center space-y-8">
-          <h2 className="text-h1 text-white">
-            당신만의 시작,<br />Arche와 함께하세요
-          </h2>
-          <p className="text-body-lg text-primary-300">
-            2달 후, 당신만의 소셜미디어 콘셉트가 완성됩니다.
-          </p>
+      <section className="py-20" style={{ backgroundColor: '#000000' }}>
+        <div className="container-wide flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+              지금 시작하면,<br />
+              당신의 콘텐츠 DNA를 발견할 수 있어요.
+            </h2>
+            <p className="text-white/50">
+              2달 후, 당신만의 소셜미디어 콘셉트가 완성됩니다.
+            </p>
+          </div>
           {isLoggedIn ? (
-            <Button size="xl" onClick={() => router.push("/dashboard")}>
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors whitespace-nowrap"
+            >
               대시보드로 이동
-            </Button>
+            </button>
           ) : (
-            <Button size="xl" onClick={() => router.push("/signup")}>
+            <button
+              onClick={() => router.push("/signup")}
+              className="px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors whitespace-nowrap"
+            >
               무료로 시작하기
-            </Button>
+            </button>
           )}
         </div>
       </section>

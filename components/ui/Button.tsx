@@ -18,14 +18,14 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+  const baseStyles = "inline-flex items-center justify-center font-semibold rounded-none transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-dark";
 
   const variants = {
-    primary: "bg-accent text-white hover:bg-accent-600 focus-visible:ring-accent shadow-lg shadow-accent/25 hover:shadow-accent/40 disabled:bg-accent/50 disabled:shadow-none",
-    secondary: "bg-primary text-white hover:bg-primary-800 focus-visible:ring-primary",
-    outline: "border-2 border-primary-200 text-primary hover:bg-primary-50 hover:border-primary-300 focus-visible:ring-primary",
-    ghost: "text-primary hover:bg-primary-50 focus-visible:ring-primary-200",
-    link: "text-accent hover:text-accent-600 underline-offset-4 hover:underline focus-visible:ring-accent",
+    primary: "bg-[#0891B2] text-white hover:bg-[#0E7490] focus-visible:ring-[#0891B2] shadow-lg shadow-[#0891B2]/20 hover:shadow-[#0891B2]/30 disabled:bg-[#0891B2]/50 disabled:shadow-none",
+    secondary: "bg-dark-lighter text-white hover:bg-dark-100 focus-visible:ring-white/50 border border-white/10",
+    outline: "border-2 border-white/20 text-white hover:bg-white/5 hover:border-white/40 focus-visible:ring-white/50",
+    ghost: "text-white hover:bg-white/10 focus-visible:ring-white/30",
+    link: "text-white hover:text-primary-300 underline-offset-4 hover:underline focus-visible:ring-white/30",
   };
 
   const sizes = {

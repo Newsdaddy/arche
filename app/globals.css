@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #0F172A;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card-bg: #1a1a1a;
+  --border: #222222;
 }
 
 @layer base {
@@ -46,40 +48,79 @@
     text-wrap: balance;
   }
 
-  /* Gradient backgrounds (duna style) */
+  /* Dark theme backgrounds */
+  .bg-dark {
+    background: #1f1f1f;
+  }
+
+  .bg-dark-lighter {
+    background: #2a2a2a;
+  }
+
+  .bg-dark-darker {
+    background: #0f0f0f;
+  }
+
+  /* Gradient backgrounds (dark theme) */
   .bg-gradient-hero {
-    background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+    background: linear-gradient(180deg, #000000 0%, #111111 100%);
   }
 
   .bg-gradient-section {
-    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
   }
 
   .bg-gradient-section-alt {
-    background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+    background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
   }
 
-  /* Text gradient */
+  /* Text gradient - subtle white glow */
   .text-gradient {
-    background: linear-gradient(to right, #2563EB, #60A5FA);
+    background: linear-gradient(to right, #ffffff, #a3a3a3);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  /* Accent color text */
+  .text-accent {
+    color: #0891B2;
+  }
+
+  /* Glass effect for cards */
+  .glass {
+    background: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   /* Decorative blur circles */
   .blur-circle {
-    @apply absolute rounded-full blur-3xl opacity-50;
+    @apply absolute rounded-full blur-3xl opacity-30;
   }
 
   /* Card hover effect */
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-soft hover:-translate-y-1;
+    @apply transition-all duration-300 hover:shadow-glow hover:-translate-y-1;
   }
 
   /* Focus visible */
   .focus-ring {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-dark;
+  }
+
+  /* Border styles for dark theme */
+  .border-dark {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 

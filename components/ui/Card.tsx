@@ -11,10 +11,10 @@ interface CardProps {
 }
 
 const cardVariants = {
-  default: "bg-white border border-primary-100 shadow-sm",
-  elevated: "bg-white shadow-soft",
-  feature: "bg-white border border-primary-100 hover:border-accent/30 hover:shadow-lg",
-  muted: "bg-primary-50 border border-primary-100",
+  default: "bg-dark-lighter border border-white/10 shadow-sm",
+  elevated: "bg-dark-lighter shadow-soft border border-white/10",
+  feature: "bg-dark-lighter border border-white/10 hover:border-white/30 hover:shadow-glow",
+  muted: "bg-dark-100 border border-white/5",
 };
 
 export default function Card({
@@ -53,7 +53,7 @@ interface CardTitleProps {
 }
 
 export function CardTitle({ children, className = "" }: CardTitleProps) {
-  return <h3 className={`text-h3 text-primary ${className}`}>{children}</h3>;
+  return <h3 className={`text-h3 text-white ${className}`}>{children}</h3>;
 }
 
 interface CardDescriptionProps {
@@ -62,7 +62,7 @@ interface CardDescriptionProps {
 }
 
 export function CardDescription({ children, className = "" }: CardDescriptionProps) {
-  return <p className={`text-body text-primary-500 mt-2 ${className}`}>{children}</p>;
+  return <p className={`text-body text-primary-400 mt-2 ${className}`}>{children}</p>;
 }
 
 interface CardContentProps {
@@ -80,5 +80,5 @@ interface CardFooterProps {
 }
 
 export function CardFooter({ children, className = "" }: CardFooterProps) {
-  return <div className={`mt-4 pt-4 border-t border-primary-100 ${className}`}>{children}</div>;
+  return <div className={`mt-4 pt-4 border-t border-white/10 ${className}`}>{children}</div>;
 }

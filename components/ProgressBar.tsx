@@ -24,7 +24,7 @@ export default function ProgressBar({
   };
 
   const colors = {
-    accent: "bg-accent",
+    accent: "bg-white",
     success: "bg-success",
     warning: "bg-warning",
   };
@@ -33,13 +33,13 @@ export default function ProgressBar({
     <div className="w-full">
       {showLabel && (
         <div className="flex justify-between items-center mb-1">
-          <span className="text-small text-gray-600">진행률</span>
-          <span className="text-small font-semibold text-primary">
+          <span className="text-small text-primary-500">진행률</span>
+          <span className="text-small font-semibold text-white">
             {current}/{total} ({Math.round(percentage)}%)
           </span>
         </div>
       )}
-      <div className={`w-full bg-secondary rounded-full ${sizes[size]} overflow-hidden`}>
+      <div className={`w-full bg-white/20 rounded-full ${sizes[size]} overflow-hidden`}>
         <div
           className={`${colors[color]} ${sizes[size]} rounded-full transition-all duration-500 ease-out`}
           style={{ width: `${percentage}%` }}
