@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+// 프로덕션 도메인 (vercel.app 대신 커스텀 도메인 사용)
+const PRODUCTION_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://arche.ai.kr";
+
 function safeRedirectPath(next: string | null): string {
   if (!next || !next.startsWith("/") || next.startsWith("//")) {
     return "/dashboard";
@@ -8,8 +11,17 @@ function safeRedirectPath(next: string | null): string {
   return next;
 }
 
+function getBaseUrl(requestOrigin: string): string {
+  // 프로덕션 환경에서는 커스텀 도메인 사용
+  if (process.env.NODE_ENV === "production") {
+    return PRODUCTION_URL;
+  }
+  return requestOrigin;
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
+  const baseUrl = getBaseUrl(origin);
   const code = searchParams.get("code");
   const nextPath = safeRedirectPath(searchParams.get("next"));
 
@@ -30,7 +42,7 @@ export async function GET(request: Request) {
           .single();
 
         if (profile?.onboarding_completed) {
-          return NextResponse.redirect(`${origin}${nextPath}`);
+          return NextResponse.redirect(`${baseUrl}${nextPath}`);
         }
 
         if (!profile) {
@@ -39,13 +51,13 @@ export async function GET(request: Request) {
             email: user.email,
             onboarding_completed: true,
           });
-          return NextResponse.redirect(`${origin}${nextPath}`);
+          return NextResponse.redirect(`${baseUrl}${nextPath}`);
         }
       }
 
-      return NextResponse.redirect(`${origin}${nextPath}`);
+      return NextResponse.redirect(`${baseUrl}${nextPath}`);
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  return NextResponse.redirect(`${baseUrl}/login?error=auth`);
 }

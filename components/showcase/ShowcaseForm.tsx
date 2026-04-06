@@ -23,6 +23,9 @@ export default function ShowcaseForm({ onSubmit, onCancel }: Props) {
   const [postUrl, setPostUrl] = useState("");
   const [likes, setLikes] = useState("");
   const [comments, setComments] = useState("");
+  const [cohort, setCohort] = useState("");
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<{ rank: number; total: number } | null>(null);
@@ -50,6 +53,9 @@ export default function ShowcaseForm({ onSubmit, onCancel }: Props) {
         post_url: postUrl,
         likes: parseInt(likes) || 0,
         comments: parseInt(comments) || 0,
+        cohort: cohort || undefined,
+        name: name || undefined,
+        nickname: nickname || undefined,
       });
 
       if (ranking) {
@@ -83,6 +89,9 @@ export default function ShowcaseForm({ onSubmit, onCancel }: Props) {
               setPostUrl("");
               setLikes("");
               setComments("");
+              setCohort("");
+              setName("");
+              setNickname("");
             }}
           >
             하나 더 등록
@@ -112,6 +121,40 @@ export default function ShowcaseForm({ onSubmit, onCancel }: Props) {
               {p.name}
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* 제출자 정보 */}
+      <div className="grid grid-cols-3 gap-3">
+        <div>
+          <label className="text-small text-primary-400 block mb-2">기수</label>
+          <input
+            type="text"
+            value={cohort}
+            onChange={(e) => setCohort(e.target.value)}
+            placeholder="1기"
+            className="w-full px-4 py-3 bg-dark border border-white/20 rounded-xl text-white placeholder-primary-600 focus:border-white/50 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="text-small text-primary-400 block mb-2">이름</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="홍길동"
+            className="w-full px-4 py-3 bg-dark border border-white/20 rounded-xl text-white placeholder-primary-600 focus:border-white/50 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="text-small text-primary-400 block mb-2">닉네임</label>
+          <input
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="길동이"
+            className="w-full px-4 py-3 bg-dark border border-white/20 rounded-xl text-white placeholder-primary-600 focus:border-white/50 focus:outline-none"
+          />
         </div>
       </div>
 

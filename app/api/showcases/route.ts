@@ -113,7 +113,17 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { platform, post_url, likes, comments, comment } = body;
+  const { platform, post_url, likes, comments, comment, cohort, name, nickname } = body;
+
+  // display_name 조합 (예: "1기 조민석 (딸깍)")
+  let displayName: string | null = null;
+  if (cohort || name || nickname) {
+    const parts = [];
+    if (cohort) parts.push(cohort);
+    if (name) parts.push(name);
+    if (nickname) parts.push(`(${nickname})`);
+    displayName = parts.join(" ");
+  }
 
   // 필수 필드 확인
   if (!platform || !post_url) {
@@ -144,6 +154,7 @@ export async function POST(request: Request) {
       likes: likes || 0,
       comments: comments || 0,
       comment: comment || null,
+      display_name: displayName,
     })
     .select()
     .single();

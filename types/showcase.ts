@@ -36,6 +36,10 @@ export interface CreateShowcaseInput {
   likes: number;
   comments: number;
   comment?: string;
+  // 제출자 정보
+  cohort?: string;      // 기수 (예: "1기")
+  name?: string;        // 이름 (예: "조민석")
+  nickname?: string;    // 닉네임 (예: "딸깍")
 }
 
 // 랭킹 정보
