@@ -21,34 +21,103 @@ function DiagnosisResultContent() {
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    // 1. sessionStorage에서 결과 가져오기 (새 방식)
-    const storedResult = sessionStorage.getItem("diagnosisResult");
-    if (storedResult) {
-      try {
-        setResult(JSON.parse(storedResult));
-        return;
-      } catch (e) {
-        console.error("Failed to parse stored result:", e);
-      }
-    }
+    const loadResult = async () => {
+      // 0. URL의 id 파라미터로 저장된 결과 불러오기
+      const resultId = searchParams.get("id");
+      if (resultId) {
+        try {
+          const { createClient } = await import("@/lib/supabase/client");
+          const supabase = createClient();
+          const { data, error } = await supabase
+            .from("persona_results")
+            .select("*")
+            .eq("id", resultId)
+            .single();
 
-    // 2. URL 파라미터에서 기존 방식 처리 (호환성)
-    const data = searchParams.get("data");
-    if (data) {
-      try {
-        const answers = JSON.parse(decodeURIComponent(data));
-        // 기존 답변을 새 형식의 결과로 변환
-        const legacyResult = convertLegacyAnswers(answers);
-        setResult(legacyResult);
-        return;
-      } catch (e) {
-        console.error("Failed to parse URL data:", e);
+          if (!error && data) {
+            // DB 데이터를 DiagnosisResult 형식으로 변환
+            const dbResult = convertDbResult(data);
+            setResult(dbResult);
+            setIsSaved(true);
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to load saved result:", e);
+        }
       }
-    }
 
-    // 결과가 없으면 진단 페이지로 리다이렉트
-    router.push("/diagnosis");
+      // 1. sessionStorage에서 결과 가져오기 (새 방식)
+      const storedResult = sessionStorage.getItem("diagnosisResult");
+      if (storedResult) {
+        try {
+          setResult(JSON.parse(storedResult));
+          return;
+        } catch (e) {
+          console.error("Failed to parse stored result:", e);
+        }
+      }
+
+      // 2. URL 파라미터에서 기존 방식 처리 (호환성)
+      const data = searchParams.get("data");
+      if (data) {
+        try {
+          const answers = JSON.parse(decodeURIComponent(data));
+          // 기존 답변을 새 형식의 결과로 변환
+          const legacyResult = convertLegacyAnswers(answers);
+          setResult(legacyResult);
+          return;
+        } catch (e) {
+          console.error("Failed to parse URL data:", e);
+        }
+      }
+
+      // 결과가 없으면 진단 페이지로 리다이렉트
+      router.push("/diagnosis");
+    };
+
+    loadResult();
   }, [router, searchParams]);
+
+  // DB에서 불러온 결과를 DiagnosisResult 형식으로 변환
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const convertDbResult = (data: any): DiagnosisResult => {
+    const archetypeId = data.archetype || "warrior";
+    const archetype = ARCHETYPES.find((a) => a.id === archetypeId) || ARCHETYPES[0];
+
+    return {
+      id: data.id,
+      userId: data.user_id,
+      diagnosisType: data.diagnosis_type || "deep",
+      createdAt: data.created_at,
+      archetype,
+      swot: data.swot_data || {
+        strengths: data.swot_strengths || [],
+        weaknesses: data.swot_weaknesses || [],
+        opportunities: data.swot_opportunities || [],
+        threats: data.swot_threats || [],
+      },
+      swotMix: data.swot_mix || {
+        so: "",
+        wo: "",
+        st: "",
+        wt: "",
+      },
+      skillIntersection: data.skill_intersection || {
+        skills: [],
+        trend: "",
+        uniquePosition: "",
+      },
+      icp: data.icp_data || {
+        demographics: "",
+        painPoints: [],
+        desires: [],
+        summary: "",
+      },
+      contentPillars: data.content_pillars || [],
+      contentTemplates: data.content_templates || archetype.templates,
+      rawAnswers: data.raw_answers || {},
+    };
+  };
 
   // 기존 답변을 새 결과 형식으로 변환
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

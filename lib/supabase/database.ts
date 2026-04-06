@@ -207,6 +207,86 @@ export async function moveToNextMission() {
 
 // ==================== Consulting ====================
 
+// ==================== Persona Results (진단 결과) ====================
+
+export async function getPersonaResults() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("persona_results")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("진단 결과 조회 실패:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function getPersonaResult(resultId: string) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("persona_results")
+    .select("*")
+    .eq("id", resultId)
+    .single();
+
+  if (error) {
+    console.error("진단 결과 상세 조회 실패:", error);
+    return null;
+  }
+
+  return data;
+}
+
+// ==================== Content Generations (생성된 콘텐츠) ====================
+
+export async function getContentGenerations() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("content_generations")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("생성 콘텐츠 조회 실패:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function getContentGeneration(generationId: string) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("content_generations")
+    .select("*")
+    .eq("id", generationId)
+    .single();
+
+  if (error) {
+    console.error("생성 콘텐츠 상세 조회 실패:", error);
+    return null;
+  }
+
+  return data;
+}
+
+// ==================== Consulting ====================
+
 export async function createConsultingRequest(data: {
   name: string;
   email: string;

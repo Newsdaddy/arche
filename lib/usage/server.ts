@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { UsageCheckResult, UsageLimits } from "@/types";
 
-// 사용량 제한 상수
+// 사용량 제한 상수 (무료 / 레거시 Pro 기준)
 export const USAGE_LIMITS: Record<"free" | "pro", UsageLimits> = {
   free: {
     content_generation: 3,
@@ -13,30 +13,71 @@ export const USAGE_LIMITS: Record<"free" | "pro", UsageLimits> = {
   },
 };
 
-// 서버 사이드: 사용자의 현재 플랜 조회
-export async function getUserPlanServer(userId: string): Promise<"free" | "pro"> {
+/** DB 기간권(daily_limit) 및 만료일을 반영한 일일 한도 */
+export async function getEffectiveUsageLimits(userId: string): Promise<{
+  content_generation: number;
+  diagnosis: number;
+  plan: "free" | "pro";
+}> {
   const supabase = await createClient();
-
   const { data } = await supabase
     .from("subscriptions")
-    .select("plan, status, current_period_end")
+    .select("plan, status, current_period_end, daily_limit")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
-  if (!data) return "free";
+  const now = new Date();
 
-  if (data.status === "active") {
-    if (data.current_period_end) {
-      const endDate = new Date(data.current_period_end);
-      if (endDate > new Date()) {
-        return data.plan as "free" | "pro";
-      }
-    } else {
-      return data.plan as "free" | "pro";
+  if (!data || data.status !== "active") {
+    return {
+      content_generation: USAGE_LIMITS.free.content_generation,
+      diagnosis: USAGE_LIMITS.free.diagnosis,
+      plan: "free",
+    };
+  }
+
+  if (data.current_period_end) {
+    const end = new Date(data.current_period_end);
+    if (end <= now) {
+      return {
+        content_generation: USAGE_LIMITS.free.content_generation,
+        diagnosis: USAGE_LIMITS.free.diagnosis,
+        plan: "free",
+      };
     }
   }
 
-  return "free";
+  if (data.plan === "free") {
+    return {
+      content_generation: USAGE_LIMITS.free.content_generation,
+      diagnosis: USAGE_LIMITS.free.diagnosis,
+      plan: "free",
+    };
+  }
+
+  if (data.plan === "pro") {
+    const contentLimit =
+      data.daily_limit != null
+        ? data.daily_limit
+        : USAGE_LIMITS.pro.content_generation;
+    return {
+      content_generation: contentLimit,
+      diagnosis: USAGE_LIMITS.pro.diagnosis,
+      plan: "pro",
+    };
+  }
+
+  return {
+    content_generation: USAGE_LIMITS.free.content_generation,
+    diagnosis: USAGE_LIMITS.free.diagnosis,
+    plan: "free",
+  };
+}
+
+// 서버 사이드: 사용자의 현재 플랜 조회
+export async function getUserPlanServer(userId: string): Promise<"free" | "pro"> {
+  const limits = await getEffectiveUsageLimits(userId);
+  return limits.plan;
 }
 
 // 서버 사이드: 오늘 사용량 조회
@@ -63,8 +104,8 @@ export async function checkUsageLimitServer(
   userId: string,
   usageType: "content_generation" | "diagnosis"
 ): Promise<UsageCheckResult> {
-  const plan = await getUserPlanServer(userId);
-  const limit = USAGE_LIMITS[plan][usageType];
+  const limits = await getEffectiveUsageLimits(userId);
+  const limit = limits[usageType];
   const currentUsage = await getTodayUsageServer(userId, usageType);
   const remaining = Math.max(0, limit - currentUsage);
 
@@ -72,7 +113,7 @@ export async function checkUsageLimitServer(
     allowed: remaining > 0,
     remaining,
     limit,
-    plan,
+    plan: limits.plan,
   };
 }
 

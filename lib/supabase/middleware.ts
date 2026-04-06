@@ -34,7 +34,14 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // 로그인이 필요한 페이지 보호
-  const protectedPaths = ["/dashboard", "/mission", "/submit", "/feedback", "/progress"];
+  const protectedPaths = [
+    "/dashboard",
+    "/mission",
+    "/submit",
+    "/feedback",
+    "/progress",
+    "/payment",
+  ];
   const isProtectedPath = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );

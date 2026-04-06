@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getProfile, getCompletedMissions } from "@/lib/supabase/database";
+import { getProfile, getCompletedMissions, getPersonaResults, getContentGenerations } from "@/lib/supabase/database";
 import { getTodayMission } from "@/lib/missions";
 import { Mission } from "@/types";
 import Button from "@/components/ui/Button";
@@ -30,6 +30,8 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [completedMissions, setCompletedMissions] = useState<string[]>([]);
   const [todayMission, setTodayMission] = useState<Mission | null>(null);
+  const [personaResults, setPersonaResults] = useState<any[]>([]);
+  const [contentGenerations, setContentGenerations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -56,6 +58,14 @@ export default function DashboardPage() {
         profileData.current_day || 1
       );
       setTodayMission(mission || null);
+
+      // 히스토리 데이터 로드
+      const [diagnosisResults, generations] = await Promise.all([
+        getPersonaResults(),
+        getContentGenerations(),
+      ]);
+      setPersonaResults(diagnosisResults);
+      setContentGenerations(generations);
 
       setIsLoading(false);
     };
@@ -199,6 +209,80 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* 진단 결과 히스토리 */}
+        {personaResults.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>내 진단 결과</CardTitle>
+              <CardDescription>페르소나 진단 히스토리</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {personaResults.slice(0, 3).map((result) => (
+                <div
+                  key={result.id}
+                  onClick={() => router.push(`/diagnosis/result?id=${result.id}`)}
+                  className="flex items-center justify-between p-3 bg-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                >
+                  <div>
+                    <p className="font-medium text-primary">{result.archetype_name || result.archetype || "진단 결과"}</p>
+                    <p className="text-small text-gray-500">
+                      {new Date(result.created_at).toLocaleDateString("ko-KR")}
+                    </p>
+                  </div>
+                  <span className="text-gray-400">→</span>
+                </div>
+              ))}
+              {personaResults.length > 3 && (
+                <button
+                  onClick={() => router.push("/history/diagnosis")}
+                  className="w-full text-center text-small text-accent hover:underline"
+                >
+                  전체 보기 ({personaResults.length}개)
+                </button>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 생성 콘텐츠 히스토리 */}
+        {contentGenerations.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>내 콘텐츠</CardTitle>
+              <CardDescription>AI로 생성한 콘텐츠 히스토리</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {contentGenerations.slice(0, 3).map((content) => (
+                <div
+                  key={content.id}
+                  onClick={() => router.push(`/history/contents/${content.id}`)}
+                  className="p-3 bg-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-small font-medium text-accent uppercase">
+                      {content.platform || "콘텐츠"}
+                    </span>
+                    <span className="text-small text-gray-500">
+                      {new Date(content.created_at).toLocaleDateString("ko-KR")}
+                    </span>
+                  </div>
+                  <p className="text-body text-primary line-clamp-2">
+                    {content.content?.substring(0, 80) || content.prompt?.substring(0, 80) || "생성된 콘텐츠"}...
+                  </p>
+                </div>
+              ))}
+              {contentGenerations.length > 3 && (
+                <button
+                  onClick={() => router.push("/history/contents")}
+                  className="w-full text-center text-small text-accent hover:underline"
+                >
+                  전체 보기 ({contentGenerations.length}개)
+                </button>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* 페르소나 정보 */}
         {profile.persona_name && (

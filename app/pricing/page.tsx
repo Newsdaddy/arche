@@ -1,111 +1,101 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card, { CardContent } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 
-interface Plan {
+type ApiPlan = {
   id: string;
   name: string;
-  price: string;
-  priceValue: number;
-  period: string;
-  description: string;
-  features: string[];
-  limitations?: string[];
-  popular?: boolean;
-  cta: string;
-}
+  price: number;
+  duration_days: number;
+  daily_limit: number;
+};
 
-const PLANS: Plan[] = [
-  {
-    id: "free",
-    name: "무료",
-    price: "0원",
-    priceValue: 0,
-    period: "",
-    description: "콘텐츠 생성기를 체험해보세요",
-    features: [
-      "하루 3회 콘텐츠 생성",
-      "5개 플랫폼 지원",
-      "기본 페르소나 진단",
-      "생성 기록 저장",
-    ],
-    limitations: [
-      "일일 생성 횟수 제한",
-      "심층 진단 1회/일",
-    ],
-    cta: "무료로 시작하기",
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "29,000원",
-    priceValue: 29000,
-    period: "/월",
-    description: "전문 크리에이터를 위한 플랜",
-    features: [
-      "하루 100회 콘텐츠 생성",
-      "5개 플랫폼 지원",
-      "심층 페르소나 진단 무제한",
-      "생성 기록 무제한 저장",
-      "AI 훅 & CTA 추천",
-      "SEO/AEO 최적화 가이드",
-      "우선 고객 지원",
-    ],
-    popular: true,
-    cta: "Pro 시작하기",
-  },
+// 할인 정보 (3개월 한정)
+const DISCOUNT_INFO: Record<string, { originalPrice: number; label: string }> = {
+  pass_1m: { originalPrice: 29000, label: "런칭 특가" },
+};
+
+const FREE_FEATURES = [
+  "하루 3회 콘텐츠 생성",
+  "5개 플랫폼 지원",
+  "기본 페르소나 진단",
+  "생성 기록 저장",
 ];
+
+const FREE_LIMITS = ["일일 생성 횟수 제한", "심층 진단 1회/일"];
 
 export default function PricingPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentPlan, setCurrentPlan] = useState<string>("free");
+  const [currentTier, setCurrentTier] = useState<"free" | "paid">("free");
+  const [paidPlans, setPaidPlans] = useState<ApiPlan[]>([]);
+  const [plansError, setPlansError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function checkAuth() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+  const load = useCallback(async () => {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (user) {
-        setIsLoggedIn(true);
+    if (user) {
+      setIsLoggedIn(true);
 
-        // 현재 구독 확인
-        const { data: subscription } = await supabase
-          .from("subscriptions")
-          .select("plan, status")
-          .eq("user_id", user.id)
-          .eq("status", "active")
-          .single();
+      const { data: subscription } = await supabase
+        .from("subscriptions")
+        .select("plan, status, current_period_end")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-        if (subscription) {
-          setCurrentPlan(subscription.plan);
+      if (subscription?.status === "active" && subscription.plan === "pro") {
+        const end = subscription.current_period_end
+          ? new Date(subscription.current_period_end)
+          : null;
+        if (!end || end > new Date()) {
+          setCurrentTier("paid");
         }
       }
-      setIsLoading(false);
     }
 
-    checkAuth();
+    try {
+      const res = await fetch("/api/payments/plans");
+      const json = (await res.json()) as { plans?: ApiPlan[]; error?: string };
+      if (!res.ok) {
+        setPlansError(json.error ?? "플랜을 불러오지 못했습니다.");
+        setPaidPlans([]);
+      } else {
+        setPaidPlans(json.plans ?? []);
+        setPlansError(null);
+      }
+    } catch {
+      setPlansError("플랜을 불러오지 못했습니다.");
+      setPaidPlans([]);
+    }
+
+    setIsLoading(false);
   }, []);
 
-  const handleSelectPlan = async (planId: string) => {
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const handleSelectPlan = async (planId: string, isPaid: boolean) => {
     if (!isLoggedIn) {
       router.push("/login?redirect=/pricing");
       return;
     }
 
-    if (planId === "free") {
+    if (!isPaid) {
       router.push("/create");
       return;
     }
 
-    // Pro 플랜 결제 처리 (추후 Stripe/토스 연동)
-    alert("결제 시스템 준비 중입니다. 곧 오픈 예정!");
+    router.push(`/payment?planId=${encodeURIComponent(planId)}`);
   };
 
   if (isLoading) {
@@ -118,99 +108,159 @@ export default function PricingPage() {
 
   return (
     <main className="flex-1 flex flex-col px-6 py-8">
-      <div className="max-w-4xl w-full mx-auto space-y-8">
-        {/* 뒤로가기 */}
+      <div className="max-w-5xl w-full mx-auto space-y-8">
         <button
+          type="button"
           onClick={() => router.back()}
           className="text-gray-400 hover:text-primary transition-colors"
         >
           ← 뒤로
         </button>
 
-        {/* 헤더 */}
         <div className="text-center space-y-4">
           <h1 className="text-h1 text-primary">가격 플랜</h1>
           <p className="text-body text-gray-600 max-w-xl mx-auto">
-            나에게 맞는 플랜을 선택하세요.
-            <br />
-            Pro 플랜으로 무제한 콘텐츠 생성과 심층 분석을 이용해보세요.
+            무료로 시작하거나, 1회 결제로 기간권을 구매하세요. 자동 결제·정기
+            구독은 없습니다.
           </p>
         </div>
 
-        {/* 플랜 카드 */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {PLANS.map((plan) => (
-            <Card
-              key={plan.id}
-              className={`relative ${
-                plan.popular
-                  ? "border-accent border-2 shadow-lg"
-                  : "border-gray-200"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-accent text-white text-small font-medium px-3 py-1 rounded-full">
-                    인기
-                  </span>
-                </div>
-              )}
+        {plansError && (
+          <p className="text-center text-red-600 text-small">{plansError}</p>
+        )}
 
-              <CardContent className="space-y-6 pt-8">
-                {/* 플랜 정보 */}
-                <div className="text-center">
-                  <h2 className="text-h2 text-primary">{plan.name}</h2>
-                  <div className="mt-2">
-                    <span className="text-4xl font-bold text-primary">
-                      {plan.price}
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+          <Card className="relative border-gray-200">
+            <CardContent className="space-y-6 pt-8">
+              <div className="text-center">
+                <h2 className="text-h2 text-primary">무료</h2>
+                <div className="mt-2">
+                  <span className="text-4xl font-bold text-primary">0원</span>
+                </div>
+                <p className="text-small text-gray-500 mt-2">
+                  콘텐츠 생성기를 체험해보세요
+                </p>
+              </div>
+              <ul className="space-y-3">
+                {FREE_FEATURES.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2 text-body">
+                    <span className="text-accent mt-0.5">✓</span>
+                    {feature}
+                  </li>
+                ))}
+                {FREE_LIMITS.map((limitation, i) => (
+                  <li
+                    key={`lim-${i}`}
+                    className="flex items-start gap-2 text-body text-gray-400"
+                  >
+                    <span className="mt-0.5">-</span>
+                    {limitation}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                fullWidth
+                size="lg"
+                variant="outline"
+                onClick={() => handleSelectPlan("free", false)}
+                disabled={currentTier === "free"}
+              >
+                {currentTier === "free" ? "현재 플랜" : "무료로 시작하기"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {paidPlans.map((plan) => {
+            const popular = plan.id === "pass_3m";
+            const discount = DISCOUNT_INFO[plan.id];
+            const hasDiscount = discount && discount.originalPrice > plan.price;
+            return (
+              <Card
+                key={plan.id}
+                className={`relative ${
+                  hasDiscount
+                    ? "border-red-500 border-2 shadow-lg"
+                    : popular
+                    ? "border-accent border-2 shadow-lg"
+                    : "border-gray-200"
+                }`}
+              >
+                {hasDiscount && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-red-500 text-white text-small font-medium px-3 py-1 rounded-full">
+                      {discount.label}
                     </span>
-                    {plan.period && (
-                      <span className="text-gray-500">{plan.period}</span>
+                  </div>
+                )}
+                {popular && !hasDiscount && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-accent text-white text-small font-medium px-3 py-1 rounded-full">
+                      인기
+                    </span>
+                  </div>
+                )}
+
+                <CardContent className="space-y-6 pt-8">
+                  <div className="text-center">
+                    <h2 className="text-h2 text-primary">{plan.name}</h2>
+                    <div className="mt-2">
+                      {hasDiscount && (
+                        <span className="text-lg text-gray-400 line-through mr-2">
+                          {discount.originalPrice.toLocaleString("ko-KR")}원
+                        </span>
+                      )}
+                      <span className={`text-3xl font-bold ${hasDiscount ? "text-red-500" : "text-primary"}`}>
+                        {plan.price.toLocaleString("ko-KR")}원
+                      </span>
+                      {hasDiscount && (
+                        <span className="ml-2 text-small bg-red-100 text-red-600 px-2 py-0.5 rounded">
+                          {Math.round((1 - plan.price / discount.originalPrice) * 100)}% OFF
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-small text-gray-500 mt-2">
+                      {plan.duration_days}일 이용 · 하루 {plan.daily_limit}회 생성
+                    </p>
+                    {hasDiscount && (
+                      <p className="text-small text-red-500 mt-1 font-medium">
+                        ⏰ 3개월 한정 할인
+                      </p>
                     )}
                   </div>
-                  <p className="text-small text-gray-500 mt-2">
-                    {plan.description}
-                  </p>
-                </div>
-
-                {/* 기능 목록 */}
-                <ul className="space-y-3">
-                  {plan.features.map((feature, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-body"
-                    >
+                  <ul className="space-y-3 text-body text-left">
+                    <li className="flex items-start gap-2">
                       <span className="text-accent mt-0.5">✓</span>
-                      {feature}
+                      유료 기간 동안 하루 {plan.daily_limit}회 콘텐츠 생성
                     </li>
-                  ))}
-                  {plan.limitations?.map((limitation, i) => (
-                    <li
-                      key={`lim-${i}`}
-                      className="flex items-start gap-2 text-body text-gray-400"
-                    >
-                      <span className="mt-0.5">-</span>
-                      {limitation}
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent mt-0.5">✓</span>
+                      심층 진단 일 10회까지 (Pro 동일 정책)
                     </li>
-                  ))}
-                </ul>
-
-                {/* CTA */}
-                <Button
-                  fullWidth
-                  size="lg"
-                  variant={plan.popular ? "primary" : "outline"}
-                  onClick={() => handleSelectPlan(plan.id)}
-                  disabled={currentPlan === plan.id}
-                >
-                  {currentPlan === plan.id ? "현재 플랜" : plan.cta}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent mt-0.5">✓</span>
+                      5개 플랫폼 · 생성 기록 저장
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent mt-0.5">✓</span>
+                      자동 갱신 없음 (1회 결제)
+                    </li>
+                  </ul>
+                  <Button
+                    fullWidth
+                    size="lg"
+                    variant={popular ? "primary" : "outline"}
+                    onClick={() => handleSelectPlan(plan.id, true)}
+                  >
+                    {currentTier === "paid"
+                      ? "기간 연장·추가 구매"
+                      : "구매하기"}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
-        {/* FAQ */}
         <div className="space-y-6 mt-12">
           <h2 className="text-h2 text-primary text-center">자주 묻는 질문</h2>
 
@@ -218,11 +268,11 @@ export default function PricingPage() {
             <Card>
               <CardContent>
                 <h3 className="font-semibold text-primary mb-2">
-                  무료 플랜으로 충분할까요?
+                  정기 구독인가요?
                 </h3>
                 <p className="text-body text-gray-600">
-                  하루 3회 생성으로 콘텐츠 생성기를 체험해보기에 충분합니다.
-                  더 많은 콘텐츠가 필요하거나 심층 진단을 원하시면 Pro 플랜을 추천드립니다.
+                  아니요. 선택한 금액을 한 번만 결제하면 안내된 기간 동안 이용할 수
+                  있는 기간권입니다. 만료 후에는 다시 구매하시면 됩니다.
                 </p>
               </CardContent>
             </Card>
@@ -230,11 +280,11 @@ export default function PricingPage() {
             <Card>
               <CardContent>
                 <h3 className="font-semibold text-primary mb-2">
-                  언제든 취소할 수 있나요?
+                  무료 플랜으로 충분할까요?
                 </h3>
                 <p className="text-body text-gray-600">
-                  네, 언제든 취소 가능합니다. 취소 시 현재 결제 기간 종료까지
-                  Pro 기능을 계속 이용할 수 있습니다.
+                  하루 3회 생성으로 체험하기에 충분합니다. 더 많은 생성이 필요하면
+                  기간권을 선택해 주세요.
                 </p>
               </CardContent>
             </Card>
@@ -245,23 +295,22 @@ export default function PricingPage() {
                   컨설팅과 플랜의 차이는?
                 </h3>
                 <p className="text-body text-gray-600">
-                  플랜은 AI 콘텐츠 생성 도구 이용권입니다.
-                  8주 컨설팅은 전문가와 1:1로 체계적인 콘텐츠 전략을 배우는 과정입니다.
+                  플랜은 AI 콘텐츠 생성 도구 이용권입니다. 8주 컨설팅은 전문가와
+                  1:1로 전략을 다루는 별도 과정입니다.
                 </p>
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* 컨설팅 유도 */}
         <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
           <CardContent className="text-center space-y-4 py-8">
             <h2 className="text-h2 text-primary">
               전문가와 함께 성장하고 싶으신가요?
             </h2>
             <p className="text-body text-gray-600 max-w-lg mx-auto">
-              8주 커리큘럼으로 자기분석부터 SEO/AEO까지
-              체계적인 콘텐츠 전략을 배워보세요.
+              8주 커리큘럼으로 자기분석부터 SEO/AEO까지 체계적인 콘텐츠 전략을
+              배워보세요.
             </p>
             <Link href="/consulting">
               <Button size="lg">8주 컨설팅 알아보기 →</Button>
