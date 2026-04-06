@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card, { CardContent } from "@/components/ui/Card";
-import { CURRICULUM, CATEGORY_INFO, CONSULTING_PLANS } from "@/lib/consulting/curriculum";
+import { CURRICULUM, CATEGORY_INFO } from "@/lib/consulting/curriculum";
 
 type Category = keyof typeof CATEGORY_INFO;
 
@@ -183,70 +183,6 @@ export default function CurriculumPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* 컨설팅 플랜 */}
-        <div className="space-y-6 pt-8">
-          <div className="text-center">
-            <h2 className="text-h1 text-primary">컨설팅 플랜</h2>
-            <p className="text-body text-gray-600 mt-2">
-              나에게 맞는 플랜을 선택하세요
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {CONSULTING_PLANS.map((plan) => (
-              <Card
-                key={plan.id}
-                className={`relative ${
-                  plan.popular ? "border-accent border-2 shadow-lg" : ""
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-accent text-white text-small font-medium px-3 py-1 rounded-full">
-                      추천
-                    </span>
-                  </div>
-                )}
-
-                <CardContent className="space-y-4 pt-6">
-                  <div className="text-center">
-                    <h3 className="text-h2 text-primary">{plan.name}</h3>
-                    <div className="mt-2">
-                      <span className="text-2xl font-bold text-primary">
-                        {plan.price}
-                      </span>
-                    </div>
-                    <p className="text-small text-gray-500 mt-1">
-                      {plan.description}
-                    </p>
-                  </div>
-
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, i) => (
-                      <li
-                        key={i}
-                        className="flex items-start gap-2 text-small"
-                      >
-                        <span className="text-accent mt-0.5">✓</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link href="/consulting#apply">
-                    <Button
-                      fullWidth
-                      variant={plan.popular ? "primary" : "outline"}
-                    >
-                      상담 신청하기
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
 
         {/* CTA */}
         <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">

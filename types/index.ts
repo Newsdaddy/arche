@@ -145,7 +145,7 @@ export interface CurriculumWeek {
   week: number;
   title: string;
   subtitle: string;
-  category: "self-analysis" | "market-analysis" | "persona-design" | "content-creation";
+  category: "self-analysis" | "content-creation" | "persona-design" | "optimization";
   topics: string[];
   outcomes: string[];
   exercises: number;
