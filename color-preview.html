@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>블랙 앤 화이트 테마 색상 비교</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 40px; background: #f5f5f5; }
+    h1 { text-align: center; margin-bottom: 40px; color: #333; }
+    h2 { margin: 40px 0 20px; color: #555; font-size: 18px; }
+
+    .section { margin-bottom: 60px; }
+
+    /* 배경색 비교 */
+    .bg-compare {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .bg-card {
+      border-radius: 16px;
+      padding: 32px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .bg-card h3 { font-size: 14px; opacity: 0.7; margin-bottom: 8px; }
+    .bg-card .color-code { font-size: 24px; font-weight: 700; margin-bottom: 16px; }
+    .bg-card .sample-text { font-size: 16px; line-height: 1.6; }
+    .bg-card .sub-text { font-size: 14px; opacity: 0.6; margin-top: 8px; }
+    .bg-card.current { border: 3px solid #22c55e; }
+
+    /* 색상 스와치 */
+    .swatches {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .swatch.current { border: 3px solid #22c55e; }
+    .swatch span { margin-top: 4px; font-size: 10px; opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <h1>블랙 앤 화이트 테마 색상 비교</h1>
+
+  <!-- 현재 적용된 색상 -->
+  <div class="section">
+    <h2>현재 적용된 테마 (Spline 배경과 통일)</h2>
+    <div class="bg-compare">
+      <div class="bg-card current" style="background: #000000; color: #fff;">
+        <div>
+          <h3>현재 메인 배경 (순수 검정)</h3>
+          <div class="color-code">#000000</div>
+        </div>
+        <div>
+          <div class="sample-text">나의 소셜 페르소나는?</div>
+          <div class="sub-text">당신의 소셜미디어 정체성을 발견하세요.</div>
+        </div>
+      </div>
+
+      <div class="bg-card" style="background: #1a1a1a; color: #fff;">
+        <div>
+          <h3>카드/lighter 배경</h3>
+          <div class="color-code">#1a1a1a</div>
+        </div>
+        <div>
+          <div class="sample-text">나의 소셜 페르소나는?</div>
+          <div class="sub-text">당신의 소셜미디어 정체성을 발견하세요.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 다른 옵션들 -->
+  <div class="section">
+    <h2>다른 배경색 옵션</h2>
+    <div class="bg-compare">
+      <div class="bg-card" style="background: #0a0a0a; color: #fff;">
+        <div>
+          <h3>옵션 - 거의 순수 검정</h3>
+          <div class="color-code">#0a0a0a</div>
+        </div>
+        <div>
+          <div class="sample-text">나의 소셜 페르소나는?</div>
+          <div class="sub-text">당신의 소셜미디어 정체성을 발견하세요.</div>
+        </div>
+      </div>
+
+      <div class="bg-card" style="background: #111111; color: #fff;">
+        <div>
+          <h3>옵션 - 약간 밝은 검정</h3>
+          <div class="color-code">#111111</div>
+        </div>
+        <div>
+          <div class="sample-text">나의 소셜 페르소나는?</div>
+          <div class="sub-text">당신의 소셜미디어 정체성을 발견하세요.</div>
+        </div>
+      </div>
+
+      <div class="bg-card" style="background: #1f1f1f; color: #fff;">
+        <div>
+          <h3>옵션 - 이전 선택 (중간)</h3>
+          <div class="color-code">#1f1f1f</div>
+        </div>
+        <div>
+          <div class="sample-text">나의 소셜 페르소나는?</div>
+          <div class="sub-text">당신의 소셜미디어 정체성을 발견하세요.</div>
+        </div>
+      </div>
+
+      <div class="bg-card" style="background: #222222; color: #fff;">
+        <div>
+          <h3>옵션 - 밝은 검정</h3>
+          <div class="color-code">#222222</div>
+        </div>
+        <div>
+          <div class="sample-text">나의 소셜 페르소나는?</div>
+          <div class="sub-text">당신의 소셜미디어 정체성을 발견하세요.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 전체 팔레트 -->
+  <div class="section">
+    <h2>전체 색상 팔레트</h2>
+    <div style="background: #000000; padding: 40px; border-radius: 16px;">
+      <p style="color: #888; margin-bottom: 20px; font-size: 14px;">배경 계층 (어두운 순)</p>
+      <div class="swatches" style="margin-bottom: 24px;">
+        <div class="swatch current" style="background: #000000; color: #fff;">#000000<span>현재 메인</span></div>
+        <div class="swatch" style="background: #0a0a0a; color: #fff;">#0a0a0a</div>
+        <div class="swatch" style="background: #111111; color: #fff;">#111111</div>
+        <div class="swatch current" style="background: #1a1a1a; color: #fff;">#1a1a1a<span>현재 카드</span></div>
+        <div class="swatch" style="background: #1f1f1f; color: #fff;">#1f1f1f</div>
+        <div class="swatch" style="background: #222222; color: #fff;">#222222</div>
+        <div class="swatch" style="background: #2a2a2a; color: #fff;">#2a2a2a</div>
+      </div>
+
+      <p style="color: #888; margin-bottom: 20px; font-size: 14px;">텍스트 계층</p>
+      <div class="swatches">
+        <div class="swatch" style="background: #ffffff; color: #000;">#ffffff<span>메인 텍스트</span></div>
+        <div class="swatch" style="background: #e5e5e5; color: #000;">#e5e5e5</div>
+        <div class="swatch" style="background: #a3a3a3; color: #000;">#a3a3a3<span>서브 텍스트</span></div>
+        <div class="swatch" style="background: #737373; color: #fff;">#737373</div>
+        <div class="swatch" style="background: #525252; color: #fff;">#525252</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

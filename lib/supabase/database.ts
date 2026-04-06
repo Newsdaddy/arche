@@ -329,28 +329,19 @@ export async function createConsultingRequest(data: {
   return result;
 }
 
-// ==================== Showcases (회원 성과) ====================
+// ==================== Showcases (회원 성과 랭킹) ====================
 
 export async function getShowcases(options?: {
   limit?: number;
-  featured?: boolean;
 }): Promise<ShowcaseWithProfile[]> {
   const supabase = createClient();
 
   let query = supabase
     .from("member_showcases")
-    .select(
-      `
-      *,
-      profiles:user_id (nickname, avatar_url)
-    `
-    )
+    .select("*")
     .eq("is_approved", true)
-    .order("created_at", { ascending: false });
-
-  if (options?.featured) {
-    query = query.eq("is_featured", true);
-  }
+    .order("likes", { ascending: false })
+    .order("comments", { ascending: false });
 
   if (options?.limit) {
     query = query.limit(options.limit);
@@ -402,12 +393,8 @@ export async function createShowcase(input: CreateShowcaseInput) {
       user_id: user.id,
       platform: input.platform,
       post_url: input.post_url,
-      likes_before: input.likes_before || 0,
-      likes_after: input.likes_after || 0,
-      comments_before: input.comments_before || 0,
-      comments_after: input.comments_after || 0,
-      followers_before: input.followers_before || 0,
-      followers_after: input.followers_after || 0,
+      likes: input.likes || 0,
+      comments: input.comments || 0,
       comment: input.comment,
     })
     .select()
@@ -436,22 +423,4 @@ export async function deleteShowcase(showcaseId: string) {
     .eq("user_id", user.id);
 
   return !error;
-}
-
-export async function checkHasCheer(showcaseId: string) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return false;
-
-  const { data } = await supabase
-    .from("showcase_cheers")
-    .select("id")
-    .eq("showcase_id", showcaseId)
-    .eq("user_id", user.id)
-    .single();
-
-  return !!data;
 }

@@ -1,19 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ShowcaseCarousel from "./ShowcaseCarousel";
+import ShowcaseLeaderboard from "./ShowcaseLeaderboard";
 import { ShowcaseWithProfile } from "@/types/showcase";
 
 export default function ShowcaseSection() {
   const [showcases, setShowcases] = useState<ShowcaseWithProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     async function fetchShowcases() {
       try {
-        const res = await fetch("/api/showcases?limit=6");
+        const res = await fetch("/api/showcases?limit=10");
         const data = await res.json();
         setShowcases(data.showcases || []);
+        setTotal(data.total || 0);
       } catch (error) {
         console.error("쇼케이스 로드 실패:", error);
       } finally {
@@ -28,25 +30,31 @@ export default function ShowcaseSection() {
   }
 
   if (showcases.length === 0) {
-    return null; // 데이터 없으면 섹션 숨김
+    return null;
   }
 
   return (
-    <section className="section-sm bg-dark">
+    <section className="section-sm" style={{ backgroundColor: "#0a0a0a" }}>
       <div className="container-wide">
-        <div className="text-center space-y-4 mb-10">
-          <p className="text-caption text-primary-400 uppercase tracking-widest">
-            COMMUNITY
-          </p>
-          <h2 className="text-h1 text-white">
-            회원들의 <span className="text-gradient">성장 스토리</span>
-          </h2>
-          <p className="text-body-lg text-primary-400">
-            함께 성장하는 Arche 커뮤니티의 실제 성과를 확인하세요
-          </p>
-        </div>
+        <div className="max-w-3xl mx-auto">
+          {/* 헤더 */}
+          <div className="mb-8">
+            <p className="text-accent text-sm font-medium tracking-wider mb-2">
+              COMMUNITY RANKING
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              회원들의 콘텐츠 랭킹
+            </h2>
+            <p className="text-primary-400 mt-2">
+              총 {total}개의 콘텐츠가 경쟁 중
+            </p>
+          </div>
 
-        <ShowcaseCarousel showcases={showcases} />
+          {/* 리더보드 */}
+          <div className="bg-dark-lighter/50 rounded-2xl border border-white/10 p-4">
+            <ShowcaseLeaderboard showcases={showcases} />
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -54,20 +62,24 @@ export default function ShowcaseSection() {
 
 function ShowcaseSkeleton() {
   return (
-    <section className="section-sm bg-dark">
+    <section className="section-sm" style={{ backgroundColor: "#0a0a0a" }}>
       <div className="container-wide">
-        <div className="text-center space-y-4 mb-10">
-          <div className="h-4 w-24 bg-dark-lighter rounded mx-auto animate-pulse" />
-          <div className="h-10 w-64 bg-dark-lighter rounded mx-auto animate-pulse" />
-          <div className="h-6 w-80 bg-dark-lighter rounded mx-auto animate-pulse" />
-        </div>
-        <div className="flex gap-6 overflow-hidden">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="w-80 h-[500px] bg-dark-lighter rounded-2xl animate-pulse flex-shrink-0"
-            />
-          ))}
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-8">
+            <div className="h-4 w-32 bg-dark-lighter rounded animate-pulse mb-2" />
+            <div className="h-10 w-64 bg-dark-lighter rounded animate-pulse" />
+          </div>
+          <div className="bg-dark-lighter/50 rounded-2xl border border-white/10 p-4 space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center gap-4 p-4">
+                <div className="w-8 h-8 bg-dark-lighter rounded animate-pulse" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 w-3/4 bg-dark-lighter rounded animate-pulse" />
+                  <div className="h-4 w-1/2 bg-dark-lighter rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

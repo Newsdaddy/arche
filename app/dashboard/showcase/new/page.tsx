@@ -21,8 +21,8 @@ export default function NewShowcasePage() {
       throw new Error(result.error);
     }
 
-    // 성공시 대시보드로 이동
-    router.push("/dashboard?showcase=success");
+    // 랭킹 정보 반환
+    return result.ranking;
   };
 
   const handleCancel = () => {
@@ -33,9 +33,9 @@ export default function NewShowcasePage() {
     <div className="flex-1 bg-dark min-h-screen">
       <div className="container-narrow section-sm">
         <div className="mb-8">
-          <h1 className="text-h1 text-white mb-2">내 성과 공유하기</h1>
+          <h1 className="text-h1 text-white mb-2">내 콘텐츠 등록</h1>
           <p className="text-body text-primary-400">
-            자랑하고 싶은 콘텐츠의 성과를 공유하고, 커뮤니티의 응원을 받아보세요!
+            콘텐츠 링크와 실적을 입력하면 커뮤니티 랭킹에 등록됩니다!
           </p>
         </div>
 
@@ -48,12 +48,9 @@ export default function NewShowcasePage() {
         <div className="mt-6 p-4 bg-dark-lighter rounded-xl border border-white/10">
           <p className="text-small text-primary-500 mb-2">💡 팁</p>
           <ul className="text-small text-primary-400 space-y-1">
-            <li>• 성장 수치는 정확하지 않아도 괜찮아요. 대략적인 수치도 OK!</li>
-            <li>
-              • 성과가 아직 없더라도, 첫 게시물을 공유해보세요. 응원을 받을 수
-              있어요.
-            </li>
-            <li>• 공유한 콘텐츠는 랜딩 페이지에서 다른 회원들이 볼 수 있어요.</li>
+            <li>• 게시물 링크를 입력하면 제목이 자동으로 가져와집니다</li>
+            <li>• 좋아요와 댓글 수를 정확히 입력해주세요</li>
+            <li>• 전체 회원 중 몇 등인지 바로 확인할 수 있어요!</li>
           </ul>
         </div>
       </div>
