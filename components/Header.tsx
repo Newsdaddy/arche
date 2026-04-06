@@ -61,7 +61,7 @@ export default function Header() {
             href="/"
             className="font-bold text-2xl text-white"
           >
-            <span className="text-primary-400">A</span>rche
+            <span className="text-accent">A</span>rche
           </Link>
 
           {/* 데스크톱 네비게이션 */}

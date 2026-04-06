@@ -11,7 +11,7 @@ export default function Footer() {
               href="/"
               className="text-2xl font-bold text-white"
             >
-              <span className="text-primary-400">A</span>rche
+              <span className="text-accent">A</span>rche
             </Link>
             <p className="text-body text-primary-500 mt-3 max-w-sm">
               정밀한 진단과 분석으로 나만의 소셜미디어 콘셉트를 찾고,
