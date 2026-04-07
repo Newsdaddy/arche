@@ -335,7 +335,7 @@ export default function CreatePage() {
                         value={formData[field.id] || ""}
                         onChange={(e) => handleInputChange(field.id, e.target.value)}
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body resize-none bg-white text-gray-900"
                         rows={3}
                       />
                     ) : (
@@ -344,7 +344,7 @@ export default function CreatePage() {
                         value={formData[field.id] || ""}
                         onChange={(e) => handleInputChange(field.id, e.target.value)}
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none transition-colors text-body bg-white text-gray-900"
                       />
                     )}
                   </div>
