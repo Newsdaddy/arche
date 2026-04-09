@@ -264,24 +264,83 @@ const PLATFORM_PROMPTS: Record<string, string> = {
 - 주요 팩트/핵심 요약 정리`,
 };
 
-// 페르소나 컨텍스트 생성
+// 페르소나 컨텍스트 생성 - 진단 결과를 콘텐츠에 풍부하게 반영
 function buildPersonaContext(persona: Record<string, unknown> | null): string {
   if (!persona) return "";
 
+  // 배열 필드 안전하게 추출
   const strengths = Array.isArray(persona.strengths)
     ? persona.strengths.join(", ")
     : "";
+  const weaknesses = Array.isArray(persona.weaknesses)
+    ? persona.weaknesses.join(", ")
+    : "";
+  const opportunities = Array.isArray(persona.opportunities)
+    ? persona.opportunities.join(", ")
+    : "";
+  const skills = Array.isArray(persona.skills)
+    ? persona.skills.join(", ")
+    : "";
+
+  // ICP (이상적 고객 프로필) 추출
+  const icp = persona.icp as Record<string, unknown> | null;
+  const icpSummary = icp?.summary || "";
+  const icpPainPoints = Array.isArray(icp?.painPoints)
+    ? (icp.painPoints as string[]).join(", ")
+    : "";
+  const icpDesires = Array.isArray(icp?.desires)
+    ? (icp.desires as string[]).join(", ")
+    : "";
+
+  // 콘텐츠 필러 추출
+  const contentPillars = Array.isArray(persona.content_pillars)
+    ? (persona.content_pillars as Array<{ name?: string; description?: string }>)
+        .map((p) => `${p.name}: ${p.description}`)
+        .join("\n   - ")
+    : "";
+
+  // SWOT Mix 전략 추출
+  const swotMix = persona.swot_mix as Record<string, string> | null;
+  const swotMixStr = swotMix
+    ? `
+   - 공격 전략(SO): ${swotMix.so || ""}
+   - 전환 전략(WO): ${swotMix.wo || ""}
+   - 방어 전략(ST): ${swotMix.st || ""}`
+    : "";
 
   return `
-[크리에이터 페르소나 정보]
-유형: ${persona.archetype_name || ""}
-설명: ${persona.archetype_description || ""}
-강점: ${strengths}
-콘텐츠 스타일: ${persona.content_style || ""}
-고유 포지션: ${persona.unique_position || ""}
+[크리에이터 페르소나 - 반드시 이 정보를 콘텐츠에 반영하세요]
 
-이 크리에이터의 톤앤매너와 스타일에 맞게 콘텐츠를 작성하세요.
-강점을 살리고, 고유한 관점이 드러나도록 해주세요.
+1. 아키타입
+   - 유형: ${persona.archetype_name || ""}
+   - 설명: ${persona.archetype_description || ""}
+   - 콘텐츠 스타일: ${persona.content_style || ""}
+
+2. SWOT 분석
+   - 강점: ${strengths}
+   - 약점: ${weaknesses}
+   - 기회: ${opportunities}
+
+3. 전략 방향${swotMixStr}
+
+4. 핵심 역량
+   - 보유 스킬: ${skills}
+   - 고유 포지션: ${persona.unique_position || ""}
+
+5. 타겟 독자 (ICP)
+   - 요약: ${icpSummary}
+   - 그들의 고민: ${icpPainPoints}
+   - 그들의 욕구: ${icpDesires}
+
+6. 콘텐츠 주제 (Content Pillars)
+   - ${contentPillars || "없음"}
+
+[페르소나 적용 규칙]
+- 이 크리에이터의 "강점"을 콘텐츠 전면에 내세우세요
+- "콘텐츠 스타일"에 맞는 톤앤매너로 작성하세요
+- "타겟 독자의 고민"에 공감하고 "욕구"를 자극하세요
+- "고유 포지션"이 드러나는 관점으로 서술하세요
+- "전략 방향"에 맞게 메시지를 구성하세요
 `;
 }
 

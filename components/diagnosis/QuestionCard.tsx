@@ -67,7 +67,7 @@ export default function QuestionCard({
                 className={`w-full px-4 py-3 rounded-lg border text-left transition-all ${
                   currentAnswer === option.value
                     ? "border-accent bg-accent/5 text-accent"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-900"
                 }`}
               >
                 {option.label}
@@ -93,7 +93,7 @@ export default function QuestionCard({
                   className={`w-full px-4 py-3 rounded-lg border text-left transition-all flex items-center gap-3 ${
                     isSelected
                       ? "border-accent bg-accent/5 text-accent"
-                      : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                      : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-900"
                   }`}
                 >
                   <span
