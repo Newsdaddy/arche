@@ -42,7 +42,7 @@ export default function QuestionCard({
             value={(currentAnswer as string) || ""}
             onChange={handleTextChange}
             placeholder={question.placeholder}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
           />
         );
 
@@ -53,7 +53,7 @@ export default function QuestionCard({
             onChange={handleTextChange}
             placeholder={question.placeholder}
             rows={4}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all resize-none"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all resize-none text-gray-900 placeholder:text-gray-400"
           />
         );
 
