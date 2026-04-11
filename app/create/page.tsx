@@ -449,8 +449,8 @@ function CreatePageContent() {
                       }`}
                     >
                       <span className="text-2xl">{type.emoji}</span>
-                      <p className="font-semibold mt-2 text-gray-900">{type.name}</p>
-                      <p className="text-small text-gray-500 mt-1">{type.description}</p>
+                      <p className="font-semibold mt-2 text-white">{type.name}</p>
+                      <p className="text-small text-gray-400 mt-1">{type.description}</p>
                     </button>
                   ))}
                 </div>
