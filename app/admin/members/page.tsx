@@ -85,7 +85,15 @@ export default function MembersPage() {
           <div className="text-center py-12 text-gray-400">로딩 중...</div>
         ) : (
           <>
-            <MemberTable members={members} showCustomerType />
+            <MemberTable
+                members={members}
+                showCustomerType
+                onMemberUpdate={(updatedMember) => {
+                  setMembers(members.map(m =>
+                    m.id === updatedMember.id ? updatedMember : m
+                  ));
+                }}
+              />
 
             {/* 페이지네이션 */}
             {totalPages > 1 && (

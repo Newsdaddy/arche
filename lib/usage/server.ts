@@ -28,13 +28,32 @@ export async function getEffectiveUsageLimits(userId: string): Promise<{
   plan: "free" | "pro";
 }> {
   const supabase = await createClient();
+  const now = new Date();
+
+  // 1. 컨설팅 고객 체크 (3개월 무료 Pro 혜택)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("customer_type, consulting_end_date")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.customer_type === "consulting") {
+    // 컨설팅 기간 내면 Pro 혜택
+    if (!profile.consulting_end_date || new Date(profile.consulting_end_date) > now) {
+      return {
+        content_generation: USAGE_LIMITS.pro.content_generation,
+        diagnosis: USAGE_LIMITS.pro.diagnosis,
+        plan: "pro",
+      };
+    }
+  }
+
+  // 2. 구독 정보 체크
   const { data } = await supabase
     .from("subscriptions")
     .select("plan, status, current_period_end, daily_limit")
     .eq("user_id", userId)
     .maybeSingle();
-
-  const now = new Date();
 
   if (!data || data.status !== "active") {
     return {

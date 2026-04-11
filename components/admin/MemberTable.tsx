@@ -1,13 +1,44 @@
 "use client";
 
+import { useState } from "react";
 import { AdminMember } from "@/types/admin";
 
 interface MemberTableProps {
   members: AdminMember[];
   showCustomerType?: boolean;
+  onMemberUpdate?: (member: AdminMember) => void;
 }
 
-export default function MemberTable({ members, showCustomerType = false }: MemberTableProps) {
+export default function MemberTable({ members, showCustomerType = false, onMemberUpdate }: MemberTableProps) {
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const handleSetCustomerType = async (memberId: string, action: string) => {
+    setLoadingId(memberId);
+    try {
+      const res = await fetch(`/api/admin/members/${memberId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.member) {
+        if (data.message) {
+          alert(data.message);
+        }
+        onMemberUpdate?.({
+          ...members.find(m => m.id === memberId)!,
+          customerType: data.member.customer_type,
+        });
+      } else {
+        alert(data.error || "처리 중 오류가 발생했습니다");
+      }
+    } catch {
+      alert("처리 중 오류가 발생했습니다");
+    }
+    setLoadingId(null);
+  };
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("ko-KR", {
       year: "numeric",
@@ -58,6 +89,9 @@ export default function MemberTable({ members, showCustomerType = false }: Membe
             <th className="text-center py-3 px-4 font-medium text-gray-600">상태</th>
             {showCustomerType && (
               <th className="text-center py-3 px-4 font-medium text-gray-600">유형</th>
+            )}
+            {showCustomerType && (
+              <th className="text-center py-3 px-4 font-medium text-gray-600">액션</th>
             )}
           </tr>
         </thead>
@@ -117,6 +151,30 @@ export default function MemberTable({ members, showCustomerType = false }: Membe
                       ? "유료"
                       : "무료"}
                   </span>
+                </td>
+              )}
+              {showCustomerType && (
+                <td className="py-3 px-4 text-center">
+                  <div className="flex justify-center gap-1">
+                    {member.customerType !== "consulting" && (
+                      <button
+                        onClick={() => handleSetCustomerType(member.id, "set_consulting")}
+                        disabled={loadingId === member.id}
+                        className="px-2 py-1 text-xs bg-purple-100 text-purple-600 rounded hover:bg-purple-200 disabled:opacity-50"
+                      >
+                        {loadingId === member.id ? "..." : "컨설팅"}
+                      </button>
+                    )}
+                    {member.customerType === "consulting" && (
+                      <button
+                        onClick={() => handleSetCustomerType(member.id, "set_free")}
+                        disabled={loadingId === member.id}
+                        className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50"
+                      >
+                        {loadingId === member.id ? "..." : "해제"}
+                      </button>
+                    )}
+                  </div>
                 </td>
               )}
             </tr>

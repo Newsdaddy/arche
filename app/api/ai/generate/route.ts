@@ -251,6 +251,18 @@ const CONTENT_TYPE_PROMPTS: Record<string, string> = {
 - 각 추천 항목의 특징과 장점
 - 왜 이것을 추천하는지 이유
 - 나의 실제 사용 경험 포함`,
+
+  reel_script: `
+[글 유형: 릴스/영상 내레이션 대본]
+- 15초~60초 영상용 내레이션 스크립트
+- 구조: 훅(첫 3초) → 본론(핵심 메시지) → CTA(마무리)
+- 첫 3초에 시청자의 관심을 사로잡는 강력한 훅 필수
+- 한 문장씩 끊어서 읽기 쉽게 구성
+- [훅], [본론], [CTA] 섹션으로 구분하여 작성
+- 각 문장 옆에 (N초) 형태로 대략적 타이밍 표시
+- 말하듯 자연스러운 구어체 사용
+- 시청자에게 직접 말하는 듯한 2인칭 사용 ("여러분", "당신")
+- 마지막에 팔로우/좋아요/저장 등 행동 유도`,
 };
 
 const PLATFORM_PROMPTS: Record<string, string> = {
@@ -474,7 +486,7 @@ export async function POST(request: Request) {
       persona = await getActivePersonaResult(userId);
     }
 
-    const { platform, topic, tone, keywords, target, additionalInfo, threadMode, threadCount, contentType } = await request.json();
+    const { platform, topic, tone, keywords, target, additionalInfo, threadMode, threadCount, contentType, language } = await request.json();
 
     if (!topic) {
       return NextResponse.json(
@@ -532,9 +544,13 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ""}
 - 중간에 솔루션과 구체적 단계 제시
 - 마지막에 행동 촉구 + 성공한 미래 비전
 - 바로 올릴 수 있는 완성된 콘텐츠
-- 한국어로 작성
 - 이모지/이모티콘 절대 사용 금지 (글자만 작성)
-- 한자(漢字) 절대 사용 금지. 순한글로만 작성 (예: 周圍→주위, 方法→방법, 問題→문제)`;
+${language === "en"
+  ? `- Write entirely in English
+- Use natural, conversational American English
+- Adapt Korean cultural references to be universally relatable`
+  : `- 한국어로 작성
+- 한자(漢字) 절대 사용 금지. 순한글로만 작성 (예: 周圍→주위, 方法→방법, 問題→문제)`}`;
 
     const completion = await groq.chat.completions.create({
       messages: [

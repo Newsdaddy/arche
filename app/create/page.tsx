@@ -131,11 +131,19 @@ const CONTENT_TYPES: ContentType[] = [
     description: "도구, 책, 콘텐츠 추천",
     details: "예: \"생산성 200% 높여준 앱 5개\", \"인생을 바꾼 책 추천\" 형식으로 직접 써본 것들 큐레이션"
   },
+  // E. 영상 대본
+  {
+    id: "reel_script",
+    name: "릴스/영상 대본",
+    emoji: "🎬",
+    description: "영상 내레이션 스크립트",
+    details: "예: 15초~60초 릴스용 내레이션 대본. 훅→본론→CTA 구조로 시청자의 관심을 끌고 행동을 유도하는 영상 스크립트"
+  },
 ];
 
 // 플랫폼별 적합한 콘텐츠 유형 필터링
 const PLATFORM_CONTENT_TYPES: Record<string, string[]> = {
-  instagram: ["listicle", "growth_story", "daily_insight", "paradox", "empathy", "experiment"],
+  instagram: ["listicle", "growth_story", "daily_insight", "paradox", "empathy", "experiment", "reel_script"],
   youtube: ["listicle", "how_to", "comparison", "growth_story"],
   blog: ["listicle", "how_to", "comparison", "growth_story", "failure_story", "deep_analysis", "empathy", "recommendation"],
   thread: ["listicle", "daily_insight", "paradox", "empathy", "failure_story"],
@@ -219,6 +227,9 @@ function CreatePageContent() {
   // 콘텐츠 유형 선택
   const [contentType, setContentType] = useState<string | null>(null);
 
+  // 언어 선택
+  const [language, setLanguage] = useState<"ko" | "en">("ko");
+
   // 페르소나 정보
   const [personaData, setPersonaData] = useState<PersonaSummary | null>(null);
   const [isPersonaLoading, setIsPersonaLoading] = useState(false);
@@ -284,6 +295,8 @@ function CreatePageContent() {
     setThreadCount(5);
     // 콘텐츠 유형 초기화
     setContentType(null);
+    // 언어 초기화
+    setLanguage("ko");
   };
 
   // 선택된 플랫폼에 맞는 콘텐츠 유형 필터링
@@ -319,6 +332,8 @@ function CreatePageContent() {
           target: formData.target || formData.audience || formData.reader,
           // 콘텐츠 유형
           contentType: contentType || undefined,
+          // 언어 선택
+          language,
           // 스레드 분할 옵션
           ...(selectedPlatform.id === "thread" && {
             threadMode,
@@ -652,6 +667,39 @@ function CreatePageContent() {
                 </CardContent>
               </Card>
             )}
+
+            {/* 언어 선택 */}
+            <Card>
+              <CardContent className="space-y-4">
+                <label className="text-body font-medium">작성 언어</label>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setLanguage("ko")}
+                    className={`flex-1 px-4 py-3 rounded-xl border-2 text-center transition-all ${
+                      language === "ko"
+                        ? "border-accent bg-accent/10 text-white"
+                        : "border-gray-200 text-gray-400 hover:border-accent/50"
+                    }`}
+                  >
+                    <span className="text-lg">🇰🇷</span>
+                    <p className="font-medium mt-1">한국어</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLanguage("en")}
+                    className={`flex-1 px-4 py-3 rounded-xl border-2 text-center transition-all ${
+                      language === "en"
+                        ? "border-accent bg-accent/10 text-white"
+                        : "border-gray-200 text-gray-400 hover:border-accent/50"
+                    }`}
+                  >
+                    <span className="text-lg">🇺🇸</span>
+                    <p className="font-medium mt-1">English</p>
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
 
             <Button
               fullWidth

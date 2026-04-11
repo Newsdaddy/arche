@@ -141,7 +141,7 @@ export default function PricingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
           <Card className="relative border-gray-200 flex flex-col">
             <CardContent className="space-y-6 pt-8 flex flex-col flex-1">
-              <div className="text-center">
+              <div className="text-center min-h-[130px]">
                 <h2 className="text-h2 text-primary">무료</h2>
                 <div className="mt-2">
                   <span className="text-4xl font-bold text-primary">₩0</span>
@@ -214,7 +214,7 @@ export default function PricingPage() {
                 )}
 
                 <CardContent className="space-y-6 pt-8 flex flex-col flex-1">
-                  <div className="text-center">
+                  <div className="text-center min-h-[130px]">
                     <h2 className="text-h2 text-primary">{plan.name}</h2>
                     <div className="mt-2 flex items-center justify-center flex-wrap gap-2">
                       {hasDiscount && (
