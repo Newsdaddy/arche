@@ -13,6 +13,14 @@ type ApiPlan = {
   price: number;
   duration_days: number;
   daily_limit: number;
+  report_limit?: number;
+};
+
+// 플랜별 심층 진단 및 보고서 다운로드 횟수
+const PLAN_LIMITS: Record<string, { diagnosis: number; report: number; months: number }> = {
+  pass_1m: { diagnosis: 1, report: 1, months: 1 },
+  pass_3m: { diagnosis: 3, report: 3, months: 3 },
+  pass_12m: { diagnosis: 12, report: 12, months: 12 },
 };
 
 // 할인 정보 (런칭 특가) - 3개월 한정
@@ -29,7 +37,7 @@ const FREE_FEATURES = [
   "생성 기록 저장",
 ];
 
-const FREE_LIMITS = ["일일 생성 횟수 제한", "심층 진단 1회/일"];
+const FREE_LIMITS = ["일일 생성 횟수 제한", "심층 진단 불가", "상세 보고서 다운로드 불가"];
 
 export default function PricingPage() {
   const router = useRouter();
@@ -223,7 +231,7 @@ export default function PricingPage() {
                       )}
                     </div>
                     <p className="text-small text-gray-500 mt-2">
-                      {plan.duration_days}일 이용 · 하루 {plan.daily_limit}회 생성 · 단위: 원
+                      {PLAN_LIMITS[plan.id]?.months || Math.round(plan.duration_days / 30)}개월 이용 · 하루 {plan.daily_limit}회 생성 · 단위: 원화 표기
                     </p>
                     {hasDiscount && (
                       <p className="text-small text-red-500 mt-1 font-medium">
@@ -234,11 +242,19 @@ export default function PricingPage() {
                   <ul className="space-y-3 text-body text-left">
                     <li className="flex items-start gap-2">
                       <span className="text-accent mt-0.5">✓</span>
-                      유료 기간 동안 하루 {plan.daily_limit}회 콘텐츠 생성
+                      하루 {plan.daily_limit}회 콘텐츠 생성
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-accent mt-0.5">✓</span>
-                      심층 진단 일 10회까지 (Pro 동일 정책)
+                      <span>
+                        <strong className="text-accent">심층 페르소나 진단 {PLAN_LIMITS[plan.id]?.diagnosis || 0}회</strong>
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent mt-0.5">✓</span>
+                      <span>
+                        <strong className="text-accent">상세 보고서 다운로드 {PLAN_LIMITS[plan.id]?.report || 0}회</strong>
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-accent mt-0.5">✓</span>
