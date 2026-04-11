@@ -39,25 +39,98 @@ interface ContentType {
   name: string;
   emoji: string;
   description: string;
+  details: string; // 호버 시 보여줄 상세 설명
 }
 
 const CONTENT_TYPES: ContentType[] = [
   // A. 숫자/구조 기반
-  { id: "listicle", name: "리스티클", emoji: "📋", description: "\"N가지 ~\", 숫자 기반 정리" },
-  { id: "how_to", name: "HOW-TO 가이드", emoji: "🛠️", description: "단계별 방법론, 실용적 조언" },
-  { id: "comparison", name: "A vs B 비교", emoji: "⚖️", description: "두 선택지 비교 분석" },
+  {
+    id: "listicle",
+    name: "리스티클",
+    emoji: "📋",
+    description: "\"N가지 ~\", 숫자 기반 정리",
+    details: "예: \"성공하는 사람들의 5가지 습관\", \"꼭 알아야 할 3가지 팁\" 형식으로 핵심 포인트를 숫자로 정리한 글"
+  },
+  {
+    id: "how_to",
+    name: "HOW-TO 가이드",
+    emoji: "🛠️",
+    description: "단계별 방법론, 실용적 조언",
+    details: "예: \"초보자를 위한 투자 시작하는 방법\", \"N단계로 배우는 ~\" 형식의 실용적인 가이드"
+  },
+  {
+    id: "comparison",
+    name: "A vs B 비교",
+    emoji: "⚖️",
+    description: "두 선택지 비교 분석",
+    details: "예: \"직장 vs 창업, 어떤 게 나을까?\", \"아이폰 vs 갤럭시\" 형식으로 장단점 비교 후 결론 제시"
+  },
   // B. 스토리 기반
-  { id: "growth_story", name: "성장 스토리", emoji: "🌱", description: "Before→After 변화 과정" },
-  { id: "failure_story", name: "실패담/회고", emoji: "💔", description: "실패→깨달음→현재" },
-  { id: "experiment", name: "실험 기록", emoji: "🧪", description: "\"N일간 ~해봤습니다\"" },
+  {
+    id: "growth_story",
+    name: "성장 스토리",
+    emoji: "🌱",
+    description: "Before→After 변화 과정",
+    details: "예: \"월급 200에서 연봉 1억이 되기까지\", \"3개월 만에 10kg 감량한 이야기\" 형식의 변화 스토리"
+  },
+  {
+    id: "failure_story",
+    name: "실패담/회고",
+    emoji: "💔",
+    description: "실패→깨달음→현재",
+    details: "예: \"창업에 실패하고 배운 것들\", \"내가 했던 최악의 선택\" 형식으로 솔직한 실패 경험과 교훈 공유"
+  },
+  {
+    id: "experiment",
+    name: "실험 기록",
+    emoji: "🧪",
+    description: "\"N일간 ~해봤습니다\"",
+    details: "예: \"30일간 새벽 5시에 일어나봤습니다\", \"한 달간 SNS 끊어봤습니다\" 형식의 직접 실험 결과 공유"
+  },
   // C. 인사이트 기반
-  { id: "daily_insight", name: "일상 인사이트", emoji: "💡", description: "작은 에피소드에서 교훈" },
-  { id: "paradox", name: "역설적 진실", emoji: "🔄", description: "\"모두가 ~라지만 실제로는...\"" },
-  { id: "deep_analysis", name: "심층 분석", emoji: "🔬", description: "한 주제를 여러 관점에서" },
+  {
+    id: "daily_insight",
+    name: "일상 인사이트",
+    emoji: "💡",
+    description: "작은 에피소드에서 교훈",
+    details: "예: \"오늘 카페에서 깨달은 것\", \"택시 기사님에게 배운 인생 교훈\" 형식으로 일상에서 발견한 인사이트"
+  },
+  {
+    id: "paradox",
+    name: "역설적 진실",
+    emoji: "🔄",
+    description: "\"모두가 ~라지만 실제로는...\"",
+    details: "예: \"열심히 하면 성공한다고? 실제로는...\", \"돈을 아끼면 부자가 될까?\" 형식으로 통념을 뒤집는 인사이트"
+  },
+  {
+    id: "deep_analysis",
+    name: "심층 분석",
+    emoji: "🔬",
+    description: "한 주제를 여러 관점에서",
+    details: "예: \"MZ세대가 퇴사하는 진짜 이유\", \"부동산 시장 전망 분석\" 형식으로 하나의 주제를 깊이있게 분석"
+  },
   // D. 공감/연결 기반
-  { id: "empathy", name: "공감 연결", emoji: "🤝", description: "\"혹시 이런 경험 있으신가요?\"" },
-  { id: "community_qa", name: "독자 Q&A", emoji: "💬", description: "\"DM으로 받은 질문에 답합니다\"" },
-  { id: "recommendation", name: "추천/큐레이션", emoji: "⭐", description: "도구, 책, 콘텐츠 추천" },
+  {
+    id: "empathy",
+    name: "공감 연결",
+    emoji: "🤝",
+    description: "\"혹시 이런 경험 있으신가요?\"",
+    details: "예: \"번아웃 왔을 때 이런 생각 드시죠?\", \"육아하면서 이런 순간 있지 않나요?\" 형식으로 독자 공감 유도"
+  },
+  {
+    id: "community_qa",
+    name: "독자 Q&A",
+    emoji: "💬",
+    description: "\"DM으로 받은 질문에 답합니다\"",
+    details: "예: \"가장 많이 받는 질문에 답합니다\", \"팔로워님의 고민 상담\" 형식으로 독자 질문에 답변하는 콘텐츠"
+  },
+  {
+    id: "recommendation",
+    name: "추천/큐레이션",
+    emoji: "⭐",
+    description: "도구, 책, 콘텐츠 추천",
+    details: "예: \"생산성 200% 높여준 앱 5개\", \"인생을 바꾼 책 추천\" 형식으로 직접 써본 것들 큐레이션"
+  },
 ];
 
 // 플랫폼별 적합한 콘텐츠 유형 필터링
@@ -427,47 +500,65 @@ function CreatePageContent() {
             {/* 콘텐츠 유형 선택 */}
             <Card>
               <CardContent className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-body font-medium">
-                    글 유형 선택
-                    <span className="text-small text-gray-500 ml-2">(선택사항)</span>
-                  </label>
-                  <p className="text-small text-gray-500">
-                    원하는 글 스타일을 선택하면 해당 유형에 최적화된 콘텐츠가 생성됩니다
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {getFilteredContentTypes().map((type) => (
-                    <button
-                      key={type.id}
-                      type="button"
-                      onClick={() => setContentType(contentType === type.id ? null : type.id)}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${
-                        contentType === type.id
-                          ? "border-accent bg-accent/5 shadow-sm"
-                          : "border-gray-200 hover:border-accent/50"
-                      }`}
-                    >
-                      <span className="text-2xl">{type.emoji}</span>
-                      <p className="font-semibold mt-2 text-white">{type.name}</p>
-                      <p className="text-small text-gray-400 mt-1">{type.description}</p>
-                    </button>
-                  ))}
-                </div>
-                {contentType && (
-                  <div className="flex items-center gap-2 text-small text-accent">
-                    <span>선택됨:</span>
-                    <span className="font-medium">
-                      {CONTENT_TYPES.find(t => t.id === contentType)?.emoji}{" "}
-                      {CONTENT_TYPES.find(t => t.id === contentType)?.name}
-                    </span>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <label className="text-body font-medium">
+                      글 유형 선택
+                      <span className="text-small text-gray-500 ml-2">(선택사항)</span>
+                    </label>
+                    <p className="text-small text-gray-500">
+                      원하는 글 스타일을 선택하면 해당 유형에 최적화된 콘텐츠가 생성됩니다
+                    </p>
+                  </div>
+                  {contentType && (
                     <button
                       type="button"
                       onClick={() => setContentType(null)}
-                      className="text-gray-400 hover:text-gray-600 ml-2"
+                      className="text-small text-accent hover:text-accent/80 font-medium"
                     >
-                      취소
+                      다시 선택
                     </button>
+                  )}
+                </div>
+
+                {/* 선택된 유형 표시 */}
+                {contentType && (
+                  <div className="p-4 rounded-xl border-2 border-accent bg-accent/10">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{CONTENT_TYPES.find(t => t.id === contentType)?.emoji}</span>
+                      <div>
+                        <p className="font-semibold text-white">
+                          {CONTENT_TYPES.find(t => t.id === contentType)?.name}
+                        </p>
+                        <p className="text-small text-gray-300 mt-1">
+                          {CONTENT_TYPES.find(t => t.id === contentType)?.details}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 유형 선택 그리드 (선택 안 됐을 때만 표시) */}
+                {!contentType && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {getFilteredContentTypes().map((type) => (
+                      <div key={type.id} className="relative group">
+                        <button
+                          type="button"
+                          onClick={() => setContentType(type.id)}
+                          className="w-full p-4 rounded-xl border-2 text-left transition-all border-gray-200 hover:border-accent/50 hover:bg-accent/5"
+                        >
+                          <span className="text-2xl">{type.emoji}</span>
+                          <p className="font-semibold mt-2 text-white">{type.name}</p>
+                          <p className="text-small text-gray-400 mt-1">{type.description}</p>
+                        </button>
+                        {/* 호버 툴팁 */}
+                        <div className="absolute left-0 right-0 bottom-full mb-2 p-3 bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                          <p className="text-small text-white leading-relaxed">{type.details}</p>
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800"></div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
