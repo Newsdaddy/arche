@@ -25,9 +25,8 @@ const PLAN_LIMITS: Record<string, { diagnosis: number; report: number; months: n
 
 // 할인 정보 (런칭 특가) - 3개월 한정
 const DISCOUNT_INFO: Record<string, { originalPrice: number; discountPrice: number; label: string }> = {
-  pass_1m: { originalPrice: 12000, discountPrice: 9000, label: "런칭 특가" },
   pass_3m: { originalPrice: 45000, discountPrice: 21000, label: "런칭 특가" },
-  pass_12m: { originalPrice: 98000, discountPrice: 79000, label: "런칭 특가" },
+  pass_12m: { originalPrice: 98000, discountPrice: 39200, label: "60% 할인" },
 };
 
 const FREE_FEATURES = [
