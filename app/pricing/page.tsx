@@ -145,7 +145,7 @@ export default function PricingPage() {
               <div className="text-center">
                 <h2 className="text-h2 text-primary">무료</h2>
                 <div className="mt-2">
-                  <span className="text-4xl font-bold text-primary">0원</span>
+                  <span className="text-4xl font-bold text-primary">₩0</span>
                 </div>
                 <p className="text-small text-gray-500 mt-2">
                   콘텐츠 생성기를 체험해보세요
@@ -218,11 +218,11 @@ export default function PricingPage() {
                     <div className="mt-2 flex items-center justify-center flex-wrap gap-2">
                       {hasDiscount && (
                         <span className="text-lg text-gray-400 line-through whitespace-nowrap">
-                          {originalPrice.toLocaleString("ko-KR")}
+                          ₩{originalPrice.toLocaleString("ko-KR")}
                         </span>
                       )}
                       <span className={`text-3xl font-bold whitespace-nowrap ${hasDiscount ? "text-red-500" : "text-primary"}`}>
-                        {displayPrice.toLocaleString("ko-KR")}
+                        ₩{displayPrice.toLocaleString("ko-KR")}
                       </span>
                       {hasDiscount && (
                         <span className="text-small bg-red-100 text-red-600 px-2 py-0.5 rounded whitespace-nowrap">
@@ -231,7 +231,7 @@ export default function PricingPage() {
                       )}
                     </div>
                     <p className="text-small text-gray-500 mt-2">
-                      {PLAN_LIMITS[plan.id]?.months || Math.round(plan.duration_days / 30)}개월 이용 · 하루 {plan.daily_limit}회 생성 · 단위: 원화 표기
+                      {PLAN_LIMITS[plan.id]?.months || Math.round(plan.duration_days / 30)}개월 이용 · 하루 {plan.daily_limit}회 생성
                     </p>
                     {hasDiscount && (
                       <p className="text-small text-red-500 mt-1 font-medium">
