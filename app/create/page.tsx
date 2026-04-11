@@ -350,10 +350,10 @@ function CreatePageContent() {
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">💡</span>
                   <div>
-                    <p className="text-body font-semibold text-gray-900">
+                    <p className="text-body font-semibold text-white">
                       페르소나 진단을 받으면 더 맞춤화된 콘텐츠를 생성할 수 있어요!
                     </p>
-                    <p className="text-small text-gray-600 mt-1">
+                    <p className="text-small text-gray-300 mt-1">
                       진단은 3분이면 충분하고, 당신의 강점과 타겟 독자를 찾아드려요.
                     </p>
                   </div>
