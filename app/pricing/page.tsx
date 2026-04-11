@@ -138,9 +138,9 @@ export default function PricingPage() {
           <p className="text-center text-red-600 text-small">{plansError}</p>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-          <Card className="relative border-gray-200">
-            <CardContent className="space-y-6 pt-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+          <Card className="relative border-gray-200 flex flex-col">
+            <CardContent className="space-y-6 pt-8 flex flex-col flex-1">
               <div className="text-center">
                 <h2 className="text-h2 text-primary">무료</h2>
                 <div className="mt-2">
@@ -150,7 +150,7 @@ export default function PricingPage() {
                   콘텐츠 생성기를 체험해보세요
                 </p>
               </div>
-              <ul className="space-y-3">
+              <ul className="space-y-3 flex-1">
                 {FREE_FEATURES.map((feature, i) => (
                   <li key={i} className="flex items-start gap-2 text-body">
                     <span className="text-accent mt-0.5">✓</span>
@@ -167,15 +167,17 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Button
-                fullWidth
-                size="lg"
-                variant="outline"
-                onClick={() => handleSelectPlan("free", false)}
-                disabled={currentTier === "free"}
-              >
-                {currentTier === "free" ? "현재 플랜" : "무료로 시작하기"}
-              </Button>
+              <div className="mt-auto">
+                <Button
+                  fullWidth
+                  size="lg"
+                  variant="outline"
+                  onClick={() => handleSelectPlan("free", false)}
+                  disabled={currentTier === "free"}
+                >
+                  {currentTier === "free" ? "현재 플랜" : "무료로 시작하기"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -188,7 +190,7 @@ export default function PricingPage() {
             return (
               <Card
                 key={plan.id}
-                className={`relative ${
+                className={`relative flex flex-col ${
                   hasDiscount
                     ? "border-red-500 border-2 shadow-lg"
                     : popular
@@ -211,7 +213,7 @@ export default function PricingPage() {
                   </div>
                 )}
 
-                <CardContent className="space-y-6 pt-8">
+                <CardContent className="space-y-6 pt-8 flex flex-col flex-1">
                   <div className="text-center">
                     <h2 className="text-h2 text-primary">{plan.name}</h2>
                     <div className="mt-2 flex items-center justify-center flex-wrap gap-2">
@@ -238,7 +240,7 @@ export default function PricingPage() {
                       </p>
                     )}
                   </div>
-                  <ul className="space-y-3 text-body text-left">
+                  <ul className="space-y-3 text-body text-left flex-1">
                     <li className="flex items-start gap-2">
                       <span className="text-accent mt-0.5">✓</span>
                       하루 {plan.daily_limit}회 콘텐츠 생성
@@ -264,16 +266,18 @@ export default function PricingPage() {
                       자동 갱신 없음 (1회 결제)
                     </li>
                   </ul>
-                  <Button
-                    fullWidth
-                    size="lg"
-                    variant={popular ? "primary" : "outline"}
-                    onClick={() => handleSelectPlan(plan.id, true)}
-                  >
-                    {currentTier === "paid"
-                      ? "기간 연장·추가 구매"
-                      : "구매하기"}
-                  </Button>
+                  <div className="mt-auto">
+                    <Button
+                      fullWidth
+                      size="lg"
+                      variant={popular ? "primary" : "outline"}
+                      onClick={() => handleSelectPlan(plan.id, true)}
+                    >
+                      {currentTier === "paid"
+                        ? "기간 연장·추가 구매"
+                        : "구매하기"}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             );

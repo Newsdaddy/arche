@@ -101,7 +101,7 @@ export default function Header() {
                 isActive("/pricing") ? "text-white" : "text-primary-400 hover:text-white"
               }`}
             >
-              가격
+              플랜
             </Link>
 
             <Link
@@ -192,7 +192,7 @@ export default function Header() {
                   isActive("/pricing") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                가격
+                플랜
               </Link>
 
               <Link

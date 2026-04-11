@@ -2,88 +2,138 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { getProfile, getCompletedMissions, getPersonaResults, getContentGenerations } from "@/lib/supabase/database";
-import { getTodayMission } from "@/lib/missions";
-import { Mission } from "@/types";
 import Button from "@/components/ui/Button";
-import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
-import ProgressBar from "@/components/ProgressBar";
-import StreakCounter from "@/components/StreakCounter";
-import ConsultingSection from "@/components/dashboard/ConsultingSection";
+import Card, { CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 
-interface Profile {
-  id: string;
-  email: string;
-  persona_name: string | null;
-  persona_description: string | null;
-  persona_strengths: string[] | null;
-  persona_recommendations: string[] | null;
-  onboarding_completed: boolean;
-  current_week: number;
-  current_day: number;
-  streak: number;
-  total_uploads: number;
-  customer_type?: string;
+interface UsageStats {
+  // 구독 정보
+  plan: "free" | "pro";
+  planName: string;
+  daysRemaining: number | null;
+  expiresAt: string | null;
+
+  // 콘텐츠 생성
+  contentUsedToday: number;
+  contentLimitToday: number;
+  contentTotalUsed: number;
+
+  // 심층 진단
+  diagnosisUsed: number;
+  diagnosisLimit: number;
+
+  // 보고서 다운로드
+  reportDownloaded: number;
+  reportLimit: number;
 }
 
-interface PersonaResult {
-  id: string;
-  archetype_name?: string;
-  archetype?: string;
-  enneagram_type?: string;
-  created_at: string;
-}
-
-interface ContentGeneration {
-  id: string;
-  platform?: string;
-  content?: string;
-  prompt?: string;
-  created_at: string;
-}
+// 플랜별 제한
+const PLAN_LIMITS = {
+  free: { dailyContent: 3, diagnosis: 0, report: 0 },
+  pass_1m: { dailyContent: 100, diagnosis: 1, report: 1 },
+  pass_3m: { dailyContent: 100, diagnosis: 3, report: 3 },
+  pass_12m: { dailyContent: 100, diagnosis: 12, report: 12 },
+};
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [completedMissions, setCompletedMissions] = useState<string[]>([]);
-  const [todayMission, setTodayMission] = useState<Mission | null>(null);
-  const [personaResults, setPersonaResults] = useState<PersonaResult[]>([]);
-  const [contentGenerations, setContentGenerations] = useState<ContentGeneration[]>([]);
+  const [profile, setProfile] = useState<{ email: string; persona_name?: string } | null>(null);
+  const [stats, setStats] = useState<UsageStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const profileData = await getProfile();
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
 
-      if (!profileData) {
+      if (!user) {
         router.replace("/login");
         return;
       }
 
-      if (!profileData.onboarding_completed) {
-        router.replace("/onboarding");
-        return;
-      }
+      // 프로필 조회
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("email, persona_name")
+        .eq("id", user.id)
+        .single();
 
       setProfile(profileData);
 
-      const completed = await getCompletedMissions();
-      setCompletedMissions(completed);
+      // 구독 정보 조회
+      const { data: subscription } = await supabase
+        .from("subscriptions")
+        .select("plan, plan_id, status, current_period_end")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .maybeSingle();
 
-      const mission = getTodayMission(
-        profileData.current_week || 1,
-        profileData.current_day || 1
-      );
-      setTodayMission(mission || null);
+      // 오늘 날짜
+      const today = new Date().toISOString().split("T")[0];
 
-      // 히스토리 데이터 로드
-      const [diagnosisResults, generations] = await Promise.all([
-        getPersonaResults(),
-        getContentGenerations(),
-      ]);
-      setPersonaResults(diagnosisResults);
-      setContentGenerations(generations);
+      // 오늘 콘텐츠 생성 횟수
+      const { count: contentTodayCount } = await supabase
+        .from("usage_logs")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("usage_type", "content_generation")
+        .eq("usage_date", today);
+
+      // 전체 콘텐츠 생성 횟수
+      const { count: contentTotalCount } = await supabase
+        .from("usage_logs")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("usage_type", "content_generation");
+
+      // 심층 진단 횟수
+      const { count: diagnosisCount } = await supabase
+        .from("persona_results")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      // 보고서 다운로드 횟수 (report_downloads 테이블이 있다면)
+      const { count: reportCount } = await supabase
+        .from("usage_logs")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("usage_type", "report_download");
+
+      // 플랜 정보 계산
+      const isPro = subscription?.status === "active" && subscription.plan === "pro";
+      const planId = subscription?.plan_id || "free";
+      const limits = PLAN_LIMITS[planId as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
+
+      // 남은 기간 계산
+      let daysRemaining: number | null = null;
+      let expiresAt: string | null = null;
+      if (isPro && subscription?.current_period_end) {
+        expiresAt = subscription.current_period_end;
+        const endDate = new Date(subscription.current_period_end);
+        const now = new Date();
+        daysRemaining = Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+      }
+
+      // 플랜 이름 결정
+      let planName = "무료";
+      if (planId === "pass_1m") planName = "1개월권";
+      else if (planId === "pass_3m") planName = "3개월권";
+      else if (planId === "pass_12m") planName = "12개월권";
+
+      setStats({
+        plan: isPro ? "pro" : "free",
+        planName,
+        daysRemaining,
+        expiresAt,
+        contentUsedToday: contentTodayCount || 0,
+        contentLimitToday: isPro ? limits.dailyContent : PLAN_LIMITS.free.dailyContent,
+        contentTotalUsed: contentTotalCount || 0,
+        diagnosisUsed: diagnosisCount || 0,
+        diagnosisLimit: limits.diagnosis,
+        reportDownloaded: reportCount || 0,
+        reportLimit: limits.report,
+      });
 
       setIsLoading(false);
     };
@@ -98,7 +148,7 @@ export default function DashboardPage() {
     router.refresh();
   };
 
-  if (isLoading || !profile) {
+  if (isLoading || !stats) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="animate-pulse text-gray-400">로딩 중...</div>
@@ -106,263 +156,213 @@ export default function DashboardPage() {
     );
   }
 
-  const totalMissions = 8 * 7; // 8주 × 7일
-  const isTodayCompleted = todayMission && completedMissions.includes(todayMission.id);
-
   return (
     <main className="flex-1 flex flex-col px-6 py-8">
-      <div className="max-w-lg w-full mx-auto space-y-6">
-        {/* 상단 인사 + 로그아웃 */}
+      <div className="max-w-2xl w-full mx-auto space-y-6">
+        {/* 상단 헤더 */}
         <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <p className="text-small text-gray-500">
-              Week {profile.current_week} - Day {profile.current_day}
-            </p>
-            <h1 className="text-h1 text-primary">
-              안녕하세요, {profile.persona_name || "크리에이터"}님!
-            </h1>
-            <p className="text-body text-gray-600">
-              오늘도 한 걸음 더 나아가볼까요?
+          <div>
+            <h1 className="text-h1 text-primary">대시보드</h1>
+            <p className="text-body text-gray-500 mt-1">
+              {profile?.persona_name || profile?.email || "사용자"}님의 이용 현황
             </p>
           </div>
           <button
             onClick={handleLogout}
-            className="text-small text-gray-400 hover:text-gray-600"
+            className="text-small text-gray-400 hover:text-white transition-colors"
           >
             로그아웃
           </button>
         </div>
 
-        {/* 스트릭 카운터 */}
-        <StreakCounter streak={profile.streak || 0} totalUploads={profile.total_uploads || 0} />
-
-        {/* 전체 진행률 */}
-        <Card>
-          <CardContent>
-            <ProgressBar
-              current={completedMissions.length}
-              total={totalMissions}
-              color="success"
-            />
+        {/* 구독 상태 카드 */}
+        <Card className={stats.plan === "pro" ? "border-accent border-2 bg-accent/5" : "border-gray-700"}>
+          <CardContent className="py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-small text-gray-400">현재 플랜</p>
+                <p className="text-2xl font-bold text-white mt-1">
+                  {stats.planName}
+                  {stats.plan === "pro" && (
+                    <span className="ml-2 text-small bg-accent text-white px-2 py-0.5">
+                      PRO
+                    </span>
+                  )}
+                </p>
+              </div>
+              {stats.plan === "pro" && stats.daysRemaining !== null ? (
+                <div className="text-right">
+                  <p className="text-small text-gray-400">남은 기간</p>
+                  <p className="text-2xl font-bold text-accent">{stats.daysRemaining}일</p>
+                  {stats.expiresAt && (
+                    <p className="text-small text-gray-500">
+                      {new Date(stats.expiresAt).toLocaleDateString("ko-KR")} 만료
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <Link href="/pricing">
+                  <Button size="sm">업그레이드</Button>
+                </Link>
+              )}
+            </div>
           </CardContent>
         </Card>
 
-        {/* 오늘 할 일 (핵심 영역) */}
-        {todayMission && (
-          <Card className={isTodayCompleted ? "bg-green-50 border-success" : "border-accent border-2"}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <span className="text-small font-semibold text-accent">
-                  {isTodayCompleted ? "완료!" : "오늘의 미션"}
+        {/* 이용 현황 그리드 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 콘텐츠 생성 - 오늘 */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-body flex items-center gap-2">
+                <span>✨</span> 오늘 콘텐츠 생성
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-end justify-between">
+                <div>
+                  <span className="text-3xl font-bold text-white">{stats.contentUsedToday}</span>
+                  <span className="text-gray-400 ml-1">/ {stats.contentLimitToday}회</span>
+                </div>
+                <span className="text-small text-gray-500">
+                  {stats.contentLimitToday - stats.contentUsedToday}회 남음
                 </span>
-                {isTodayCompleted && (
-                  <span className="text-success text-2xl">✓</span>
+              </div>
+              <div className="mt-3 h-2 bg-gray-700 overflow-hidden">
+                <div
+                  className="h-full bg-accent transition-all"
+                  style={{ width: `${Math.min(100, (stats.contentUsedToday / stats.contentLimitToday) * 100)}%` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 콘텐츠 생성 - 누적 */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-body flex items-center gap-2">
+                <span>📊</span> 누적 콘텐츠 생성
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-end justify-between">
+                <div>
+                  <span className="text-3xl font-bold text-white">{stats.contentTotalUsed}</span>
+                  <span className="text-gray-400 ml-1">회</span>
+                </div>
+                <Link href="/history/contents" className="text-small text-accent hover:underline">
+                  기록 보기 →
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 심층 페르소나 진단 */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-body flex items-center gap-2">
+                <span>🔍</span> 심층 페르소나 진단
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-end justify-between">
+                <div>
+                  <span className="text-3xl font-bold text-white">{stats.diagnosisUsed}</span>
+                  <span className="text-gray-400 ml-1">
+                    / {stats.diagnosisLimit === 0 ? "0" : stats.diagnosisLimit}회
+                  </span>
+                </div>
+                {stats.diagnosisLimit > 0 ? (
+                  <span className="text-small text-gray-500">
+                    {Math.max(0, stats.diagnosisLimit - stats.diagnosisUsed)}회 남음
+                  </span>
+                ) : (
+                  <span className="text-small text-red-400">유료 전용</span>
                 )}
               </div>
-              <CardTitle>{todayMission.title}</CardTitle>
-              <CardDescription>{todayMission.description}</CardDescription>
+              {stats.diagnosisLimit > 0 && (
+                <div className="mt-3 h-2 bg-gray-700 overflow-hidden">
+                  <div
+                    className="h-full bg-purple-500 transition-all"
+                    style={{ width: `${Math.min(100, (stats.diagnosisUsed / stats.diagnosisLimit) * 100)}%` }}
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 상세 보고서 다운로드 */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-body flex items-center gap-2">
+                <span>📄</span> 상세 보고서 다운로드
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-secondary rounded-lg p-4">
-                <p className="text-small text-gray-500 mb-1">미션 내용</p>
-                <p className="text-body">{todayMission.task}</p>
+            <CardContent>
+              <div className="flex items-end justify-between">
+                <div>
+                  <span className="text-3xl font-bold text-white">{stats.reportDownloaded}</span>
+                  <span className="text-gray-400 ml-1">
+                    / {stats.reportLimit === 0 ? "0" : stats.reportLimit}회
+                  </span>
+                </div>
+                {stats.reportLimit > 0 ? (
+                  <span className="text-small text-gray-500">
+                    {Math.max(0, stats.reportLimit - stats.reportDownloaded)}회 남음
+                  </span>
+                ) : (
+                  <span className="text-small text-red-400">유료 전용</span>
+                )}
               </div>
-              <div className="flex items-center gap-2 text-small text-gray-500">
-                <span>⏱️ 예상 시간: {todayMission.estimatedTime}</span>
-              </div>
-            </CardContent>
-            {!isTodayCompleted && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <Button
-                  fullWidth
-                  onClick={() => router.push(`/mission/${todayMission.id}`)}
-                >
-                  미션 상세 보기
-                </Button>
-              </div>
-            )}
-          </Card>
-        )}
-
-        {/* 과제 제출 버튼 */}
-        <Card
-          hoverable
-          onClick={() => router.push("/dashboard/showcase/new")}
-          className="bg-gradient-to-r from-accent to-accent/80 border-none"
-        >
-          <CardContent className="flex items-center gap-4">
-            <span className="text-4xl">📝</span>
-            <div>
-              <p className="text-body font-semibold text-white">과제 제출하기</p>
-              <p className="text-small text-white/70">소셜미디어 콘텐츠 링크와 성과를 보고하세요</p>
-            </div>
-            <span className="ml-auto text-white text-2xl">→</span>
-          </CardContent>
-        </Card>
-
-        {/* 네비게이션 */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card
-            hoverable
-            onClick={() => router.push("/progress")}
-            className="text-center"
-          >
-            <CardContent>
-              <span className="text-3xl">📊</span>
-              <p className="text-body font-medium mt-2">진행 상황</p>
-            </CardContent>
-          </Card>
-          <Card
-            hoverable
-            onClick={() => router.push("/submit")}
-            className="text-center"
-          >
-            <CardContent>
-              <span className="text-3xl">📤</span>
-              <p className="text-body font-medium mt-2">링크 제출</p>
-            </CardContent>
-          </Card>
-          <Card
-            hoverable
-            onClick={() => router.push("/create")}
-            className="text-center"
-          >
-            <CardContent>
-              <span className="text-3xl">✨</span>
-              <p className="text-body font-medium mt-2">콘텐츠 생성</p>
-            </CardContent>
-          </Card>
-          <Card
-            hoverable
-            onClick={() => router.push("/consulting")}
-            className="text-center"
-          >
-            <CardContent>
-              <span className="text-3xl">💬</span>
-              <p className="text-body font-medium mt-2">1:1 상담</p>
+              {stats.reportLimit > 0 && (
+                <div className="mt-3 h-2 bg-gray-700 overflow-hidden">
+                  <div
+                    className="h-full bg-green-500 transition-all"
+                    style={{ width: `${Math.min(100, (stats.reportDownloaded / stats.reportLimit) * 100)}%` }}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
 
-        {/* 진단 결과 히스토리 */}
-        {personaResults.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>내 진단 결과</CardTitle>
-              <CardDescription>페르소나 진단 히스토리</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {personaResults.slice(0, 3).map((result) => (
-                <div
-                  key={result.id}
-                  onClick={() => router.push(`/diagnosis/result?id=${result.id}`)}
-                  className="flex items-center justify-between p-3 bg-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                >
-                  <div>
-                    <p className="font-medium text-primary">{result.archetype_name || result.archetype || "진단 결과"}</p>
-                    <p className="text-small text-gray-500">
-                      {new Date(result.created_at).toLocaleDateString("ko-KR")}
-                    </p>
-                  </div>
-                  <span className="text-gray-400">→</span>
-                </div>
-              ))}
-              {personaResults.length > 3 && (
-                <button
-                  onClick={() => router.push("/history/diagnosis")}
-                  className="w-full text-center text-small text-accent hover:underline"
-                >
-                  전체 보기 ({personaResults.length}개)
-                </button>
-              )}
+        {/* 빠른 액션 */}
+        <div className="grid grid-cols-2 gap-4">
+          <Card
+            hoverable
+            onClick={() => router.push("/create")}
+            className="text-center cursor-pointer"
+          >
+            <CardContent className="py-6">
+              <span className="text-3xl">✨</span>
+              <p className="text-body font-medium mt-2 text-white">콘텐츠 생성</p>
             </CardContent>
           </Card>
-        )}
-
-        {/* 생성 콘텐츠 히스토리 */}
-        {contentGenerations.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>내 콘텐츠</CardTitle>
-              <CardDescription>AI로 생성한 콘텐츠 히스토리</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {contentGenerations.slice(0, 3).map((content) => (
-                <div
-                  key={content.id}
-                  onClick={() => router.push(`/history/contents/${content.id}`)}
-                  className="p-3 bg-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-small font-medium text-accent uppercase">
-                      {content.platform || "콘텐츠"}
-                    </span>
-                    <span className="text-small text-gray-500">
-                      {new Date(content.created_at).toLocaleDateString("ko-KR")}
-                    </span>
-                  </div>
-                  <p className="text-body text-primary line-clamp-2">
-                    {content.content?.substring(0, 80) || content.prompt?.substring(0, 80) || "생성된 콘텐츠"}...
-                  </p>
-                </div>
-              ))}
-              {contentGenerations.length > 3 && (
-                <button
-                  onClick={() => router.push("/history/contents")}
-                  className="w-full text-center text-small text-accent hover:underline"
-                >
-                  전체 보기 ({contentGenerations.length}개)
-                </button>
-              )}
+          <Card
+            hoverable
+            onClick={() => router.push("/diagnosis")}
+            className="text-center cursor-pointer"
+          >
+            <CardContent className="py-6">
+              <span className="text-3xl">🔍</span>
+              <p className="text-body font-medium mt-2 text-white">페르소나 진단</p>
             </CardContent>
           </Card>
-        )}
+        </div>
 
-        {/* 상담 고객 전용 섹션 */}
-        {profile.customer_type === "consulting" && (
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              🎯 컨설팅 현황
-              <span className="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">
-                상담 고객 전용
-              </span>
-            </h2>
-            <ConsultingSection />
-          </div>
-        )}
-
-        {/* 페르소나 정보 */}
-        {profile.persona_name && (
-          <Card className="bg-gradient-to-br from-accent/5 to-accent/10">
-            <CardHeader>
-              <CardTitle className="text-accent">{profile.persona_name}</CardTitle>
-              <CardDescription>{profile.persona_description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {profile.persona_strengths && (
-                  <div>
-                    <p className="text-small text-gray-500 mb-1">강점</p>
-                    <div className="flex flex-wrap gap-2">
-                      {profile.persona_strengths.map((s, i) => (
-                        <span key={i} className="bg-white px-2 py-1 rounded text-small">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {profile.persona_recommendations && (
-                  <div>
-                    <p className="text-small text-gray-500 mb-1">추천 행동</p>
-                    <ul className="text-small space-y-1">
-                      {profile.persona_recommendations.map((r, i) => (
-                        <li key={i}>• {r}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+        {/* 업그레이드 유도 (무료 사용자만) */}
+        {stats.plan === "free" && (
+          <Card className="bg-gradient-to-r from-accent/10 to-purple-500/10 border-accent/30">
+            <CardContent className="py-6 text-center">
+              <p className="text-lg font-semibold text-white mb-2">
+                더 많은 기능을 원하시나요?
+              </p>
+              <p className="text-small text-gray-400 mb-4">
+                유료 플랜으로 업그레이드하면 심층 진단, 상세 보고서, 무제한 콘텐츠 생성을 이용할 수 있어요.
+              </p>
+              <Link href="/pricing">
+                <Button>플랜 보기 →</Button>
+              </Link>
             </CardContent>
           </Card>
         )}

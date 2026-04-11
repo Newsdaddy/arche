@@ -41,6 +41,7 @@ export async function updateSession(request: NextRequest) {
     "/feedback",
     "/progress",
     "/payment",
+    "/admin",
   ];
   const isProtectedPath = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
@@ -48,7 +49,9 @@ export async function updateSession(request: NextRequest) {
 
   if (isProtectedPath && !user) {
     const url = request.nextUrl.clone();
+    const redirectTo = request.nextUrl.pathname;
     url.pathname = "/login";
+    url.searchParams.set("redirect", redirectTo);
     return NextResponse.redirect(url);
   }
 
