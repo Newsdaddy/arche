@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card, { CardContent } from "@/components/ui/Card";
-import { checkUsageLimit } from "@/lib/usage";
+import PersonaSummaryCard from "@/components/PersonaSummaryCard";
+import { checkUsageLimit, getActivePersonaClient, PersonaSummary } from "@/lib/usage";
 import { createClient } from "@/lib/supabase/client";
 
 interface Platform {
@@ -29,6 +30,44 @@ interface UsageInfo {
   limit: number;
   plan: "free" | "pro";
 }
+
+// ========================================
+// 12가지 콘텐츠 유형 정의
+// ========================================
+interface ContentType {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+}
+
+const CONTENT_TYPES: ContentType[] = [
+  // A. 숫자/구조 기반
+  { id: "listicle", name: "리스티클", emoji: "📋", description: "\"N가지 ~\", 숫자 기반 정리" },
+  { id: "how_to", name: "HOW-TO 가이드", emoji: "🛠️", description: "단계별 방법론, 실용적 조언" },
+  { id: "comparison", name: "A vs B 비교", emoji: "⚖️", description: "두 선택지 비교 분석" },
+  // B. 스토리 기반
+  { id: "growth_story", name: "성장 스토리", emoji: "🌱", description: "Before→After 변화 과정" },
+  { id: "failure_story", name: "실패담/회고", emoji: "💔", description: "실패→깨달음→현재" },
+  { id: "experiment", name: "실험 기록", emoji: "🧪", description: "\"N일간 ~해봤습니다\"" },
+  // C. 인사이트 기반
+  { id: "daily_insight", name: "일상 인사이트", emoji: "💡", description: "작은 에피소드에서 교훈" },
+  { id: "paradox", name: "역설적 진실", emoji: "🔄", description: "\"모두가 ~라지만 실제로는...\"" },
+  { id: "deep_analysis", name: "심층 분석", emoji: "🔬", description: "한 주제를 여러 관점에서" },
+  // D. 공감/연결 기반
+  { id: "empathy", name: "공감 연결", emoji: "🤝", description: "\"혹시 이런 경험 있으신가요?\"" },
+  { id: "community_qa", name: "독자 Q&A", emoji: "💬", description: "\"DM으로 받은 질문에 답합니다\"" },
+  { id: "recommendation", name: "추천/큐레이션", emoji: "⭐", description: "도구, 책, 콘텐츠 추천" },
+];
+
+// 플랫폼별 적합한 콘텐츠 유형 필터링
+const PLATFORM_CONTENT_TYPES: Record<string, string[]> = {
+  instagram: ["listicle", "growth_story", "daily_insight", "paradox", "empathy", "experiment"],
+  youtube: ["listicle", "how_to", "comparison", "growth_story"],
+  blog: ["listicle", "how_to", "comparison", "growth_story", "failure_story", "deep_analysis", "empathy", "recommendation"],
+  thread: ["listicle", "daily_insight", "paradox", "empathy", "failure_story"],
+  newsletter: ["listicle", "how_to", "comparison", "failure_story", "deep_analysis", "community_qa", "recommendation", "experiment"],
+};
 
 const PLATFORMS: Platform[] = [
   {
@@ -88,7 +127,7 @@ const PLATFORMS: Platform[] = [
   },
 ];
 
-export default function CreatePage() {
+function CreatePageContent() {
   const router = useRouter();
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -100,6 +139,22 @@ export default function CreatePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 스레드 분할 옵션
+  const [threadMode, setThreadMode] = useState<"single" | "split">("single");
+  const [threadCount, setThreadCount] = useState<number>(5);
+
+  // 콘텐츠 유형 선택
+  const [contentType, setContentType] = useState<string | null>(null);
+
+  // 페르소나 정보
+  const [personaData, setPersonaData] = useState<PersonaSummary | null>(null);
+  const [isPersonaLoading, setIsPersonaLoading] = useState(false);
+
+  // URL 파라미터
+  const searchParams = useSearchParams();
+  const topicFromUrl = searchParams.get("topic");
+  const isPillarMode = searchParams.get("pillar") === "true";
+
   useEffect(() => {
     async function checkAuth() {
       const supabase = createClient();
@@ -107,6 +162,8 @@ export default function CreatePage() {
 
       if (user) {
         setIsLoggedIn(true);
+        setIsPersonaLoading(true);
+
         // 사용량 확인
         const usage = await checkUsageLimit(user.id, "content_generation");
         setUsageInfo({
@@ -115,16 +172,17 @@ export default function CreatePage() {
           plan: usage.plan,
         });
 
-        // 페르소나 확인
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("active_persona_result_id, persona_name")
-          .eq("id", user.id)
-          .single();
-
-        if (profile?.active_persona_result_id || profile?.persona_name) {
-          setHasPersona(true);
+        // 페르소나 상세 정보 조회
+        try {
+          const persona = await getActivePersonaClient(user.id);
+          if (persona) {
+            setHasPersona(true);
+            setPersonaData(persona);
+          }
+        } catch (e) {
+          console.error("페르소나 조회 실패:", e);
         }
+        setIsPersonaLoading(false);
       }
       setIsLoading(false);
     }
@@ -132,10 +190,34 @@ export default function CreatePage() {
     checkAuth();
   }, []);
 
+  // URL 파라미터로 받은 topic 처리
+  useEffect(() => {
+    if (topicFromUrl && isPillarMode) {
+      // 인스타그램을 기본으로 선택하고 topic 설정
+      const instagram = PLATFORMS.find((p) => p.id === "instagram");
+      if (instagram) {
+        setSelectedPlatform(instagram);
+        setFormData({ topic: topicFromUrl });
+      }
+    }
+  }, [topicFromUrl, isPillarMode]);
+
   const handlePlatformSelect = (platform: Platform) => {
     setSelectedPlatform(platform);
     setFormData({});
     setGeneratedContent("");
+    // 스레드 옵션 초기화
+    setThreadMode("single");
+    setThreadCount(5);
+    // 콘텐츠 유형 초기화
+    setContentType(null);
+  };
+
+  // 선택된 플랫폼에 맞는 콘텐츠 유형 필터링
+  const getFilteredContentTypes = (): ContentType[] => {
+    if (!selectedPlatform) return [];
+    const allowedTypes = PLATFORM_CONTENT_TYPES[selectedPlatform.id] || [];
+    return CONTENT_TYPES.filter(type => allowedTypes.includes(type.id));
   };
 
   const handleInputChange = (fieldId: string, value: string) => {
@@ -162,6 +244,13 @@ export default function CreatePage() {
           platform: selectedPlatform.id,
           topic: formData.topic,
           target: formData.target || formData.audience || formData.reader,
+          // 콘텐츠 유형
+          contentType: contentType || undefined,
+          // 스레드 분할 옵션
+          ...(selectedPlatform.id === "thread" && {
+            threadMode,
+            threadCount: threadMode === "split" ? threadCount : undefined,
+          }),
           additionalInfo: Object.entries(formData)
             .filter(([key]) => !["topic", "target", "audience", "reader"].includes(key))
             .map(([key, value]) => `${key}: ${value}`)
@@ -240,30 +329,43 @@ export default function CreatePage() {
           </p>
         </div>
 
-        {/* 사용량 표시 & 페르소나 상태 */}
+        {/* 사용량 표시 */}
         {isLoggedIn && usageInfo && (
-          <div className="flex flex-wrap gap-3">
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-small ${
-              usageInfo.plan === "pro" ? "bg-accent/10 text-accent" : "bg-gray-100 text-gray-600"
-            }`}>
-              <span>{usageInfo.plan === "pro" ? "Pro" : "무료"}</span>
-              <span className="text-gray-400">|</span>
-              <span>오늘 {usageInfo.remaining}/{usageInfo.limit}회 남음</span>
-            </div>
-
-            {hasPersona ? (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 text-green-600 text-small">
-                ✓ 페르소나 연동됨
-              </div>
-            ) : (
-              <Link
-                href="/diagnosis"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-50 text-yellow-700 text-small hover:bg-yellow-100 transition-colors"
-              >
-                페르소나 진단하기 →
-              </Link>
-            )}
+          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-small ${
+            usageInfo.plan === "pro" ? "bg-accent/10 text-accent" : "bg-gray-100 text-gray-600"
+          }`}>
+            <span>{usageInfo.plan === "pro" ? "Pro" : "무료"}</span>
+            <span className="text-gray-400">|</span>
+            <span>오늘 {usageInfo.remaining}/{usageInfo.limit}회 남음</span>
           </div>
+        )}
+
+        {/* 페르소나 카드 또는 진단 유도 */}
+        {isLoggedIn && (
+          hasPersona ? (
+            <PersonaSummaryCard persona={personaData} isLoading={isPersonaLoading} />
+          ) : (
+            <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">💡</span>
+                  <div>
+                    <p className="text-body font-semibold text-gray-900">
+                      페르소나 진단을 받으면 더 맞춤화된 콘텐츠를 생성할 수 있어요!
+                    </p>
+                    <p className="text-small text-gray-600 mt-1">
+                      진단은 3분이면 충분하고, 당신의 강점과 타겟 독자를 찾아드려요.
+                    </p>
+                  </div>
+                </div>
+                <Link href="/diagnosis">
+                  <Button size="sm" className="w-full sm:w-auto">
+                    무료로 페르소나 진단받기 →
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )
         )}
 
         {/* 비로그인 안내 */}
@@ -322,6 +424,55 @@ export default function CreatePage() {
               </button>
             </div>
 
+            {/* 콘텐츠 유형 선택 */}
+            <Card>
+              <CardContent className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-body font-medium">
+                    글 유형 선택
+                    <span className="text-small text-gray-500 ml-2">(선택사항)</span>
+                  </label>
+                  <p className="text-small text-gray-500">
+                    원하는 글 스타일을 선택하면 해당 유형에 최적화된 콘텐츠가 생성됩니다
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {getFilteredContentTypes().map((type) => (
+                    <button
+                      key={type.id}
+                      type="button"
+                      onClick={() => setContentType(contentType === type.id ? null : type.id)}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        contentType === type.id
+                          ? "border-accent bg-accent/5 shadow-sm"
+                          : "border-gray-200 hover:border-accent/50"
+                      }`}
+                    >
+                      <span className="text-2xl">{type.emoji}</span>
+                      <p className="font-semibold mt-2 text-gray-900">{type.name}</p>
+                      <p className="text-small text-gray-500 mt-1">{type.description}</p>
+                    </button>
+                  ))}
+                </div>
+                {contentType && (
+                  <div className="flex items-center gap-2 text-small text-accent">
+                    <span>선택됨:</span>
+                    <span className="font-medium">
+                      {CONTENT_TYPES.find(t => t.id === contentType)?.emoji}{" "}
+                      {CONTENT_TYPES.find(t => t.id === contentType)?.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setContentType(null)}
+                      className="text-gray-400 hover:text-gray-600 ml-2"
+                    >
+                      취소
+                    </button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             <Card>
               <CardContent className="space-y-4">
                 {selectedPlatform.fields.map((field) => (
@@ -352,6 +503,65 @@ export default function CreatePage() {
               </CardContent>
             </Card>
 
+            {/* 스레드 분할 옵션 */}
+            {selectedPlatform.id === "thread" && (
+              <Card>
+                <CardContent className="space-y-4">
+                  <label className="text-body font-medium">글 형식 선택</label>
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="threadMode"
+                        checked={threadMode === "single"}
+                        onChange={() => setThreadMode("single")}
+                        className="w-4 h-4 text-accent"
+                      />
+                      <div>
+                        <span className="text-body font-medium">단일 포스트</span>
+                        <p className="text-small text-gray-500">하나의 임팩트 있는 포스트로 작성</p>
+                      </div>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="threadMode"
+                        checked={threadMode === "split"}
+                        onChange={() => setThreadMode("split")}
+                        className="w-4 h-4 text-accent"
+                      />
+                      <div>
+                        <span className="text-body font-medium">스레드로 나누기</span>
+                        <p className="text-small text-gray-500">답글 형식으로 연결된 여러 포스트</p>
+                      </div>
+                    </label>
+
+                    {threadMode === "split" && (
+                      <div className="ml-7 flex items-center gap-2">
+                        <span className="text-small text-gray-600">몇 개로 나눌까요?</span>
+                        <div className="flex gap-2">
+                          {[3, 5, 7, 10].map((count) => (
+                            <button
+                              key={count}
+                              type="button"
+                              onClick={() => setThreadCount(count)}
+                              className={`px-3 py-1 rounded-lg text-small font-medium transition-colors ${
+                                threadCount === count
+                                  ? "bg-accent text-white"
+                                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                              }`}
+                            >
+                              {count}개
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <Button
               fullWidth
               size="lg"
@@ -370,6 +580,13 @@ export default function CreatePage() {
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{selectedPlatform?.emoji}</span>
                 <h2 className="text-h2 text-primary">생성된 콘텐츠</h2>
+                {/* 적용된 콘텐츠 유형 배지 */}
+                {contentType && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-accent/10 text-accent text-small font-medium">
+                    {CONTENT_TYPES.find(t => t.id === contentType)?.emoji}
+                    {CONTENT_TYPES.find(t => t.id === contentType)?.name}
+                  </span>
+                )}
               </div>
               <button
                 onClick={handleReset}
@@ -386,6 +603,35 @@ export default function CreatePage() {
                 </pre>
               </CardContent>
             </Card>
+
+            {/* FR-03: 페르소나 기반 생성 안내 배너 */}
+            {hasPersona && personaData && (
+              <Card className="bg-gradient-to-r from-accent/5 to-accent/10 border-accent/20">
+                <CardContent className="space-y-2">
+                  <p className="font-semibold text-gray-900 flex items-center gap-2">
+                    <span>✓</span>
+                    <span>이 콘텐츠는 당신의 페르소나를 기반으로 생성되었습니다</span>
+                  </p>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <p>
+                      <span className="font-medium">적용된 강점:</span>{" "}
+                      {personaData.strengths.slice(0, 3).join(", ")}
+                    </p>
+                    <p>
+                      <span className="font-medium">타겟 독자:</span>{" "}
+                      {personaData.targetAudience}
+                    </p>
+                  </div>
+                  <Link
+                    href="/diagnosis/result"
+                    className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent/80 font-medium transition-colors"
+                  >
+                    페르소나 상세 보기
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
 
             <div className="flex gap-3">
               <Button
@@ -440,5 +686,19 @@ export default function CreatePage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function CreatePage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-gray-400">로딩 중...</div>
+        </main>
+      }
+    >
+      <CreatePageContent />
+    </Suspense>
   );
 }

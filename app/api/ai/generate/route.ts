@@ -164,6 +164,95 @@ Before & After 패턴:
 - 전환적 CTA (블로그, 자료 링크)
 `;
 
+// ========================================
+// 12가지 콘텐츠 유형별 프롬프트
+// ========================================
+const CONTENT_TYPE_PROMPTS: Record<string, string> = {
+  listicle: `
+[글 유형: 리스티클]
+- 반드시 숫자 기반 제목 사용 (예: "3가지", "5개의")
+- 각 항목을 명확히 구분하여 나열
+- 도입→리스트→마무리 구조
+- 각 항목에 구체적 예시나 설명 포함`,
+
+  how_to: `
+[글 유형: HOW-TO 가이드]
+- "~하는 방법", "~하는 N단계" 형식
+- 단계별로 명확한 액션 제시
+- 각 단계에 왜 중요한지 설명
+- 마지막에 실행 후 기대 결과 제시`,
+
+  comparison: `
+[글 유형: A vs B 비교]
+- 두 선택지를 명확히 제시
+- 각각의 장단점 분석
+- 어떤 상황에 뭐가 좋은지 가이드
+- 마지막에 나의 선택과 이유 제시`,
+
+  growth_story: `
+[글 유형: 성장 스토리]
+- Before(과거) 상황 구체적 묘사
+- 전환점이 된 사건/깨달음
+- After(현재) 상황 대비
+- "당신도 할 수 있다" 격려로 마무리`,
+
+  failure_story: `
+[글 유형: 실패담/회고]
+- 실패 상황을 솔직하게 묘사
+- 그 순간의 감정 표현
+- 실패에서 배운 구체적 교훈
+- 현재는 어떻게 달라졌는지`,
+
+  experiment: `
+[글 유형: 실험 기록]
+- "N일간 ~해봤습니다" 형식
+- 시작 전 예상/가설 제시
+- 실제 결과 (숫자 포함)
+- 예상과 다른 점, 배운 인사이트`,
+
+  daily_insight: `
+[글 유형: 일상 인사이트]
+- 일상의 작은 에피소드로 시작
+- "오늘 ~하다가 깨달은 것"
+- 에피소드에서 보편적 교훈 도출
+- 독자도 공감할 수 있는 메시지`,
+
+  paradox: `
+[글 유형: 역설적 진실]
+- "모두가 ~라고 하지만" 으로 시작
+- 일반적 통념 제시
+- "실제로는 ~더라고요" 반전
+- 왜 그런지 근거와 경험 제시`,
+
+  deep_analysis: `
+[글 유형: 심층 분석]
+- 하나의 주제를 깊이있게 파고들기
+- 3-4가지 다른 관점에서 분석
+- 각 관점에 근거나 데이터 포함
+- 종합적인 인사이트로 마무리`,
+
+  empathy: `
+[글 유형: 공감 연결]
+- "혹시 이런 경험 있으신가요?"로 시작
+- 독자가 겪었을 법한 상황 묘사
+- "저도 그랬습니다" 공감
+- 함께 해결해나가는 톤으로 마무리`,
+
+  community_qa: `
+[글 유형: 독자 Q&A]
+- "DM으로 이런 질문을 받았어요"
+- 질문 원문 인용 (가상)
+- 답변을 친절하고 구체적으로
+- 비슷한 고민 가진 분들께 메시지`,
+
+  recommendation: `
+[글 유형: 추천/큐레이션]
+- "~를 위한 N가지 추천"
+- 각 추천 항목의 특징과 장점
+- 왜 이것을 추천하는지 이유
+- 나의 실제 사용 경험 포함`,
+};
+
 const PLATFORM_PROMPTS: Record<string, string> = {
   instagram: `인스타그램 피드/릴스용 캡션을 작성해주세요.
 요구사항:
@@ -192,11 +281,20 @@ const PLATFORM_PROMPTS: Record<string, string> = {
 - AI 검색 최적화를 위한 명확한 답변 구조
 - 이모지 사용하지 마세요 (글자만 작성)`,
 
-  thread: `스레드/X(트위터)용 스레드를 작성해주세요.
+  thread: `X(트위터)/스레드용 포스트를 작성해주세요.
 요구사항:
-- 첫 트윗은 강력한 훅
-- 5-10개의 연결된 트윗
+- 강력한 훅으로 시작
+- 280자 이내의 임팩트 있는 단일 포스트
+- CTA 포함
+- 이모지 사용하지 마세요 (글자만 작성)`,
+
+  // 스레드 분할 모드 (threadCount가 있을 때 사용)
+  thread_split: `X(트위터)/스레드용 연결된 포스트 시리즈를 작성해주세요.
+요구사항:
+- 첫 트윗은 강력한 훅으로 시작
+- {{threadCount}}개의 연결된 트윗으로 구성
 - 각 트윗 280자 이내
+- (1/{{threadCount}}), (2/{{threadCount}}) 형식으로 번호 표시
 - 마지막 트윗에 CTA
 - 이모지 사용하지 마세요 (글자만 작성)`,
 
@@ -376,7 +474,7 @@ export async function POST(request: Request) {
       persona = await getActivePersonaResult(userId);
     }
 
-    const { platform, topic, tone, keywords, target, additionalInfo } = await request.json();
+    const { platform, topic, tone, keywords, target, additionalInfo, threadMode, threadCount, contentType } = await request.json();
 
     if (!topic) {
       return NextResponse.json(
@@ -385,8 +483,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const platformPrompt = PLATFORM_PROMPTS[platform] || PLATFORM_PROMPTS.instagram;
+    // 스레드 분할 모드 처리
+    let platformPrompt = PLATFORM_PROMPTS[platform] || PLATFORM_PROMPTS.instagram;
+    if (platform === "thread" && threadMode === "split" && threadCount) {
+      platformPrompt = PLATFORM_PROMPTS.thread_split.replace(/\{\{threadCount\}\}/g, String(threadCount));
+    }
     const personaContext = buildPersonaContext(persona);
+
+    // 콘텐츠 유형 프롬프트 추가
+    const contentTypePrompt = contentType && CONTENT_TYPE_PROMPTS[contentType]
+      ? CONTENT_TYPE_PROMPTS[contentType]
+      : "";
 
     const prompt = `당신은 뉴스대디 7코드 프레임워크를 마스터한 콘텐츠 에디터입니다.
 사용자의 브레인스토밍을 '조력자 관점'의 완성된 콘텐츠로 변환합니다.
@@ -411,6 +518,7 @@ ${topic}
 
 [플랫폼: ${platform}]
 ${platformPrompt}
+${contentTypePrompt}
 
 ${tone ? `톤앤매너: ${tone}` : ""}
 ${keywords ? `포함할 키워드: ${keywords}` : ""}
@@ -425,7 +533,8 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ""}
 - 마지막에 행동 촉구 + 성공한 미래 비전
 - 바로 올릴 수 있는 완성된 콘텐츠
 - 한국어로 작성
-- 이모지/이모티콘 절대 사용 금지 (글자만 작성)`;
+- 이모지/이모티콘 절대 사용 금지 (글자만 작성)
+- 한자(漢字) 절대 사용 금지. 순한글로만 작성 (예: 周圍→주위, 方法→방법, 問題→문제)`;
 
     const completion = await groq.chat.completions.create({
       messages: [
@@ -448,7 +557,7 @@ ${additionalInfo ? `추가 정보: ${additionalInfo}` : ""}
       await saveContentGeneration(userId, {
         platform,
         topic,
-        additionalInputs: { tone, keywords, target, additionalInfo },
+        additionalInputs: { tone, keywords, target, additionalInfo, contentType },
         personaResultId: persona?.id,
         generatedContent: content,
       });
