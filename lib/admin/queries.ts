@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/server';
 import {
   AdminMember,
   AdminPaidMember,
@@ -24,7 +24,7 @@ import {
 // ==================== Admin Stats ====================
 
 export async function getAdminStats(): Promise<AdminStats> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     { count: totalMembers },
@@ -54,7 +54,7 @@ export async function getMembers(options?: {
   search?: string;
   onboarding?: 'completed' | 'pending';
 }): Promise<{ members: AdminMember[]; total: number }> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const page = options?.page || 1;
   const limit = options?.limit || 10;
   const offset = (page - 1) * limit;
@@ -103,7 +103,7 @@ export async function getPaidMembers(options?: {
   limit?: number;
   search?: string;
 }): Promise<{ members: AdminPaidMember[]; total: number }> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const page = options?.page || 1;
   const limit = options?.limit || 10;
   const offset = (page - 1) * limit;
@@ -189,7 +189,7 @@ export async function getConsultingClients(options?: {
   sortBy?: 'healthScore' | 'name' | 'createdAt';
   order?: 'asc' | 'desc';
 }): Promise<{ clients: ConsultingClient[]; summary: { total: number; inProgress: number; completed: number; needsAttention: number } }> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: profiles, error } = await supabase
     .from('profiles')
@@ -413,7 +413,7 @@ export async function getConsultingClients(options?: {
 }
 
 export async function getConsultingClientDetail(clientId: string): Promise<ConsultingClientDetail | null> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: profile, error } = await supabase
     .from('profiles')
@@ -573,7 +573,7 @@ export async function createConsultingSession(data: {
   materials?: string[];
   notes?: string;
 }): Promise<ConsultingSession | null> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: session, error } = await supabase
     .from('consulting_sessions')
@@ -614,7 +614,7 @@ export async function updateConsultingSession(
     notes: string;
   }>
 ): Promise<boolean> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase
     .from('consulting_sessions')
@@ -641,7 +641,7 @@ export async function getInquiries(options?: {
   page?: number;
   limit?: number;
 }): Promise<{ inquiries: CustomerInquiry[]; total: number }> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const page = options?.page || 1;
   const limit = options?.limit || 20;
   const offset = (page - 1) * limit;
@@ -697,7 +697,7 @@ export async function respondToInquiry(
   response: string,
   status: 'in_progress' | 'resolved' = 'resolved'
 ): Promise<boolean> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase
     .from('customer_inquiries')

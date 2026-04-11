@@ -42,7 +42,8 @@ export default function SignupPage() {
 
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signUp({
+    // 회원가입 (이메일 인증 없이 바로 로그인)
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -56,7 +57,22 @@ export default function SignupPage() {
       return;
     }
 
-    setIsSuccess(true);
+    // 회원가입 성공 시 바로 프로필 생성
+    if (data.user) {
+      // 프로필 생성 (이미 존재하면 무시)
+      await supabase.from("profiles").upsert({
+        id: data.user.id,
+        email: data.user.email,
+        onboarding_completed: true,
+      }, { onConflict: "id" });
+
+      // 대시보드로 이동
+      router.push("/dashboard");
+      router.refresh();
+    } else {
+      // 이메일 인증이 필요한 경우 (Supabase 설정에 따라)
+      setIsSuccess(true);
+    }
   };
 
   const handleGoogleSignup = async () => {

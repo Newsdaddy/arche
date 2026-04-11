@@ -35,24 +35,14 @@ export async function GET(request: Request) {
       } = await supabase.auth.getUser();
 
       if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("onboarding_completed")
-          .eq("id", user.id)
-          .single();
+        // 프로필이 없으면 생성, 있으면 업데이트 (upsert)
+        await supabase.from("profiles").upsert({
+          id: user.id,
+          email: user.email,
+          onboarding_completed: true,
+        }, { onConflict: "id" });
 
-        if (profile?.onboarding_completed) {
-          return NextResponse.redirect(`${baseUrl}${nextPath}`);
-        }
-
-        if (!profile) {
-          await supabase.from("profiles").insert({
-            id: user.id,
-            email: user.email,
-            onboarding_completed: true,
-          });
-          return NextResponse.redirect(`${baseUrl}${nextPath}`);
-        }
+        return NextResponse.redirect(`${baseUrl}${nextPath}`);
       }
 
       return NextResponse.redirect(`${baseUrl}${nextPath}`);
