@@ -18,11 +18,6 @@ const serviceItems = [
     href: "/create",
     description: "브레인스토밍을 완성된 글로 변환",
   },
-  {
-    label: "8주 프로그램",
-    href: "/consulting/curriculum",
-    description: "체계적인 커리큘럼으로 콘텐츠 성장",
-  },
 ];
 
 export default function Header() {
