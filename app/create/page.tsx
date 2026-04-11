@@ -542,15 +542,15 @@ function CreatePageContent() {
                 {!contentType && (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {getFilteredContentTypes().map((type) => (
-                      <div key={type.id} className="relative group">
+                      <div key={type.id} className="relative group h-full">
                         <button
                           type="button"
                           onClick={() => setContentType(type.id)}
-                          className="w-full p-4 rounded-xl border-2 text-left transition-all border-gray-200 hover:border-accent/50 hover:bg-accent/5"
+                          className="w-full h-full min-h-[120px] p-4 rounded-xl border-2 text-left transition-all border-gray-200 hover:border-accent/50 hover:bg-accent/5 flex flex-col"
                         >
                           <span className="text-2xl">{type.emoji}</span>
                           <p className="font-semibold mt-2 text-white">{type.name}</p>
-                          <p className="text-small text-gray-400 mt-1">{type.description}</p>
+                          <p className="text-small text-gray-400 mt-1 flex-1">{type.description}</p>
                         </button>
                         {/* 호버 툴팁 */}
                         <div className="absolute left-0 right-0 bottom-full mb-2 p-3 bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
