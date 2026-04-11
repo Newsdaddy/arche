@@ -72,7 +72,7 @@ export async function POST(request: Request) {
 
   const { data: plan, error: planError } = await admin
     .from("plans")
-    .select("id, price, duration_days, daily_limit")
+    .select("id, price, duration_days, daily_limit, report_limit")
     .eq("id", payment.plan_id)
     .single();
 
@@ -140,12 +140,35 @@ export async function POST(request: Request) {
     expiresAt = new Date(now.getTime() + durationDays * 86_400_000);
   }
 
+  // 기존 구독의 report 사용량 유지 (새 구매 시 report_limit만 추가)
+  const existingReportsUsed = existingSub ?
+    (await admin
+      .from("subscriptions")
+      .select("reports_used")
+      .eq("user_id", user.id)
+      .maybeSingle()
+    ).data?.reports_used ?? 0 : 0;
+
+  // 기존 report_limit에 새 플랜의 limit 추가 (기간 연장 시)
+  const existingReportLimit = existingSub?.plan === "pro" && existingEnd && existingEnd > now
+    ? (await admin
+        .from("subscriptions")
+        .select("report_limit")
+        .eq("user_id", user.id)
+        .maybeSingle()
+      ).data?.report_limit ?? 0
+    : 0;
+
+  const newReportLimit = existingReportLimit + (plan.report_limit ?? 0);
+
   const row = {
     user_id: user.id,
     plan: "pro",
     status: "active" as const,
     plan_id: plan.id,
     daily_limit: plan.daily_limit,
+    report_limit: newReportLimit,
+    reports_used: existingReportsUsed,
     payment_provider: "toss",
     current_period_start: now.toISOString(),
     current_period_end: expiresAt.toISOString(),

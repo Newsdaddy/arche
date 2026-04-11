@@ -176,3 +176,48 @@ export interface DiagnosisSaveResponse {
   id?: string;
   error?: string;
 }
+
+// ===== Tiered Report System Types =====
+
+// 프리뷰 데이터 (무료 사용자에게 표시)
+export interface PreviewData {
+  // 아키타입 기본 정보
+  archetypeId: string;
+  archetypeName: string;
+  archetypeEmoji: string;
+  archetypeTagline: string;
+  archetypeDescription: string; // 간단한 설명 (2-3문장)
+
+  // 되고 싶은 모습 (idealImage)
+  idealImage: string;
+
+  // 핵심 강점 (상위 3개)
+  topStrengths: string[];
+
+  // ICP 요약 (한 줄)
+  icpSummary: string;
+
+  // Content Pillar 이름만 (설명 X)
+  pillarNames: string[];
+
+  // 진단 메타 정보
+  diagnosisType: "quick" | "deep";
+  createdAt: string;
+}
+
+// 리포트 액세스 상태
+export interface ReportAccessInfo {
+  isUnlocked: boolean;
+  isAdmin: boolean;
+  reportLimit: number;
+  reportsUsed: number;
+  remainingReports: number;
+  hasActiveSubscription: boolean;
+}
+
+// 리포트 언락 API 응답
+export interface UnlockReportResponse {
+  success: boolean;
+  error?: string;
+  accessInfo?: ReportAccessInfo;
+}

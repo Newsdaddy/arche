@@ -178,3 +178,113 @@ export async function resetUsage(
   const { error } = await query;
   return !error;
 }
+
+// ===== 리포트 액세스 관련 (클라이언트) =====
+
+// Admin 이메일 목록 (무제한 액세스)
+export const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
+
+// Admin 여부 확인 (클라이언트용)
+export function isAdminEmail(email: string | undefined): boolean {
+  return !!email && ADMIN_EMAILS.includes(email);
+}
+
+// 리포트 액세스 정보 타입
+export interface ReportAccessInfo {
+  isUnlocked: boolean;
+  isAdmin: boolean;
+  reportLimit: number;
+  reportsUsed: number;
+  remainingReports: number;
+  hasActiveSubscription: boolean;
+}
+
+// 클라이언트용: 리포트 액세스 정보 조회 (API 호출)
+export async function fetchReportAccess(
+  personaResultId: string
+): Promise<ReportAccessInfo | null> {
+  try {
+    const res = await fetch(`/api/diagnosis/report-access?id=${personaResultId}`);
+    const data = await res.json();
+    if (data.success && data.accessInfo) {
+      return data.accessInfo;
+    }
+    return null;
+  } catch (e) {
+    console.error("Failed to fetch report access:", e);
+    return null;
+  }
+}
+
+// 클라이언트용: 리포트 언락 요청 (API 호출)
+export async function unlockReport(
+  personaResultId: string
+): Promise<{ success: boolean; accessInfo?: ReportAccessInfo; error?: string }> {
+  try {
+    const res = await fetch("/api/diagnosis/unlock", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ personaResultId }),
+    });
+    return await res.json();
+  } catch (e) {
+    console.error("Failed to unlock report:", e);
+    return { success: false, error: "언락 요청에 실패했습니다." };
+  }
+}
+
+// 페르소나 요약 정보 타입
+export interface PersonaSummary {
+  archetypeName: string;
+  strengths: string[];
+  targetAudience: string;
+  contentPillars: string[];
+}
+
+// 클라이언트용: 활성 페르소나 요약 정보 조회
+export async function getActivePersonaClient(
+  userId: string
+): Promise<PersonaSummary | null> {
+  const supabase = createClient();
+
+  // profiles에서 active_persona_result_id 확인
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("active_persona_result_id")
+    .eq("id", userId)
+    .single();
+
+  let personaData = null;
+
+  if (profile?.active_persona_result_id) {
+    const { data } = await supabase
+      .from("persona_results")
+      .select("archetype_name, strengths, icp_data, content_pillars")
+      .eq("id", profile.active_persona_result_id)
+      .single();
+    personaData = data;
+  } else {
+    // 최신 결과 조회
+    const { data } = await supabase
+      .from("persona_results")
+      .select("archetype_name, strengths, icp_data, content_pillars")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+    personaData = data;
+  }
+
+  if (!personaData) return null;
+
+  // PersonaSummary 형식으로 변환
+  const icpData = personaData.icp_data as { summary?: string } | null;
+  const contentPillars = personaData.content_pillars as Array<{ name?: string }> | null;
+
+  return {
+    archetypeName: personaData.archetype_name || "페르소나",
+    strengths: Array.isArray(personaData.strengths) ? personaData.strengths : [],
+    targetAudience: icpData?.summary || "타겟 독자",
+    contentPillars: contentPillars?.map((p) => p.name || "").filter(Boolean) || [],
+  };
+}

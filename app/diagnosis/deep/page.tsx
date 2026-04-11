@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import QuestionCard from "@/components/diagnosis/QuestionCard";
 import ProgressTracker from "@/components/diagnosis/ProgressTracker";
+import AnalysisLoadingScreen from "@/components/diagnosis/AnalysisLoadingScreen";
 import { SECTIONS, getQuestionsBySection, TOTAL_QUESTIONS } from "@/lib/diagnosis/questions";
 
 export default function DeepDiagnosisPage() {
@@ -128,6 +129,9 @@ export default function DeepDiagnosisPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* 분석 로딩 화면 */}
+      <AnalysisLoadingScreen isVisible={isSubmitting} />
+
       {/* 헤더 */}
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">

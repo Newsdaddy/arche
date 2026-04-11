@@ -1,6 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { UsageCheckResult, UsageLimits } from "@/types";
 
+// Admin 이메일 목록 (무제한 액세스)
+export const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
+
+// Admin 여부 확인
+export function isAdmin(email: string | undefined): boolean {
+  return !!email && ADMIN_EMAILS.includes(email);
+}
+
 // 사용량 제한 상수 (무료 / 레거시 Pro 기준)
 export const USAGE_LIMITS: Record<"free" | "pro", UsageLimits> = {
   free: {
@@ -212,4 +220,137 @@ export async function saveContentGeneration(
     });
 
   return !error;
+}
+
+// ===== 리포트 언락 관련 함수 =====
+
+// 리포트 언락 상태 타입
+export interface ReportAccessStatus {
+  isUnlocked: boolean;
+  isAdmin: boolean;
+  reportLimit: number;
+  reportsUsed: number;
+  remainingReports: number;
+  hasActiveSubscription: boolean;
+  subscriptionId?: string;
+}
+
+// 특정 페르소나 리포트의 언락 상태 확인
+export async function checkReportAccess(
+  userId: string,
+  userEmail: string | undefined,
+  personaResultId: string
+): Promise<ReportAccessStatus> {
+  const supabase = await createClient();
+
+  // Admin 체크 - Admin은 무제한
+  if (isAdmin(userEmail)) {
+    return {
+      isUnlocked: true,
+      isAdmin: true,
+      reportLimit: 999,
+      reportsUsed: 0,
+      remainingReports: 999,
+      hasActiveSubscription: true,
+    };
+  }
+
+  // 이미 언락된 리포트인지 확인
+  const { data: unlock } = await supabase
+    .from("report_unlocks")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("persona_result_id", personaResultId)
+    .maybeSingle();
+
+  // 활성 구독 정보 확인
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("id, plan, status, current_period_end, report_limit, reports_used")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  const now = new Date();
+  const hasActiveSubscription =
+    subscription?.status === "active" &&
+    subscription?.plan === "pro" &&
+    (!subscription.current_period_end ||
+      new Date(subscription.current_period_end) > now);
+
+  const reportLimit = subscription?.report_limit ?? 0;
+  const reportsUsed = subscription?.reports_used ?? 0;
+  const remainingReports = Math.max(0, reportLimit - reportsUsed);
+
+  return {
+    isUnlocked: !!unlock,
+    isAdmin: false,
+    reportLimit,
+    reportsUsed,
+    remainingReports,
+    hasActiveSubscription,
+    subscriptionId: subscription?.id,
+  };
+}
+
+// 사용자의 전체 리포트 액세스 상태 (구독 기반)
+export async function getUserReportQuota(
+  userId: string,
+  userEmail: string | undefined
+): Promise<{
+  isAdmin: boolean;
+  reportLimit: number;
+  reportsUsed: number;
+  remainingReports: number;
+  hasActiveSubscription: boolean;
+  planId?: string;
+}> {
+  const supabase = await createClient();
+
+  // Admin 체크
+  if (isAdmin(userEmail)) {
+    return {
+      isAdmin: true,
+      reportLimit: 999,
+      reportsUsed: 0,
+      remainingReports: 999,
+      hasActiveSubscription: true,
+    };
+  }
+
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("plan, status, current_period_end, report_limit, reports_used, plan_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  const now = new Date();
+  const hasActiveSubscription =
+    subscription?.status === "active" &&
+    subscription?.plan === "pro" &&
+    (!subscription.current_period_end ||
+      new Date(subscription.current_period_end) > now);
+
+  const reportLimit = subscription?.report_limit ?? 0;
+  const reportsUsed = subscription?.reports_used ?? 0;
+
+  return {
+    isAdmin: false,
+    reportLimit,
+    reportsUsed,
+    remainingReports: Math.max(0, reportLimit - reportsUsed),
+    hasActiveSubscription,
+    planId: subscription?.plan_id,
+  };
+}
+
+// 사용자가 언락한 모든 리포트 ID 목록 조회
+export async function getUnlockedReportIds(userId: string): Promise<string[]> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("report_unlocks")
+    .select("persona_result_id")
+    .eq("user_id", userId);
+
+  return data?.map((r) => r.persona_result_id) ?? [];
 }

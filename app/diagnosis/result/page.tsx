@@ -1,44 +1,64 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { DiagnosisResult } from "@/types/diagnosis";
+import { DiagnosisResult, PreviewData, ReportAccessInfo } from "@/types/diagnosis";
 import { ARCHETYPES } from "@/lib/diagnosis/archetypes";
-import ArchetypeCard from "@/components/diagnosis/ArchetypeCard";
-import SWOTChart from "@/components/diagnosis/SWOTChart";
-import SkillIntersection from "@/components/diagnosis/SkillIntersection";
-import ICPCard from "@/components/diagnosis/ICPCard";
-import ContentPillars from "@/components/diagnosis/ContentPillars";
-import ContentTemplates from "@/components/diagnosis/ContentTemplates";
+import { generatePreview, generatePreviewFromDb } from "@/lib/diagnosis/preview";
+import PreviewSection from "@/components/diagnosis/PreviewSection";
+import PremiumSection from "@/components/diagnosis/PremiumSection";
+import UnlockBanner from "@/components/diagnosis/UnlockBanner";
 import MethodologySection from "@/components/diagnosis/MethodologySection";
 
 function DiagnosisResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [result, setResult] = useState<DiagnosisResult | null>(null);
+  const [preview, setPreview] = useState<PreviewData | null>(null);
+  const [accessInfo, setAccessInfo] = useState<ReportAccessInfo | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [resultId, setResultId] = useState<string | null>(null);
+
+  // 액세스 정보 로드
+  const loadAccessInfo = useCallback(async (personaResultId: string) => {
+    try {
+      const res = await fetch(`/api/diagnosis/report-access?id=${personaResultId}`);
+      const data = await res.json();
+      if (data.accessInfo) {
+        setAccessInfo(data.accessInfo);
+      }
+    } catch (e) {
+      console.error("Failed to load access info:", e);
+    }
+  }, []);
 
   useEffect(() => {
     const loadResult = async () => {
       // 0. URL의 id 파라미터로 저장된 결과 불러오기
-      const resultId = searchParams.get("id");
-      if (resultId) {
+      const id = searchParams.get("id");
+      if (id) {
+        setResultId(id);
         try {
           const { createClient } = await import("@/lib/supabase/client");
           const supabase = createClient();
           const { data, error } = await supabase
             .from("persona_results")
             .select("*")
-            .eq("id", resultId)
+            .eq("id", id)
             .single();
 
           if (!error && data) {
             // DB 데이터를 DiagnosisResult 형식으로 변환
             const dbResult = convertDbResult(data);
             setResult(dbResult);
+            setPreview(generatePreviewFromDb(data));
             setIsSaved(true);
+
+            // 액세스 정보 로드
+            await loadAccessInfo(id);
             return;
           }
         } catch (e) {
@@ -50,7 +70,9 @@ function DiagnosisResultContent() {
       const storedResult = sessionStorage.getItem("diagnosisResult");
       if (storedResult) {
         try {
-          setResult(JSON.parse(storedResult));
+          const parsed = JSON.parse(storedResult) as DiagnosisResult;
+          setResult(parsed);
+          setPreview(generatePreview(parsed));
           return;
         } catch (e) {
           console.error("Failed to parse stored result:", e);
@@ -65,6 +87,7 @@ function DiagnosisResultContent() {
           // 기존 답변을 새 형식의 결과로 변환
           const legacyResult = convertLegacyAnswers(answers);
           setResult(legacyResult);
+          setPreview(generatePreview(legacyResult));
           return;
         } catch (e) {
           console.error("Failed to parse URL data:", e);
@@ -76,7 +99,7 @@ function DiagnosisResultContent() {
     };
 
     loadResult();
-  }, [router, searchParams]);
+  }, [router, searchParams, loadAccessInfo]);
 
   // DB에서 불러온 결과를 DiagnosisResult 형식으로 변환
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -181,6 +204,11 @@ function DiagnosisResultContent() {
       const data = await response.json();
       if (data.success) {
         setIsSaved(true);
+        setResultId(data.id);
+        // 저장 후 액세스 정보 로드
+        if (data.id) {
+          await loadAccessInfo(data.id);
+        }
         alert("결과가 저장되었습니다!");
       } else {
         alert(data.error || "저장에 실패했습니다.");
@@ -193,13 +221,42 @@ function DiagnosisResultContent() {
     }
   };
 
-  if (!result) {
+  const handleUnlock = async () => {
+    if (!resultId || isUnlocking) return;
+
+    setIsUnlocking(true);
+    try {
+      const response = await fetch("/api/diagnosis/unlock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personaResultId: resultId }),
+      });
+
+      const data = await response.json();
+      if (data.success && data.accessInfo) {
+        setAccessInfo(data.accessInfo);
+      } else {
+        alert(data.error || "열람에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("언락 실패:", error);
+      alert("열람에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsUnlocking(false);
+    }
+  };
+
+  if (!result || !preview) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
       </div>
     );
   }
+
+  const isUnlocked = accessInfo?.isUnlocked || accessInfo?.isAdmin || false;
+  const canUnlock = (accessInfo?.remainingReports ?? 0) > 0 && (accessInfo?.hasActiveSubscription ?? false);
+  const remainingReports = accessInfo?.remainingReports ?? 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -224,41 +281,34 @@ function DiagnosisResultContent() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {/* 아키타입 결과 */}
-        <ArchetypeCard archetype={result.archetype} showTemplates={false} />
-
-        {/* SWOT 분석 */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span>📊</span>
-            <span>SWOT 분석</span>
-          </h3>
-          <SWOTChart
-            strengths={result.swot.strengths}
-            weaknesses={result.swot.weaknesses}
-            opportunities={result.swot.opportunities}
-            threats={result.swot.threats}
-            mixStrategies={result.swotMix}
-          />
-        </div>
-
-        {/* 능력 교차점 */}
-        {result.skillIntersection.skills.length > 0 && (
-          <SkillIntersection
-            skills={result.skillIntersection.skills}
-            trend={result.skillIntersection.trend}
-            uniquePosition={result.skillIntersection.uniquePosition}
+        {/* 언락 배너 (저장된 결과인 경우에만) */}
+        {isSaved && accessInfo && (
+          <UnlockBanner
+            isUnlocked={isUnlocked}
+            canUnlock={canUnlock}
+            remainingReports={remainingReports}
+            onUnlock={handleUnlock}
+            isLoading={isUnlocking}
           />
         )}
 
-        {/* ICP */}
-        <ICPCard icp={result.icp} />
+        {/* Preview Section (항상 표시) */}
+        <PreviewSection
+          preview={preview}
+          onUnlock={handleUnlock}
+          canUnlock={canUnlock}
+          remainingReports={remainingReports}
+          isUnlocked={isUnlocked}
+        />
 
-        {/* Content Pillars */}
-        <ContentPillars pillars={result.contentPillars} />
-
-        {/* 콘텐츠 템플릿 */}
-        <ContentTemplates templates={result.contentTemplates} />
+        {/* Premium Section (잠금/언락 상태에 따라) */}
+        <PremiumSection
+          result={result}
+          isUnlocked={isUnlocked}
+          onUnlock={handleUnlock}
+          canUnlock={canUnlock}
+          remainingReports={remainingReports}
+        />
 
         {/* CTA 버튼들 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -271,7 +321,6 @@ function DiagnosisResultContent() {
           </Link>
           <button
             onClick={() => {
-              // PDF 다운로드 기능 (추후 구현)
               window.print();
             }}
             className="flex items-center justify-center gap-2 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"

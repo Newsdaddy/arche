@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ContentPillar } from "@/types/diagnosis";
 
 interface ContentPillarsProps {
@@ -28,11 +29,18 @@ export default function ContentPillars({ pillars }: ContentPillarsProps) {
           >
             <div className="flex items-start gap-3">
               <span className="text-2xl">{pillarIcons[idx] || "📌"}</span>
-              <div>
+              <div className="flex-1">
                 <h5 className="font-semibold text-gray-900 mb-1">
                   {pillar.name}
                 </h5>
-                <p className="text-sm text-gray-600">{pillar.description}</p>
+                <p className="text-sm text-gray-600 mb-2">{pillar.description}</p>
+                <Link
+                  href={`/create?topic=${encodeURIComponent(pillar.name + ": " + pillar.description)}&pillar=true`}
+                  className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent/80 font-medium transition-colors"
+                >
+                  이 주제로 글쓰기
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
           </div>

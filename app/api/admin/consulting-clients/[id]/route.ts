@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const ADMIN_EMAILS = ["bjchung90@gmail.com", "admin@newsdaddy.com"];
+const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
 
 export async function GET(
   request: NextRequest,
