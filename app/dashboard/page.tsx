@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import ProgressBar from "@/components/ProgressBar";
 import StreakCounter from "@/components/StreakCounter";
+import ConsultingSection from "@/components/dashboard/ConsultingSection";
 
 interface Profile {
   id: string;
@@ -23,6 +24,7 @@ interface Profile {
   current_day: number;
   streak: number;
   total_uploads: number;
+  customer_type?: string;
 }
 
 interface PersonaResult {
@@ -314,6 +316,19 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+        )}
+
+        {/* 상담 고객 전용 섹션 */}
+        {profile.customer_type === "consulting" && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              🎯 컨설팅 현황
+              <span className="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">
+                상담 고객 전용
+              </span>
+            </h2>
+            <ConsultingSection />
+          </div>
         )}
 
         {/* 페르소나 정보 */}
