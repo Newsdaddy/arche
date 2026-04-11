@@ -20,9 +20,12 @@ const serviceItems = [
   },
 ];
 
+const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
+
 export default function Header() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServiceOpen, setIsServiceOpen] = useState(false);
 
@@ -31,6 +34,7 @@ export default function Header() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       setIsLoggedIn(!!user);
+      setIsAdmin(!!user && ADMIN_EMAILS.includes(user.email || ""));
     }
     checkAuth();
   }, []);
@@ -114,6 +118,13 @@ export default function Header() {
           <div className="hidden lg:flex items-center gap-3">
             {isLoggedIn ? (
               <>
+                {isAdmin && (
+                  <Link href="/admin">
+                    <Button variant="ghost" size="md">
+                      어드민
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/dashboard">
                   <Button variant="ghost" size="md">
                     대시보드
@@ -197,6 +208,11 @@ export default function Header() {
               <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2 px-4">
                 {isLoggedIn ? (
                   <>
+                    {isAdmin && (
+                      <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
+                        <Button fullWidth variant="primary">어드민</Button>
+                      </Link>
+                    )}
                     <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
                       <Button fullWidth variant="outline">대시보드</Button>
                     </Link>
