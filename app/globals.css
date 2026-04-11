@@ -21,6 +21,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* 모든 요소 각진 디자인 (라운드 제거) */
+  *,
+  *::before,
+  *::after {
+    border-radius: 0 !important;
+  }
 }
 
 @layer components {
