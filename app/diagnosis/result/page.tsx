@@ -313,11 +313,11 @@ function DiagnosisResultContent() {
         {/* CTA 버튼들 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
-            href="/create"
+            href="/"
             className="flex items-center justify-center gap-2 py-4 bg-accent text-white font-semibold rounded-xl hover:bg-accent/90 transition-colors"
           >
-            <span>✍️</span>
-            <span>콘텐츠 생성기로 바로 만들기</span>
+            <span>🎯</span>
+            <span>AX 워크숍 알아보기</span>
           </Link>
           <button
             onClick={() => {

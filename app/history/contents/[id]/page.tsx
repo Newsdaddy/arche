@@ -146,8 +146,8 @@ export default function ContentDetailPage() {
           >
             목록으로
           </Button>
-          <Button fullWidth onClick={() => router.push("/create")}>
-            새 콘텐츠 생성
+          <Button fullWidth onClick={() => router.push("/")}>
+            AX 워크숍 알아보기
           </Button>
         </div>
       </div>

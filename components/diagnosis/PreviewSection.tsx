@@ -146,20 +146,20 @@ export default function PreviewSection({
           </div>
         )}
 
-        {/* 글쓰기 연결 */}
+        {/* 컨설팅 연결 */}
         <div className="bg-gray-50 rounded-2xl p-6 text-center">
           <p className="text-gray-600 mb-4">
-            프리뷰만으로도 충분히 글을 쓸 수 있어요!
+            진단 결과를 바탕으로 더 전문적인 컨설팅이 필요하신가요?
           </p>
           <Link
-            href="/create"
+            href="/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-semibold rounded-xl hover:bg-accent/90 transition-colors"
           >
-            <span>✍️</span>
-            <span>이 페르소나로 글 생성하기</span>
+            <span>🎯</span>
+            <span>AX 워크숍 알아보기</span>
           </Link>
           <p className="text-sm text-gray-400 mt-2">
-            서버에서 전체 페르소나 데이터를 활용하므로 품질은 동일합니다
+            AI로 실무를 혁신하는 맞춤형 기업 강의/세미나
           </p>
         </div>
       </section>

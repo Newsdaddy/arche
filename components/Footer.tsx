@@ -14,45 +14,45 @@ export default function Footer() {
               <span className="text-accent">A</span>rche
             </Link>
             <p className="text-body text-primary-500 mt-3 max-w-sm">
-              정밀한 진단과 분석으로 나만의 소셜미디어 콘셉트를 찾고,
+              AI로 실무를 혁신하고, 나만의 콘텐츠 콘셉트를 찾는
               그 첫 시작을 함께합니다.
             </p>
           </div>
 
-          {/* 플랫폼 */}
+          {/* 서비스 */}
           <div>
-            <h3 className="font-semibold text-white mb-4">플랫폼</h3>
+            <h3 className="font-semibold text-white mb-4">서비스</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/diagnosis" className="text-body text-primary-500 hover:text-white transition-colors">
+                <Link href="/" className="text-body text-primary-500 hover:text-white transition-colors">
+                  AX 워크숍
+                </Link>
+              </li>
+              <li>
+                <Link href="/persona" className="text-body text-primary-500 hover:text-white transition-colors">
                   페르소나 진단
-                </Link>
-              </li>
-              <li>
-                <Link href="/create" className="text-body text-primary-500 hover:text-white transition-colors">
-                  콘텐츠 생성
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="text-body text-primary-500 hover:text-white transition-colors">
-                  가격 플랜
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* 컨설팅 */}
-          <div>
-            <h3 className="font-semibold text-white mb-4">컨설팅</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/consulting" className="text-body text-primary-500 hover:text-white transition-colors">
-                  컨설팅 안내
                 </Link>
               </li>
               <li>
                 <Link href="/consulting/curriculum" className="text-body text-primary-500 hover:text-white transition-colors">
                   8주 커리큘럼
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* 안내 */}
+          <div>
+            <h3 className="font-semibold text-white mb-4">안내</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/about" className="text-body text-primary-500 hover:text-white transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="text-body text-primary-500 hover:text-white transition-colors">
+                  가격 플랜
                 </Link>
               </li>
             </ul>

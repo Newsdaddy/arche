@@ -330,12 +330,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 gap-4">
           <Card
             hoverable
-            onClick={() => router.push("/create")}
+            onClick={() => router.push("/")}
             className="text-center cursor-pointer"
           >
             <CardContent className="py-6">
-              <span className="text-3xl">✨</span>
-              <p className="text-body font-medium mt-2 text-white">콘텐츠 생성</p>
+              <span className="text-3xl">🎯</span>
+              <p className="text-body font-medium mt-2 text-white">AX 워크숍</p>
             </CardContent>
           </Card>
           <Card
