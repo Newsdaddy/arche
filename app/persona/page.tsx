@@ -161,8 +161,8 @@ export default function Home() {
   return (
     <main className="flex-1">
       {/* ============ Hero Section ============ */}
-      <section className="relative overflow-hidden min-h-screen pt-20" style={{ backgroundColor: '#000000' }}>
-        <div className="container-wide py-20 md:py-32 relative z-10">
+      <section className="relative overflow-hidden pt-20 pb-24" style={{ backgroundColor: '#000000' }}>
+        <div className="container-wide relative z-10">
           {/* 테스트 시작 전 */}
           {!testStarted && !testComplete && (
             <div>

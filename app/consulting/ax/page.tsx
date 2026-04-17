@@ -197,8 +197,8 @@ export default function AXConsultingPage() {
   return (
     <main className="flex-1">
       {/* Hero */}
-      <section className="relative overflow-hidden min-h-screen pt-20" style={{ backgroundColor: '#000000' }}>
-        <div className="container-wide py-20 md:py-32 relative z-10">
+      <section className="relative overflow-hidden pt-20 pb-24" style={{ backgroundColor: '#000000' }}>
+        <div className="container-wide relative z-10">
           <div className="max-w-3xl">
             <p className="text-accent text-lg font-semibold tracking-wider mb-6">AX 1:1 CONSULTING</p>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
