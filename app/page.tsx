@@ -193,7 +193,7 @@ export default function Home() {
               </p>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
               AI로 실무를 혁신하는<br />
               AX 워크숍
             </h1>
