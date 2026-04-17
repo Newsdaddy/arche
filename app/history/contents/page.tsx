@@ -68,10 +68,10 @@ export default function ContentsHistoryPage() {
             <CardContent className="text-center py-12">
               <p className="text-gray-500">아직 생성한 콘텐츠가 없습니다.</p>
               <button
-                onClick={() => router.push("/create")}
+                onClick={() => router.push("/diagnosis")}
                 className="mt-4 text-accent hover:underline"
               >
-                콘텐츠 생성하러 가기 →
+                페르소나 진단 시작하기 →
               </button>
             </CardContent>
           </Card>

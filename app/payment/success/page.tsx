@@ -88,9 +88,9 @@ function SuccessInner() {
             </p>
           )}
           <div className="flex flex-col gap-3 w-full">
-            <Link href="/create" className="w-full">
+            <Link href="/diagnosis" className="w-full">
               <Button size="lg" fullWidth>
-                콘텐츠 만들기
+                페르소나 진단 시작
               </Button>
             </Link>
             <Link href="/dashboard" className="w-full">

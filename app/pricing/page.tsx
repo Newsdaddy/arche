@@ -100,7 +100,7 @@ export default function PricingPage() {
     }
 
     if (!isPaid) {
-      router.push("/create");
+      router.push("/diagnosis");
       return;
     }
 
