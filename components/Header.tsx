@@ -65,14 +65,14 @@ export default function Header() {
 
           {/* 데스크톱 네비게이션 */}
           <nav className="hidden lg:flex items-center gap-8 ml-36">
-            {/* AX (메인) */}
+            {/* AX 워크샵 (메인) */}
             <Link
               href="/"
               className={`px-1 py-2 text-body font-medium transition-colors ${
                 isActive("/") && pathname === "/" ? "text-white" : "text-primary-400 hover:text-white"
               }`}
             >
-              AX
+              AX 워크샵
             </Link>
 
             {/* 컨설팅 드롭다운 */}
@@ -174,7 +174,7 @@ export default function Header() {
         {isMenuOpen && (
           <div className="lg:hidden py-4 border-t border-white/10 animate-fade-in">
             <nav className="flex flex-col gap-1">
-              {/* AX */}
+              {/* AX 워크샵 */}
               <Link
                 href="/"
                 onClick={() => setIsMenuOpen(false)}
@@ -182,7 +182,7 @@ export default function Header() {
                   pathname === "/" ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                AX
+                AX 워크샵
               </Link>
 
               {/* 컨설팅 서브메뉴 */}

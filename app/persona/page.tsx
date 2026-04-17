@@ -165,40 +165,64 @@ export default function Home() {
         <div className="container-wide py-20 md:py-32 relative z-10">
           {/* 테스트 시작 전 */}
           {!testStarted && !testComplete && (
-            <div className="max-w-3xl">
-              {/* 브랜드 뱃지 */}
-              <div className="mb-10">
-                <p className="text-accent text-lg font-semibold tracking-wider mb-2">SOCIAL PERSONA</p>
+            <div>
+              <div className="max-w-3xl">
+                {/* 브랜드 뱃지 */}
+                <div className="mb-10">
+                  <p className="text-accent text-lg font-semibold tracking-wider mb-2">SOCIAL PERSONA</p>
+                </div>
+
+                {/* 헤드라인 */}
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+                  나를 알아야<br />
+                  콘텐츠가 보인다
+                </h1>
+
+                {/* 구분선 */}
+                <div className="w-12 h-[2px] bg-white/30 mb-6" />
+
+                {/* 서브 카피 */}
+                <p className="text-lg text-white/60 mb-10 max-w-xl">
+                  5가지 프레임워크 심층 진단으로<br />
+                  당신만의 콘텐츠 DNA를 찾아드립니다.
+                </p>
+
+                {/* CTA 버튼들 */}
+                <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                  <Link
+                    href="/diagnosis"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors"
+                  >
+                    무료 진단 시작하기
+                    <span className="text-lg">→</span>
+                  </Link>
+                </div>
               </div>
 
-              {/* 헤드라인 */}
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-                나를 알아야<br />
-                콘텐츠가 보인다
-              </h1>
-
-              {/* 구분선 */}
-              <div className="w-12 h-[2px] bg-white/30 mb-6" />
-
-              {/* 서브 카피 */}
-              <p className="text-lg text-white/60 mb-10 max-w-xl">
-                5가지 프레임워크 심층 진단으로<br />
-                당신만의 콘텐츠 DNA를 찾아드립니다.
-              </p>
-
-              {/* CTA 버튼들 */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/diagnosis"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors"
-                >
-                  무료 진단 시작하기
-                  <span className="text-lg">→</span>
-                </Link>
+              {/* 3가지 핵심 요소 */}
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="border border-white/20 rounded-2xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-2">5가지 프레임워크 진단</h3>
+                  <p className="text-white/60">
+                    SWOT, Hero&apos;s Journey, Enneagram, VPC, Ikigai로 콘텐츠 DNA 분석
+                  </p>
+                </div>
+                <div className="border border-white/20 rounded-2xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-2">벤치마킹 매칭</h3>
+                  <p className="text-white/60">
+                    당신과 맞는 콘텐츠 타입과 인플루언서 추천
+                  </p>
+                </div>
+                <div className="border border-white/20 rounded-2xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-2">지속 업데이트</h3>
+                  <p className="text-white/60">
+                    새로운 트렌드와 인플루언서 계속 매칭
+                  </p>
+                </div>
               </div>
 
               {/* 빠른 테스트 링크 */}
-              <div className="mt-8">
+              <div>
                 <button
                   onClick={() => setTestStarted(true)}
                   className="text-white/50 hover:text-white text-sm transition-colors"
@@ -361,58 +385,6 @@ export default function Home() {
               </div>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* ============ Persona SaaS Section ============ */}
-      <section className="section-sm" style={{ backgroundColor: '#000000' }}>
-        <div className="container-wide">
-          <div className="max-w-3xl mb-12">
-            <p className="text-accent text-sm font-medium tracking-wider mb-4">PERSONA SAAS</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
-              나를 알아야<br />
-              콘텐츠가 보인다
-            </h2>
-            <p className="text-lg text-white/60">
-              심층 진단 + 벤치마킹 인플루언서 매칭
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <div className="border border-white/20 rounded-2xl p-6">
-              <span className="text-3xl mb-4 block">🔍</span>
-              <h3 className="text-xl font-bold text-white mb-2">5가지 프레임워크 진단</h3>
-              <p className="text-white/60">
-                SWOT, Hero&apos;s Journey, Enneagram, VPC, Ikigai로 당신의 콘텐츠 DNA를 분석합니다.
-              </p>
-            </div>
-
-            <div className="border border-white/20 rounded-2xl p-6">
-              <span className="text-3xl mb-4 block">🎯</span>
-              <h3 className="text-xl font-bold text-white mb-2">벤치마킹 매칭</h3>
-              <p className="text-white/60">
-                당신과 맞는 콘텐츠 타입과 인플루언서를 추천해드립니다.
-              </p>
-            </div>
-
-            <div className="border border-white/20 rounded-2xl p-6">
-              <span className="text-3xl mb-4 block">🔄</span>
-              <h3 className="text-xl font-bold text-white mb-2">지속 업데이트</h3>
-              <p className="text-white/60">
-                새로운 트렌드와 인플루언서를 계속 매칭해드립니다.
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <Link
-              href="/diagnosis"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors"
-            >
-              무료 진단 시작하기
-              <span className="text-lg">→</span>
-            </Link>
-          </div>
         </div>
       </section>
 
