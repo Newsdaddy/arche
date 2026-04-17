@@ -63,19 +63,19 @@ const COURSES: CourseType[] = [
 // 후기
 const TESTIMONIALS = [
   {
-    name: "김OO",
-    role: "마케팅 팀장",
-    company: "IT 스타트업",
+    name: "신OO",
+    role: "APAC 총괄",
+    company: "건축 유리 제조업",
     content: "실무에서 바로 적용 가능한 내용이라 좋았습니다. 팀원들과 함께 들으니 더 효과적이었어요.",
   },
   {
-    name: "이OO",
-    role: "기획자",
-    company: "콘텐츠 에이전시",
+    name: "김OO",
+    role: "콘텐츠 디렉터",
+    company: "해외 정보 기관",
     content: "AI 도구를 업무에 어떻게 녹여야 할지 막막했는데, 구체적인 방법을 알게 되었습니다.",
   },
   {
-    name: "박OO",
+    name: "변OO",
     role: "대표",
     company: "1인 기업",
     content: "혼자서 여러 업무를 처리해야 하는데, AX 적용 후 시간이 많이 절약되었습니다.",
@@ -183,7 +183,15 @@ export default function Home() {
       <section className="relative overflow-hidden pt-20 pb-24" style={{ backgroundColor: "#000000" }}>
         <div className="container-wide relative z-10">
           <div className="max-w-3xl">
-            <p className="text-accent text-sm font-medium tracking-wider mb-6">AX WORKSHOP</p>
+            {/* 브랜드 뱃지 */}
+            <div className="mb-10">
+              <p className="text-accent text-lg font-semibold tracking-wider mb-2">ARCHE</p>
+              <p className="text-white/50 text-sm tracking-wide">
+                <span style={{ fontFamily: 'Georgia, serif' }}>ἀρχή</span>
+                <span className="mx-2 text-white/30">|</span>
+                기원, 제1원리
+              </p>
+            </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
               AI로 실무를 혁신하는<br />
@@ -290,9 +298,9 @@ export default function Home() {
               <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-accent font-bold">02</span>
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">녹화본 제공</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">실습 중심</h4>
               <p className="text-sm text-gray-600">
-                요청 시 녹화본을 제공해드립니다
+                실제 업무 적용 사례만 다룹니다
               </p>
             </div>
 
@@ -300,9 +308,9 @@ export default function Home() {
               <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-accent font-bold">03</span>
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">후속 Q&A</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">실시간 Q&A</h4>
               <p className="text-sm text-gray-600">
-                강의 후 추가 질문에 답변해드립니다
+                Slido로 실시간 소통합니다
               </p>
             </div>
           </div>

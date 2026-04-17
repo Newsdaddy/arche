@@ -116,24 +116,12 @@ function getPersona(answers: Record<string, string>) {
 // FAQ
 const FAQS = [
   {
-    q: "AX 워크숍은 어떤 형태로 진행되나요?",
-    a: "모든 강의는 온라인 실시간으로 진행됩니다 (Zoom/Google Meet). 녹화본 제공도 가능합니다.",
-  },
-  {
-    q: "AX 워크숍 가격은 어떻게 되나요?",
-    a: "참석 인원과 요구사항에 따라 맞춤 견적을 안내드립니다. 문의 폼을 통해 연락주세요.",
-  },
-  {
     q: "페르소나 진단은 어떤 방법론을 사용하나요?",
     a: "SWOT, Hero's Journey, Enneagram, Value Proposition Canvas, Ikigai 등 5개 검증된 프레임워크를 활용합니다.",
   },
   {
     q: "벤치마킹 인플루언서는 어떻게 매칭되나요?",
     a: "진단 결과를 바탕으로 콘텐츠 스타일, 성장 단계, 타겟 오디언스가 유사한 인플루언서를 추천해드립니다.",
-  },
-  {
-    q: "8주 커리큘럼은 무엇인가요?",
-    a: "소셜미디어 콘텐츠 역량을 체계적으로 키우는 8주 프로그램입니다. 컨설팅 페이지에서 자세히 확인하세요.",
   },
 ];
 
@@ -180,18 +168,13 @@ export default function Home() {
             <div className="max-w-3xl">
               {/* 브랜드 뱃지 */}
               <div className="mb-10">
-                <p className="text-accent text-lg font-semibold tracking-wider mb-2">ARCHE</p>
-                <p className="text-white/50 text-sm tracking-wide">
-                  <span style={{ fontFamily: 'Georgia, serif' }}>ἀρχή</span>
-                  <span className="mx-2 text-white/30">|</span>
-                  기원, 제1원리
-                </p>
+                <p className="text-accent text-lg font-semibold tracking-wider mb-2">SOCIAL PERSONA</p>
               </div>
 
               {/* 헤드라인 */}
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-                실무를 바꾸는 AI<br />
-                콘텐츠를 바꾸는 나
+                나를 알아야<br />
+                콘텐츠가 보인다
               </h1>
 
               {/* 구분선 */}
@@ -199,24 +182,18 @@ export default function Home() {
 
               {/* 서브 카피 */}
               <p className="text-lg text-white/60 mb-10 max-w-xl">
-                뉴스대디의 2가지 컨설팅으로<br />
-                당신의 변화를 함께합니다.
+                5가지 프레임워크 심층 진단으로<br />
+                당신만의 콘텐츠 DNA를 찾아드립니다.
               </p>
 
               {/* CTA 버튼들 */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                  href="/"
+                  href="/diagnosis"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors"
                 >
-                  AX 워크숍 알아보기
+                  무료 진단 시작하기
                   <span className="text-lg">→</span>
-                </Link>
-                <Link
-                  href="/diagnosis"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 hover:border-white/60 text-white font-semibold transition-colors"
-                >
-                  페르소나 진단 시작
                 </Link>
               </div>
 
@@ -387,93 +364,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ AX Consulting Section ============ */}
-      <section className="section-sm" style={{ backgroundColor: '#ffffff' }}>
-        <div className="container-wide">
-          <div className="max-w-3xl mb-12">
-            <p className="text-accent text-sm font-medium tracking-wider mb-4">AX CONSULTING</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
-              AI로 실무를 혁신하세요
-            </h2>
-            <p className="text-lg text-gray-500">
-              뉴스대디가 직접 실험하고 검증한 AX 방법론을 전달합니다.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {/* 1시간 */}
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-400 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">⚡</span>
-                <div>
-                  <p className="text-sm text-gray-500">1시간</p>
-                  <h3 className="text-xl font-bold text-gray-900">라이트닝 토크</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">
-                AX 개념과 핵심 사례를 빠르게 전달하는 입문 강의
-              </p>
-              <ul className="text-sm text-gray-500 space-y-1">
-                <li>• AX란 무엇인가</li>
-                <li>• 왜 지금 AX인가</li>
-                <li>• 핵심 사례 3가지</li>
-              </ul>
-            </div>
-
-            {/* 2시간 */}
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-400 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🛠</span>
-                <div>
-                  <p className="text-sm text-gray-500">2시간</p>
-                  <h3 className="text-xl font-bold text-gray-900">실무 워크숍</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">
-                내 업무에 AI를 직접 적용해보는 실습 중심 워크숍
-              </p>
-              <ul className="text-sm text-gray-500 space-y-1">
-                <li>• AX 프레임워크</li>
-                <li>• 업무 분석 → AI 적용 실습</li>
-                <li>• Q&A</li>
-              </ul>
-            </div>
-
-            {/* 3시간 */}
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-400 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🎯</span>
-                <div>
-                  <p className="text-sm text-gray-500">3시간</p>
-                  <h3 className="text-xl font-bold text-gray-900">딥다이브 세미나</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">
-                조직 차원의 AX 로드맵을 함께 설계하는 심화 세미나
-              </p>
-              <ul className="text-sm text-gray-500 space-y-1">
-                <li>• AX 전략 프레임워크</li>
-                <li>• 로드맵 설계 워크숍</li>
-                <li>• 실행 계획 수립</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors"
-            >
-              AX 워크숍 상세 보기
-              <span className="text-lg">→</span>
-            </Link>
-            <p className="text-sm text-gray-400 mt-4">
-              링크드인에서 강의 섭외 진행 중
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* ============ Persona SaaS Section ============ */}
       <section className="section-sm" style={{ backgroundColor: '#000000' }}>
         <div className="container-wide">
@@ -530,7 +420,7 @@ export default function Home() {
       <section className="section-sm" style={{ backgroundColor: '#ffffff' }}>
         <div className="container-wide">
           <div className="max-w-3xl">
-            <p className="text-accent text-sm font-medium tracking-wider mb-4">WHY ARCHE?</p>
+            <p className="text-accent text-sm font-medium tracking-wider mb-4">WHY US?</p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-8">
               이론이 아닌<br />
               실전에서 검증된 방법론
@@ -538,7 +428,7 @@ export default function Home() {
             <div className="space-y-6">
               <div className="border-l-2 border-gray-200 pl-6">
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  뉴스대디는 인스타그램과 뉴스레터에서 직접 AX를 실험하고 있습니다.
+                  아르케인텔리전스는 인스타그램과 뉴스레터에서 직접 콘텐츠를 운영하고 있습니다.
                 </p>
               </div>
               <div className="border-l-2 border-gray-200 pl-6">
@@ -593,22 +483,16 @@ export default function Home() {
         <div className="container-wide flex flex-col md:flex-row md:items-center md:justify-between gap-8">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              변화를 시작할 준비가 되셨나요?
+              나만의 콘텐츠 DNA를 찾을 준비가 되셨나요?
             </h2>
             <p className="text-white/50">
-              AX 워크숍으로 실무를, 페르소나 진단으로 콘텐츠를 바꿔보세요.
+              심층 진단으로 당신만의 콘텐츠 방향을 찾아보세요.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/"
-              className="px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors whitespace-nowrap text-center"
-            >
-              AX 워크숍 문의
-            </Link>
-            <Link
               href="/diagnosis"
-              className="px-8 py-4 border border-white/30 hover:border-white/60 text-white font-semibold transition-colors whitespace-nowrap text-center"
+              className="px-8 py-4 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold transition-colors whitespace-nowrap text-center"
             >
               무료 진단 시작
             </Link>

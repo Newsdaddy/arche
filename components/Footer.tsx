@@ -29,13 +29,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/persona" className="text-body text-primary-500 hover:text-white transition-colors">
-                  페르소나 진단
+                <Link href="/consulting/ax" className="text-body text-primary-500 hover:text-white transition-colors">
+                  AX 1:1 컨설팅
                 </Link>
               </li>
               <li>
-                <Link href="/consulting/curriculum" className="text-body text-primary-500 hover:text-white transition-colors">
-                  8주 커리큘럼
+                <Link href="/persona" className="text-body text-primary-500 hover:text-white transition-colors">
+                  소셜페르소나 컨설팅
                 </Link>
               </li>
             </ul>
@@ -48,11 +48,6 @@ export default function Footer() {
               <li>
                 <Link href="/about" className="text-body text-primary-500 hover:text-white transition-colors">
                   About
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="text-body text-primary-500 hover:text-white transition-colors">
-                  가격 플랜
                 </Link>
               </li>
             </ul>

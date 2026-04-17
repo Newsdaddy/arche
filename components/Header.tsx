@@ -9,14 +9,14 @@ import Button from "@/components/ui/Button";
 // 컨설팅 드롭다운 메뉴 아이템
 const consultingItems = [
   {
-    label: "페르소나 진단",
-    href: "/persona",
-    description: "5개 프레임워크로 나만의 콘텐츠 전략 발견",
+    label: "AX 1:1 컨설팅",
+    href: "/consulting/ax",
+    description: "AI 업무 위임 셋업 및 루틴 설계",
   },
   {
-    label: "8주 커리큘럼",
-    href: "/consulting/curriculum",
-    description: "체계적인 소셜미디어 콘텐츠 역량 강화",
+    label: "소셜페르소나 컨설팅",
+    href: "/persona",
+    description: "페르소나 진단 + 8주 콘텐츠 역량 강화",
   },
 ];
 
