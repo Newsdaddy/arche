@@ -154,24 +154,30 @@ export default function Home() {
 
   if (isSubmitted) {
     return (
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-20 min-h-screen" style={{ backgroundColor: "#000000" }}>
         <div className="max-w-md w-full text-center space-y-6">
-          <h1 className="text-3xl font-bold text-gray-900">문의 접수 완료</h1>
-          <p className="text-body text-gray-600">
+          <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-white">문의 접수 완료</h1>
+          <p className="text-white/60">
             AX 워크숍 문의가 접수되었습니다.<br />
             24시간 내에 연락드리겠습니다.
           </p>
-          <Card className="bg-gray-50">
-            <CardContent>
-              <p className="text-small text-gray-500">문의하신 강의</p>
-              <p className="text-body font-semibold text-gray-900">
-                {COURSES.find((c) => c.id === formData.courseType)?.name} ({formData.courseType === "1h" ? "1시간" : formData.courseType === "2h" ? "2시간" : "3시간"})
-              </p>
-            </CardContent>
-          </Card>
-          <Button fullWidth onClick={() => setIsSubmitted(false)}>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+            <p className="text-sm text-white/50 mb-1">문의하신 강의</p>
+            <p className="text-lg font-semibold text-white">
+              {COURSES.find((c) => c.id === formData.courseType)?.name} ({formData.courseType === "1h" ? "1시간" : formData.courseType === "2h" ? "2시간" : "3시간"})
+            </p>
+          </div>
+          <button
+            onClick={() => setIsSubmitted(false)}
+            className="w-full h-14 bg-accent hover:bg-accent/90 text-white font-semibold rounded-xl transition-colors"
+          >
             새 문의하기
-          </Button>
+          </button>
         </div>
       </main>
     );
