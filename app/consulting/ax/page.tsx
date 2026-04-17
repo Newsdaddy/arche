@@ -207,7 +207,7 @@ export default function AXConsultingPage() {
             </h1>
             <div className="w-12 h-[2px] bg-white/30 mb-6" />
             <p className="text-lg text-white/60 mb-10 max-w-xl">
-              "어디서부터 시작해야 할지 모르겠다"<br />
+              &ldquo;어디서부터 시작해야 할지 모르겠다&rdquo;<br />
               귀사 비즈니스에 맞는 AI 셋업부터 루틴 설계까지,<br />
               1:1로 함께 만들어갑니다.
             </p>
@@ -240,7 +240,7 @@ export default function AXConsultingPage() {
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {PROBLEMS.map((item, i) => (
               <div key={i} className="bg-gray-50 rounded-2xl p-6">
-                <p className="text-gray-900 font-medium mb-3">"{item.problem}"</p>
+                <p className="text-gray-900 font-medium mb-3">&ldquo;{item.problem}&rdquo;</p>
                 <p className="text-accent text-sm">→ {item.solution}</p>
               </div>
             ))}
@@ -502,7 +502,7 @@ export default function AXConsultingPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-accent">•</span>
-                    뉴스레터 '뉴스대디' 구독자 600명+
+                    뉴스레터 &apos;뉴스대디&apos; 구독자 600명+
                   </li>
                 </ul>
               </div>
@@ -516,7 +516,7 @@ export default function AXConsultingPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-accent">•</span>
-                    해외교민 리딩클럽 '디카피텔' - 바이브코딩 강의 및 컨설팅
+                    해외교민 리딩클럽 &apos;디카피텔&apos; - 바이브코딩 강의 및 컨설팅
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-accent">•</span>
