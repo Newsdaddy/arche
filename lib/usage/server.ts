@@ -2,7 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { UsageCheckResult, UsageLimits } from "@/types";
 
 // Admin 이메일 목록 (무제한 액세스)
-export const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
+export const ADMIN_EMAILS = [
+  "editorjin0326@gmail.com",
+  "byeongjin.jeong05@gmail.com",
+];
 
 // Admin 여부 확인
 export function isAdmin(email: string | undefined): boolean {
