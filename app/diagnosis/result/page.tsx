@@ -10,6 +10,8 @@ import PreviewSection from "@/components/diagnosis/PreviewSection";
 import PremiumSection from "@/components/diagnosis/PremiumSection";
 import UnlockBanner from "@/components/diagnosis/UnlockBanner";
 import MethodologySection from "@/components/diagnosis/MethodologySection";
+import StorySpineSection from "@/components/diagnosis/StorySpineSection";
+import ComicPanel from "@/components/diagnosis/ComicPanel";
 
 function DiagnosisResultContent() {
   const router = useRouter();
@@ -139,6 +141,10 @@ function DiagnosisResultContent() {
       contentPillars: data.content_pillars || [],
       contentTemplates: data.content_templates || archetype.templates,
       rawAnswers: data.raw_answers || {},
+      // 신규 필드 (v2)
+      storySpine: data.story_spine || undefined,
+      comicScenes: data.comic_scenes || undefined,
+      refinedAnswers: data.refined_answers || undefined,
     };
   };
 
@@ -309,6 +315,23 @@ function DiagnosisResultContent() {
           canUnlock={canUnlock}
           remainingReports={remainingReports}
         />
+
+        {/* Disney Story Spine Section */}
+        {result.storySpine && (
+          <StorySpineSection
+            storySpine={result.storySpine}
+            isUnlocked={isUnlocked}
+          />
+        )}
+
+        {/* 4컷 만화 Section */}
+        {result.comicScenes && result.comicScenes.length === 4 && (
+          <ComicPanel
+            scenes={result.comicScenes}
+            isUnlocked={isUnlocked}
+            resultId={resultId || undefined}
+          />
+        )}
 
         {/* CTA 버튼들 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

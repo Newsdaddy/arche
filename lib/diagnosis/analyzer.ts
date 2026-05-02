@@ -1,6 +1,9 @@
 import {
   DiagnosisResult,
   Archetype,
+  StorySpine,
+  ComicScene,
+  RefinedAnswers,
 } from "@/types/diagnosis";
 import { ARCHETYPES, getArchetypeById } from "./archetypes";
 
@@ -9,79 +12,164 @@ export function generateAnalysisPrompt(
   answers: Record<string, string>
 ): string {
   return `당신은 소셜 페르소나 분석 전문가입니다.
-사용자의 답변을 바탕으로 다음을 분석해주세요.
+사용자의 답변을 바탕으로 종합 분석을 수행해주세요.
 
-## 사용된 프레임워크
-1. SWOT 분석 (Albert Humphrey)
-2. Hero's Journey (Joseph Campbell)
-3. Enneagram (성격 심리학)
-4. Value Proposition Canvas (Strategyzer)
-5. 능력 교차점 (Ikigai 변형)
+## 중요 지침
+1. 사용자의 원본 답변을 전문적이고 세련된 표현으로 정제하세요 (refinedAnswers)
+2. 각 분석 항목에 구체적인 예시와 실행 가능한 아이디어를 포함하세요
+3. Disney Story Spine 구조로 콘텐츠 전략을 수립하세요
+4. 4컷 만화 장면을 이미지 생성에 적합하게 묘사하세요
+
+## 사용 프레임워크
+1. SWOT 분석 (Albert Humphrey) - 강점/약점/기회/위협 + 교차 전략
+2. Hero's Journey (Joseph Campbell) - 시련과 극복의 스토리텔링
+3. Enneagram (성격 심리학) - 콘텐츠 스타일 연결
+4. Value Proposition Canvas (Strategyzer) - 고객 관점 분석
+5. Ikigai 능력 교차점 - 유니크 포지션 도출
+6. Disney Story Spine (Pixar) - 콘텐츠 전략 로드맵
+
+## Disney Story Spine 구조
+1. 옛날 옛적에... (Origin) - 콘텐츠 크리에이터로서의 시작점
+2. 매일매일... (Routine) - 현재의 일상과 활동
+3. 그런데 어느 날... (Trigger) - 변화의 계기가 된 사건
+4. 그로 인해... (Consequences) - 연쇄적 변화들 (3개)
+5. 마침내... (Climax) - 핵심 전환점/깨달음
+6. 그 이후로... (New Normal) - 새로운 일상과 비전
 
 ## 사용자 답변
 ${Object.entries(answers)
   .map(([key, value]) => `${key}: ${value}`)
   .join("\n")}
 
-## 분석 항목 (JSON 형식으로 응답)
+## 분석 항목 (JSON 형식으로만 응답)
 
 {
-  "archetype": "warrior | latestarter | collector | connector | experimenter | guide 중 하나",
+  "archetype": "warrior | latestarter | collector | connector | experimenter | guide",
   "archetypeReason": "선택 이유 (한 문장)",
 
+  "refinedAnswers": {
+    "challenge": "정제된 시련 스토리 (q6 기반, 2-3문장으로 임팩트 있게)",
+    "overcoming": "정제된 극복 스토리 (q7 기반)",
+    "motivation": "정제된 콘텐츠 동기 (q10 기반)",
+    "coreMessage": "정제된 핵심 메시지 (q24 기반)"
+  },
+
   "swot": {
-    "strengths": ["강점 3-4개"],
-    "weaknesses": ["약점 2-3개 (이것도 콘텐츠가 됨)"],
-    "opportunities": ["기회 2-3개"],
-    "threats": ["위협 2개"]
+    "strengths": [
+      "강점 1 (예: 10년간 쌓은 마케팅 실무 경험과 데이터 분석 역량)",
+      "강점 2 (예: 복잡한 개념을 쉽게 풀어내는 스토리텔링 능력)",
+      "강점 3"
+    ],
+    "weaknesses": [
+      "약점 1 → 콘텐츠화 방법 (예: 완벽주의 성향 → '실패 일기' 시리즈로 공감 유도)",
+      "약점 2 → 콘텐츠화 방법"
+    ],
+    "opportunities": [
+      "기회 1 + 실행 아이디어 (예: AI 콘텐츠 시대 → AI 활용 실험 콘텐츠)",
+      "기회 2 + 실행 아이디어"
+    ],
+    "threats": [
+      "위협 1 + 대응 방안",
+      "위협 2 + 대응 방안"
+    ]
   },
 
   "swotMix": {
-    "so": "강점으로 기회를 잡는 공격 전략 (콘텐츠 아이디어)",
-    "wo": "약점을 기회로 전환하는 전략 (핵심! 약점을 콘텐츠화)",
-    "st": "강점으로 위협을 방어하는 전략",
-    "wt": "약점과 위협을 회피하는 전략"
+    "so": "강점×기회 공격 전략 (구체적 콘텐츠 예시 포함)",
+    "wo": "약점→기회 전환 전략 (핵심! 약점을 콘텐츠화하는 구체적 방법)",
+    "st": "강점으로 위협 방어 전략",
+    "wt": "약점×위협 회피 전략"
   },
 
-  "skillIntersection": {
-    "skills": ["핵심 능력 2-3개"],
-    "trend": "관심 트렌드 (있다면)",
-    "uniquePosition": "유니크 포지션 문장 (예: AI 시대의 설득 심리학 전문가)"
+  "storySpine": {
+    "origin": "옛날 옛적에, [사용자의 시작점을 스토리로]",
+    "routine": "매일매일, [현재의 일상을 묘사]",
+    "trigger": "그런데 어느 날, [변화의 계기를 드라마틱하게]",
+    "consequences": [
+      "그로 인해, [첫 번째 변화]",
+      "그로 인해, [두 번째 변화]",
+      "그로 인해, [세 번째 변화]"
+    ],
+    "climax": "마침내, [핵심 깨달음/전환점]",
+    "newNormal": "그 이후로, [새로운 일상과 비전]",
+    "contentRoadmap": {
+      "phase1": {
+        "theme": "기원 스토리",
+        "duration": "1-2주",
+        "contentIdeas": ["콘텐츠 아이디어 1", "아이디어 2", "아이디어 3"]
+      },
+      "phase2": {
+        "theme": "일상 공유",
+        "duration": "3-4주",
+        "contentIdeas": ["아이디어 1", "아이디어 2", "아이디어 3"]
+      },
+      "phase3": {
+        "theme": "시련과 변화",
+        "duration": "5-6주",
+        "contentIdeas": ["아이디어 1", "아이디어 2", "아이디어 3"]
+      },
+      "phase4": {
+        "theme": "성장과 비전",
+        "duration": "7-8주",
+        "contentIdeas": ["아이디어 1", "아이디어 2", "아이디어 3"]
+      }
+    }
   },
 
-  "icp": {
-    "demographics": "타겟 인구통계 (예: 20-30대 직장인)",
-    "painPoints": ["고통점 3개"],
-    "desires": ["원하는 것 3개"],
-    "summary": "한 문장 요약 (예: 퇴사를 꿈꾸지만 첫 발을 못 떼는 직장인)"
-  },
-
-  "contentPillars": [
+  "comicScenes": [
     {
-      "id": "pillar1",
-      "name": "Pillar 이름",
-      "description": "설명"
+      "panel": 1,
+      "scene": "장면 설명 (이미지 생성용, 배경과 인물 동작 포함)",
+      "emotion": "표현할 감정 (좌절, 희망, 결심 등)",
+      "visualElements": ["배경", "인물 포즈", "핵심 소품"]
     },
     {
-      "id": "pillar2",
-      "name": "Pillar 이름",
-      "description": "설명"
+      "panel": 2,
+      "scene": "두 번째 장면 설명",
+      "emotion": "감정",
+      "visualElements": ["요소1", "요소2", "요소3"]
     },
     {
-      "id": "pillar3",
-      "name": "Pillar 이름",
-      "description": "설명"
+      "panel": 3,
+      "scene": "세 번째 장면 설명",
+      "emotion": "감정",
+      "visualElements": ["요소1", "요소2", "요소3"]
+    },
+    {
+      "panel": 4,
+      "scene": "네 번째 장면 설명 (희망찬 결말)",
+      "emotion": "감정",
+      "visualElements": ["요소1", "요소2", "요소3"]
     }
   ],
 
+  "skillIntersection": {
+    "skills": ["핵심 능력 2-3개"],
+    "trend": "관심 트렌드",
+    "uniquePosition": "유니크 포지션 문장"
+  },
+
+  "icp": {
+    "demographics": "타겟 인구통계",
+    "painPoints": ["고통점 1", "고통점 2", "고통점 3"],
+    "desires": ["욕구 1", "욕구 2", "욕구 3"],
+    "summary": "한 문장 타겟 요약"
+  },
+
+  "contentPillars": [
+    {"id": "pillar1", "name": "이름", "description": "설명 + 예시 콘텐츠"},
+    {"id": "pillar2", "name": "이름", "description": "설명 + 예시 콘텐츠"},
+    {"id": "pillar3", "name": "이름", "description": "설명 + 예시 콘텐츠"}
+  ],
+
   "enneagram": {
-    "primaryType": 1-9 중 하나,
+    "primaryType": 1-9,
     "wing": null 또는 인접 숫자,
-    "description": "이 유형의 특성 설명"
+    "description": "유형 특성 설명"
   }
 }
 
-반드시 위 JSON 형식으로만 응답해주세요. 설명 텍스트 없이 JSON만 출력하세요.`;
+반드시 위 JSON 형식으로만 응답하세요. 설명 텍스트 없이 JSON만 출력하세요.`;
 }
 
 // AI 응답 파싱
@@ -103,6 +191,47 @@ export function parseAIResponse(
     // 아키타입 가져오기
     const archetype = getArchetypeById(parsed.archetype) || ARCHETYPES[0];
 
+    // StorySpine 파싱 (있을 경우)
+    let storySpine: StorySpine | undefined;
+    if (parsed.storySpine) {
+      storySpine = {
+        origin: parsed.storySpine.origin || "",
+        routine: parsed.storySpine.routine || "",
+        trigger: parsed.storySpine.trigger || "",
+        consequences: parsed.storySpine.consequences || [],
+        climax: parsed.storySpine.climax || "",
+        newNormal: parsed.storySpine.newNormal || "",
+        contentRoadmap: parsed.storySpine.contentRoadmap || {
+          phase1: { theme: "", duration: "", contentIdeas: [] },
+          phase2: { theme: "", duration: "", contentIdeas: [] },
+          phase3: { theme: "", duration: "", contentIdeas: [] },
+          phase4: { theme: "", duration: "", contentIdeas: [] },
+        },
+      };
+    }
+
+    // ComicScenes 파싱 (있을 경우)
+    let comicScenes: ComicScene[] | undefined;
+    if (parsed.comicScenes && Array.isArray(parsed.comicScenes)) {
+      comicScenes = parsed.comicScenes.map((scene: ComicScene) => ({
+        panel: scene.panel,
+        scene: scene.scene || "",
+        emotion: scene.emotion || "",
+        visualElements: scene.visualElements || [],
+      }));
+    }
+
+    // RefinedAnswers 파싱 (있을 경우)
+    let refinedAnswers: RefinedAnswers | undefined;
+    if (parsed.refinedAnswers) {
+      refinedAnswers = {
+        challenge: parsed.refinedAnswers.challenge,
+        overcoming: parsed.refinedAnswers.overcoming,
+        motivation: parsed.refinedAnswers.motivation,
+        coreMessage: parsed.refinedAnswers.coreMessage,
+      };
+    }
+
     // 결과 조합
     const result: DiagnosisResult = {
       id: `diag_${Date.now()}`,
@@ -118,6 +247,10 @@ export function parseAIResponse(
       contentTemplates: archetype.templates,
       enneagram: parsed.enneagram,
       rawAnswers,
+      // 신규 필드 (v2)
+      storySpine,
+      comicScenes,
+      refinedAnswers,
     };
 
     return result;

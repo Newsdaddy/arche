@@ -132,6 +132,17 @@ export interface DiagnosisResult {
 
   // 원본 답변
   rawAnswers: Record<string, string>;
+
+  // ===== 신규 필드 (v2) =====
+
+  // Disney Story Spine 콘텐츠 전략
+  storySpine?: StorySpine;
+
+  // 4컷 만화 장면 (Gemini 이미지 생성용)
+  comicScenes?: ComicScene[];
+
+  // 정제된 답변 (전문적 언어로 다듬은 사용자 입력)
+  refinedAnswers?: RefinedAnswers;
 }
 
 // 방법론 타입
@@ -220,4 +231,53 @@ export interface UnlockReportResponse {
   success: boolean;
   error?: string;
   accessInfo?: ReportAccessInfo;
+}
+
+// ===== Disney Story Spine Types =====
+
+// 콘텐츠 로드맵 단계
+export interface RoadmapPhase {
+  theme: string;
+  duration: string;
+  contentIdeas: string[];
+}
+
+// 8주 콘텐츠 로드맵
+export interface ContentRoadmap {
+  phase1: RoadmapPhase;
+  phase2: RoadmapPhase;
+  phase3: RoadmapPhase;
+  phase4: RoadmapPhase;
+}
+
+// Disney Story Spine (Pixar 스토리 구조)
+export interface StorySpine {
+  origin: string;        // 옛날 옛적에...
+  routine: string;       // 매일매일...
+  trigger: string;       // 그런데 어느 날...
+  consequences: string[]; // 그로 인해... (최대 3개)
+  climax: string;        // 마침내...
+  newNormal: string;     // 그 이후로...
+  contentRoadmap: ContentRoadmap;
+}
+
+// ===== 4컷 만화 Types =====
+
+// 만화 패널 장면
+export interface ComicScene {
+  panel: number;         // 1-4
+  scene: string;         // 장면 설명
+  emotion: string;       // 표현할 감정
+  visualElements: string[]; // 시각 요소 (배경, 포즈, 소품)
+  imageUrl?: string;     // Gemini 생성 후 이미지 URL
+}
+
+// ===== 정제된 답변 =====
+
+export interface RefinedAnswers {
+  challenge?: string;      // 정제된 시련 스토리
+  overcoming?: string;     // 정제된 극복 스토리
+  motivation?: string;     // 정제된 콘텐츠 동기
+  coreMessage?: string;    // 정제된 핵심 메시지
+  [key: string]: string | undefined;
 }
