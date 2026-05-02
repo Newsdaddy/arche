@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { isAdmin } from "@/lib/config/admin";
 
 export async function PUT(
@@ -14,6 +15,9 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // RLS 우회를 위해 admin client 사용
+  const adminClient = createAdminClient();
+
   const body = await request.json();
   const { action } = body;
 
@@ -23,7 +27,7 @@ export async function PUT(
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + 3);
 
-    const { data, error } = await supabase
+    const { data, error } = await adminClient
       .from("profiles")
       .update({
         customer_type: "consulting",
@@ -47,7 +51,7 @@ export async function PUT(
 
   if (action === "set_paid") {
     // Pro 고객으로 지정
-    const { data, error } = await supabase
+    const { data, error } = await adminClient
       .from("profiles")
       .update({ customer_type: "paid" })
       .eq("id", id)
@@ -63,7 +67,7 @@ export async function PUT(
 
   if (action === "set_free") {
     // 무료 고객으로 변경
-    const { data, error } = await supabase
+    const { data, error } = await adminClient
       .from("profiles")
       .update({
         customer_type: "free",

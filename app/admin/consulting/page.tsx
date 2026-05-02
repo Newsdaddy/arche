@@ -37,6 +37,10 @@ export default function ConsultingPage() {
     router.push(`/admin/consulting/${id}`);
   };
 
+  const handleViewPersona = (id: string) => {
+    router.push(`/admin/consulting/${id}#persona`);
+  };
+
   const needsAttentionClients = clients.filter((c) => c.healthScore.score < 60);
   const normalClients = clients.filter((c) => c.healthScore.score >= 60);
 
@@ -110,6 +114,7 @@ export default function ConsultingPage() {
                       key={client.id}
                       client={client}
                       onViewDetail={handleViewDetail}
+                      onViewPersona={handleViewPersona}
                     />
                   ))}
                 </div>
@@ -130,6 +135,7 @@ export default function ConsultingPage() {
                       key={client.id}
                       client={client}
                       onViewDetail={handleViewDetail}
+                      onViewPersona={handleViewPersona}
                     />
                   ))}
                 </div>

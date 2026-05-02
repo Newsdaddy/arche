@@ -27,6 +27,8 @@ export interface AdminMember {
   onboardingCompleted: boolean;
   totalUploads: number;
   customerType: 'free' | 'paid' | 'consulting';
+  personaAnalysisType: 'deep' | 'quick' | null;
+  personaResultId: string | null;
 }
 
 // ==================== Paid Members ====================

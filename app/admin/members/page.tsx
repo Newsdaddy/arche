@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AdminMember } from "@/types/admin";
 import MemberTable from "@/components/admin/MemberTable";
 import Card, { CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
 export default function MembersPage() {
+  const router = useRouter();
   const [members, setMembers] = useState<AdminMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -14,6 +16,10 @@ export default function MembersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+
+  const handleViewPersona = (memberId: string) => {
+    router.push(`/admin/members/${memberId}`);
+  };
 
   const fetchMembers = async () => {
     setIsLoading(true);
@@ -93,6 +99,7 @@ export default function MembersPage() {
                     m.id === updatedMember.id ? updatedMember : m
                   ));
                 }}
+                onViewPersona={handleViewPersona}
               />
 
             {/* 페이지네이션 */}

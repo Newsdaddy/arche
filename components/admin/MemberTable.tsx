@@ -8,9 +8,10 @@ interface MemberTableProps {
   members: AdminMember[];
   showCustomerType?: boolean;
   onMemberUpdate?: (member: AdminMember) => void;
+  onViewPersona?: (memberId: string) => void;
 }
 
-export default function MemberTable({ members, showCustomerType = false, onMemberUpdate }: MemberTableProps) {
+export default function MemberTable({ members, showCustomerType = false, onMemberUpdate, onViewPersona }: MemberTableProps) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
@@ -89,6 +90,7 @@ export default function MemberTable({ members, showCustomerType = false, onMembe
             <th className="text-left py-3 px-4 font-medium text-gray-600">채널</th>
             <th className="text-left py-3 px-4 font-medium text-gray-600">가입일</th>
             <th className="text-center py-3 px-4 font-medium text-gray-600">상태</th>
+            <th className="text-center py-3 px-4 font-medium text-gray-600">페르소나 분석</th>
             {showCustomerType && (
               <th className="text-center py-3 px-4 font-medium text-gray-600">유형</th>
             )}
@@ -145,6 +147,31 @@ export default function MemberTable({ members, showCustomerType = false, onMembe
                 >
                   {member.onboardingCompleted ? "테스트 완료" : "미완료"}
                 </span>
+              </td>
+              <td className="py-3 px-4 text-center">
+                {member.personaAnalysisType ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        member.personaAnalysisType === "deep"
+                          ? "bg-purple-100 text-purple-600"
+                          : "bg-blue-100 text-blue-600"
+                      }`}
+                    >
+                      {member.personaAnalysisType === "deep" ? "심층" : "간단"}
+                    </span>
+                    {onViewPersona && (
+                      <button
+                        onClick={() => onViewPersona(member.id)}
+                        className="px-2 py-1 text-xs bg-accent text-white rounded hover:bg-accent/80 transition-colors"
+                      >
+                        결과 보기
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-gray-400 text-xs">미완료</span>
+                )}
               </td>
               {showCustomerType && (
                 <td className="py-3 px-4 text-center">

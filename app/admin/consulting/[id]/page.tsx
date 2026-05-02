@@ -36,6 +36,22 @@ interface Inquiry {
   created_at: string;
 }
 
+interface PersonaResult {
+  id: string;
+  archetype: string;
+  archetype_name: string;
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+  swot_mix: { so: string; wo: string; st: string; wt: string };
+  skills: string[];
+  unique_position: string;
+  icp: { demographics: string; painPoints: string[]; desires: string[]; summary: string };
+  content_pillars: { id: string; name: string; description: string }[];
+  created_at: string;
+}
+
 interface ClientData {
   client: {
     id: string;
@@ -51,6 +67,7 @@ interface ClientData {
   inquiries: Inquiry[];
   lectureProgress: { lecture_id: string; progress: number; completed: boolean }[];
   reviews: { rating: number; review_text: string | null; created_at: string }[];
+  personaResult: PersonaResult | null;
 }
 
 export default function ConsultingClientDetailPage() {
@@ -96,7 +113,7 @@ export default function ConsultingClientDetailPage() {
     );
   }
 
-  const { client, sessions, submissions, inquiries, lectureProgress, reviews } = data;
+  const { client, sessions, submissions, inquiries, lectureProgress, reviews, personaResult } = data;
 
   // Health Score 계산
   const completedSessions = sessions.filter((s) => s.status === "completed").length;
@@ -223,6 +240,106 @@ export default function ConsultingClientDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* 페르소나 분석 결과 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>페르소나 분석 결과</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!personaResult ? (
+            <p className="text-center text-gray-400 py-8">아직 페르소나 분석이 완료되지 않았습니다</p>
+          ) : (
+            <div className="space-y-6">
+              {/* 아키타입 */}
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6">
+                <p className="text-sm text-gray-500 mb-1">아키타입</p>
+                <p className="text-2xl font-bold text-gray-900">{personaResult.archetype_name}</p>
+                <p className="text-gray-600 mt-2">{personaResult.unique_position}</p>
+              </div>
+
+              {/* SWOT */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-green-50 rounded-lg p-4">
+                  <p className="font-semibold text-green-800 mb-2">강점</p>
+                  <ul className="space-y-1">
+                    {personaResult.strengths?.map((s, i) => (
+                      <li key={i} className="text-sm text-green-700">• {s}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-red-50 rounded-lg p-4">
+                  <p className="font-semibold text-red-800 mb-2">약점</p>
+                  <ul className="space-y-1">
+                    {personaResult.weaknesses?.map((w, i) => (
+                      <li key={i} className="text-sm text-red-700">• {w}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <p className="font-semibold text-blue-800 mb-2">기회</p>
+                  <ul className="space-y-1">
+                    {personaResult.opportunities?.map((o, i) => (
+                      <li key={i} className="text-sm text-blue-700">• {o}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-yellow-50 rounded-lg p-4">
+                  <p className="font-semibold text-yellow-800 mb-2">위협</p>
+                  <ul className="space-y-1">
+                    {personaResult.threats?.map((t, i) => (
+                      <li key={i} className="text-sm text-yellow-700">• {t}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* ICP */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="font-semibold text-gray-800 mb-2">이상적 고객 (ICP)</p>
+                <p className="text-sm text-gray-600 mb-2"><strong>타겟:</strong> {personaResult.icp?.demographics}</p>
+                <p className="text-sm text-gray-600 mb-2"><strong>요약:</strong> {personaResult.icp?.summary}</p>
+                <div className="grid md:grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">고통점</p>
+                    <ul className="space-y-1">
+                      {personaResult.icp?.painPoints?.map((p, i) => (
+                        <li key={i} className="text-sm text-gray-700">• {p}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">욕구</p>
+                    <ul className="space-y-1">
+                      {personaResult.icp?.desires?.map((d, i) => (
+                        <li key={i} className="text-sm text-gray-700">• {d}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* 콘텐츠 필러 */}
+              <div>
+                <p className="font-semibold text-gray-800 mb-3">콘텐츠 필러</p>
+                <div className="grid md:grid-cols-3 gap-3">
+                  {personaResult.content_pillars?.map((pillar) => (
+                    <div key={pillar.id} className="border rounded-lg p-3">
+                      <p className="font-medium text-gray-900">{pillar.name}</p>
+                      <p className="text-sm text-gray-500 mt-1">{pillar.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 분석일 */}
+              <p className="text-xs text-gray-400 text-right">
+                분석일: {formatDate(personaResult.created_at)}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* 과제 제출 내역 */}
       <Card>

@@ -9,12 +9,14 @@ interface ConsultingClientCardProps {
   client: ConsultingClient;
   onViewDetail: (id: string) => void;
   onAddMeeting?: (id: string) => void;
+  onViewPersona?: (id: string) => void;
 }
 
 export default function ConsultingClientCard({
   client,
   onViewDetail,
   onAddMeeting,
+  onViewPersona,
 }: ConsultingClientCardProps) {
   const gradeInfo = getGradeInfo(client.healthScore.grade);
 
@@ -120,9 +122,18 @@ export default function ConsultingClientCard({
           >
             상세 보기
           </Button>
-          {onAddMeeting && client.currentMeetingNumber < 4 && (
+          {onViewPersona && (
             <Button
               variant="primary"
+              size="sm"
+              onClick={() => onViewPersona(client.id)}
+            >
+              페르소나 결과
+            </Button>
+          )}
+          {onAddMeeting && client.currentMeetingNumber < 4 && (
+            <Button
+              variant="outline"
               size="sm"
               onClick={() => onAddMeeting(client.id)}
             >

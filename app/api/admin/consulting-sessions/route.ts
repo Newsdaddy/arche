@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { isAdmin } from "@/lib/config/admin";
 
 export async function POST(request: NextRequest) {
@@ -9,6 +10,9 @@ export async function POST(request: NextRequest) {
   if (!user || !isAdmin(user.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // RLS 우회를 위해 admin client 사용
+  const adminClient = createAdminClient();
 
   const body = await request.json();
   const { userId, sessionNumber, sessionDate, sessionNotes, materialsProvided } = body;
@@ -23,7 +27,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 이미 존재하는 세션인지 확인
-  const { data: existing } = await supabase
+  const { data: existing } = await adminClient
     .from("consulting_sessions")
     .select("id")
     .eq("user_id", userId)
@@ -34,7 +38,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "이미 해당 회차의 세션이 존재합니다" }, { status: 400 });
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await adminClient
     .from("consulting_sessions")
     .insert({
       user_id: userId,
@@ -62,6 +66,9 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // RLS 우회를 위해 admin client 사용
+  const adminClient = createAdminClient();
+
   const body = await request.json();
   const { sessionId, sessionDate, sessionNotes, materialsProvided, status } = body;
 
@@ -75,7 +82,7 @@ export async function PUT(request: NextRequest) {
   if (materialsProvided) updateData.materials_provided = materialsProvided;
   if (status) updateData.status = status;
 
-  const { data, error } = await supabase
+  const { data, error } = await adminClient
     .from("consulting_sessions")
     .update(updateData)
     .eq("id", sessionId)

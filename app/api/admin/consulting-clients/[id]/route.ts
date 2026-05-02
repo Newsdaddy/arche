@@ -61,6 +61,15 @@ export async function GET(
     .eq("user_id", id)
     .order("created_at", { ascending: false });
 
+  // 페르소나 분석 결과
+  const { data: personaResults } = await supabase
+    .from("persona_results")
+    .select("*")
+    .eq("user_id", id)
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
   return NextResponse.json({
     client,
     sessions: sessions || [],
@@ -68,6 +77,7 @@ export async function GET(
     inquiries: inquiries || [],
     lectureProgress: lectureProgress || [],
     reviews: reviews || [],
+    personaResult: personaResults?.[0] || null,
   });
 }
 

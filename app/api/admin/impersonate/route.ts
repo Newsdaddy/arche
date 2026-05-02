@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { isAdmin } from "@/lib/config/admin";
 import { cookies } from "next/headers";
 
@@ -15,6 +16,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // RLS 우회를 위해 admin client 사용
+  const adminClient = createAdminClient();
+
   const { targetUserId } = await request.json();
 
   if (!targetUserId) {
@@ -22,7 +26,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 대상 사용자 확인
-  const { data: targetUser, error } = await supabase
+  const { data: targetUser, error } = await adminClient
     .from("profiles")
     .select("id, email, full_name")
     .eq("id", targetUserId)
@@ -71,6 +75,9 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // RLS 우회를 위해 admin client 사용
+  const adminClient = createAdminClient();
+
   const cookieStore = await cookies();
   const impersonatingUserId = cookieStore.get(IMPERSONATE_COOKIE)?.value;
   const impersonatingName = cookieStore.get(IMPERSONATE_NAME_COOKIE)?.value;
@@ -80,7 +87,7 @@ export async function GET() {
   }
 
   // 대상 사용자 정보 조회
-  const { data: targetUser } = await supabase
+  const { data: targetUser } = await adminClient
     .from("profiles")
     .select("id, email, full_name")
     .eq("id", impersonatingUserId)

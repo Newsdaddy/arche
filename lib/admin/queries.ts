@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import {
   AdminMember,
   AdminPaidMember,
@@ -24,7 +24,7 @@ import {
 // ==================== Admin Stats ====================
 
 export async function getAdminStats(): Promise<AdminStats> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const [
     { count: totalMembers },
@@ -54,7 +54,7 @@ export async function getMembers(options?: {
   search?: string;
   onboarding?: 'completed' | 'pending';
 }): Promise<{ members: AdminMember[]; total: number }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const page = options?.page || 1;
   const limit = options?.limit || 10;
   const offset = (page - 1) * limit;
@@ -82,16 +82,37 @@ export async function getMembers(options?: {
     return { members: [], total: 0 };
   }
 
-  const members: AdminMember[] = (data || []).map((row) => ({
-    id: row.id,
-    email: row.email,
-    fullName: row.full_name,
-    socialChannels: row.social_channels || [],
-    createdAt: row.created_at,
-    onboardingCompleted: row.onboarding_completed,
-    totalUploads: row.total_uploads || 0,
-    customerType: row.customer_type || 'free',
-  }));
+  // 회원들의 페르소나 분석 결과 조회
+  const memberIds = (data || []).map((row) => row.id);
+  const { data: personaResults } = await supabase
+    .from('persona_results')
+    .select('id, user_id, diagnosis_type')
+    .in('user_id', memberIds)
+    .eq('is_active', true);
+
+  // 페르소나 결과를 user_id로 매핑 (가장 최근 것만)
+  const personaMap = new Map<string, { id: string; diagnosisType: 'deep' | 'quick' }>();
+  personaResults?.forEach((pr) => {
+    if (!personaMap.has(pr.user_id)) {
+      personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
+    }
+  });
+
+  const members: AdminMember[] = (data || []).map((row) => {
+    const persona = personaMap.get(row.id);
+    return {
+      id: row.id,
+      email: row.email,
+      fullName: row.full_name,
+      socialChannels: row.social_channels || [],
+      createdAt: row.created_at,
+      onboardingCompleted: row.onboarding_completed,
+      totalUploads: row.total_uploads || 0,
+      customerType: row.customer_type || 'free',
+      personaAnalysisType: persona?.diagnosisType || null,
+      personaResultId: persona?.id || null,
+    };
+  });
 
   return { members, total: count || 0 };
 }
@@ -103,7 +124,7 @@ export async function getPaidMembers(options?: {
   limit?: number;
   search?: string;
 }): Promise<{ members: AdminPaidMember[]; total: number }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const page = options?.page || 1;
   const limit = options?.limit || 10;
   const offset = (page - 1) * limit;
@@ -159,8 +180,23 @@ export async function getPaidMembers(options?: {
     inquiryMap.set(inq.user_id, list);
   });
 
+  // 페르소나 분석 결과 조회
+  const { data: personaResults } = await supabase
+    .from('persona_results')
+    .select('id, user_id, diagnosis_type')
+    .in('user_id', memberIds)
+    .eq('is_active', true);
+
+  const personaMap = new Map<string, { id: string; diagnosisType: 'deep' | 'quick' }>();
+  personaResults?.forEach((pr) => {
+    if (!personaMap.has(pr.user_id)) {
+      personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
+    }
+  });
+
   const members: AdminPaidMember[] = (data || []).map((row) => {
     const sub = subscriptionMap.get(row.id);
+    const persona = personaMap.get(row.id);
     return {
       id: row.id,
       email: row.email,
@@ -170,6 +206,8 @@ export async function getPaidMembers(options?: {
       onboardingCompleted: row.onboarding_completed,
       totalUploads: row.total_uploads || 0,
       customerType: row.customer_type || 'paid',
+      personaAnalysisType: persona?.diagnosisType || null,
+      personaResultId: persona?.id || null,
       subscription: sub ? {
         plan: sub.plan,
         status: sub.status,
@@ -189,7 +227,7 @@ export async function getConsultingClients(options?: {
   sortBy?: 'healthScore' | 'name' | 'createdAt';
   order?: 'asc' | 'desc';
 }): Promise<{ clients: ConsultingClient[]; summary: { total: number; inProgress: number; completed: number; needsAttention: number } }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: profiles, error } = await supabase
     .from('profiles')
@@ -314,6 +352,20 @@ export async function getConsultingClients(options?: {
     reviewMap.set(r.user_id, list);
   });
 
+  // 페르소나 분석 결과 조회
+  const { data: personaResults } = await supabase
+    .from('persona_results')
+    .select('id, user_id, diagnosis_type')
+    .in('user_id', userIds)
+    .eq('is_active', true);
+
+  const personaMap = new Map<string, { id: string; diagnosisType: 'deep' | 'quick' }>();
+  personaResults?.forEach((pr) => {
+    if (!personaMap.has(pr.user_id)) {
+      personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
+    }
+  });
+
   const clients: ConsultingClient[] = profiles.map((profile) => {
     const userSessions = sessionMap.get(profile.id) || [];
     const userTasks = taskMap.get(profile.id) || [];
@@ -366,6 +418,7 @@ export async function getConsultingClients(options?: {
       }
     }
 
+    const persona = personaMap.get(profile.id);
     return {
       id: profile.id,
       email: profile.email,
@@ -375,6 +428,8 @@ export async function getConsultingClients(options?: {
       onboardingCompleted: profile.onboarding_completed,
       totalUploads: profile.total_uploads || 0,
       customerType: 'consulting' as const,
+      personaAnalysisType: persona?.diagnosisType || null,
+      personaResultId: persona?.id || null,
       consultingStartDate: profile.consulting_start_date,
       consultingEndDate: profile.consulting_end_date,
       currentMeetingNumber,
@@ -413,7 +468,7 @@ export async function getConsultingClients(options?: {
 }
 
 export async function getConsultingClientDetail(clientId: string): Promise<ConsultingClientDetail | null> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: profile, error } = await supabase
     .from('profiles')
@@ -496,6 +551,16 @@ export async function getConsultingClientDetail(clientId: string): Promise<Consu
     createdAt: r.created_at,
   }));
 
+  // 페르소나 분석 결과 조회
+  const { data: personaResults } = await supabase
+    .from('persona_results')
+    .select('id, diagnosis_type')
+    .eq('user_id', clientId)
+    .eq('is_active', true)
+    .limit(1);
+
+  const personaResult = personaResults?.[0];
+
   // Health Score 계산
   const startDate = profile.consulting_start_date ? new Date(profile.consulting_start_date) : new Date();
   const today = new Date();
@@ -549,6 +614,8 @@ export async function getConsultingClientDetail(clientId: string): Promise<Consu
     onboardingCompleted: profile.onboarding_completed,
     totalUploads: profile.total_uploads || 0,
     customerType: 'consulting',
+    personaAnalysisType: (personaResult?.diagnosis_type as 'deep' | 'quick') || null,
+    personaResultId: personaResult?.id || null,
     consultingStartDate: profile.consulting_start_date,
     consultingEndDate: profile.consulting_end_date,
     currentMeetingNumber,
@@ -573,7 +640,7 @@ export async function createConsultingSession(data: {
   materials?: string[];
   notes?: string;
 }): Promise<ConsultingSession | null> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: session, error } = await supabase
     .from('consulting_sessions')
@@ -614,7 +681,7 @@ export async function updateConsultingSession(
     notes: string;
   }>
 ): Promise<boolean> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { error } = await supabase
     .from('consulting_sessions')
@@ -641,7 +708,7 @@ export async function getInquiries(options?: {
   page?: number;
   limit?: number;
 }): Promise<{ inquiries: CustomerInquiry[]; total: number }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const page = options?.page || 1;
   const limit = options?.limit || 20;
   const offset = (page - 1) * limit;
@@ -697,7 +764,7 @@ export async function respondToInquiry(
   response: string,
   status: 'in_progress' | 'resolved' = 'resolved'
 ): Promise<boolean> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { error } = await supabase
     .from('customer_inquiries')

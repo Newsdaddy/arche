@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import Card, { CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
 interface RecentUser {
   id: string;
   email: string;
+  full_name: string | null;
   created_at: string;
   onboarding_completed: boolean;
   total_uploads: number;
@@ -32,35 +32,24 @@ export default function AdminOverviewPage() {
   const [recentConsulting, setRecentConsulting] = useState<RecentConsulting[]>([]);
   const [stats, setStats] = useState<DailyStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
-      const supabase = createClient();
-
       try {
-        const [
-          { count: totalUsers },
-          { count: onboardingCompleted },
-          { count: totalSubmissions },
-          { data: users },
-          { data: consulting },
-        ] = await Promise.all([
-          supabase.from("profiles").select("*", { count: "exact", head: true }),
-          supabase.from("profiles").select("*", { count: "exact", head: true }).eq("onboarding_completed", true),
-          supabase.from("submissions").select("*", { count: "exact", head: true }),
-          supabase.from("profiles").select("id, email, created_at, onboarding_completed, total_uploads").order("created_at", { ascending: false }).limit(5),
-          supabase.from("consulting_requests").select("id, name, email, plan_name, created_at").order("created_at", { ascending: false }).limit(5),
-        ]);
+        const res = await fetch("/api/admin/overview");
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "데이터 로드 실패");
+        }
+        const data = await res.json();
 
-        setStats({
-          totalUsers: totalUsers || 0,
-          onboardingCompleted: onboardingCompleted || 0,
-          totalSubmissions: totalSubmissions || 0,
-        });
-        setRecentUsers(users || []);
-        setRecentConsulting(consulting || []);
+        setStats(data.stats);
+        setRecentUsers(data.recentUsers || []);
+        setRecentConsulting(data.recentConsulting || []);
       } catch (err) {
         console.error("데이터 로드 실패:", err);
+        setError(err instanceof Error ? err.message : "데이터 로드 실패");
       }
 
       setIsLoading(false);
@@ -71,6 +60,10 @@ export default function AdminOverviewPage() {
 
   if (isLoading) {
     return <div className="text-center py-12 text-gray-400">로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-12 text-red-500">{error}</div>;
   }
 
   return (
