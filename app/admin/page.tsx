@@ -178,10 +178,10 @@ export default function AdminOverviewPage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
-            <Button variant="outline" onClick={() => window.open("https://supabase.com/dashboard", "_blank")}>
+            <Button variant="outline-dark" onClick={() => window.open("https://supabase.com/dashboard", "_blank")}>
               Supabase 대시보드 →
             </Button>
-            <Button variant="outline" onClick={() => window.open("https://vercel.com/dashboard", "_blank")}>
+            <Button variant="outline-dark" onClick={() => window.open("https://vercel.com/dashboard", "_blank")}>
               Vercel 대시보드 →
             </Button>
           </div>

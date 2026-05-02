@@ -8,6 +8,7 @@ const tabs = [
   { id: "members", label: "가입자", href: "/admin/members", icon: "👥" },
   { id: "paid", label: "유료 가입자", href: "/admin/paid-members", icon: "💎" },
   { id: "consulting", label: "상담 고객", href: "/admin/consulting", icon: "🎯" },
+  { id: "social", label: "소셜 활동", href: "/admin/social-activities", icon: "📱" },
   { id: "inquiries", label: "문의함", href: "/admin/inquiries", icon: "💬" },
 ];
 
@@ -23,6 +24,7 @@ export default function AdminTabs({ pendingInquiries = 0 }: AdminTabsProps) {
     if (pathname.startsWith("/admin/members")) return "members";
     if (pathname.startsWith("/admin/paid-members")) return "paid";
     if (pathname.startsWith("/admin/consulting")) return "consulting";
+    if (pathname.startsWith("/admin/social-activities")) return "social";
     if (pathname.startsWith("/admin/inquiries")) return "inquiries";
     return "overview";
   };

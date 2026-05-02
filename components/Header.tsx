@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { isAdmin as checkIsAdmin } from "@/lib/config/admin";
 import Button from "@/components/ui/Button";
 
 // 컨설팅 드롭다운 메뉴 아이템
@@ -20,8 +21,6 @@ const consultingItems = [
   },
 ];
 
-const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
-
 export default function Header() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,7 +33,7 @@ export default function Header() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       setIsLoggedIn(!!user);
-      setIsAdmin(!!user && ADMIN_EMAILS.includes(user.email || ""));
+      setIsAdmin(checkIsAdmin(user?.email));
     }
     checkAuth();
   }, []);

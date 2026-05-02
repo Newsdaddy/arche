@@ -181,13 +181,8 @@ export async function resetUsage(
 
 // ===== 리포트 액세스 관련 (클라이언트) =====
 
-// Admin 이메일 목록 (무제한 액세스)
-export const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
-
-// Admin 여부 확인 (클라이언트용)
-export function isAdminEmail(email: string | undefined): boolean {
-  return !!email && ADMIN_EMAILS.includes(email);
-}
+// Re-export from centralized config
+export { ADMIN_EMAILS, isAdmin as isAdminEmail } from "@/lib/config/admin";
 
 // 리포트 액세스 정보 타입
 export interface ReportAccessInfo {

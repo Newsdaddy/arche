@@ -1,16 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { UsageCheckResult, UsageLimits } from "@/types";
+import { isAdmin } from "@/lib/config/admin";
 
-// Admin 이메일 목록 (무제한 액세스)
-export const ADMIN_EMAILS = [
-  "editorjin0326@gmail.com",
-  "byeongjin.jeong05@gmail.com",
-];
-
-// Admin 여부 확인
-export function isAdmin(email: string | undefined): boolean {
-  return !!email && ADMIN_EMAILS.includes(email);
-}
+// Re-export for backward compatibility
+export { ADMIN_EMAILS, isAdmin } from "@/lib/config/admin";
 
 // 사용량 제한 상수 (무료 / 레거시 Pro 기준)
 export const USAGE_LIMITS: Record<"free" | "pro", UsageLimits> = {

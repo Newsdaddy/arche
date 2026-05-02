@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import HealthScoreGauge from "@/components/admin/HealthScoreGauge";
 import MeetingTimeline from "@/components/admin/MeetingTimeline";
 import MeetingSessionModal from "@/components/admin/MeetingSessionModal";
+import ReportUploadSection from "@/components/admin/ReportUploadSection";
 import { calculateHealthScore, getGradeInfo } from "@/lib/admin/health-score";
 
 interface Session {
@@ -88,7 +89,7 @@ export default function ConsultingClientDetailPage() {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 mb-4">클라이언트를 찾을 수 없습니다</p>
-        <Button variant="outline" onClick={() => router.back()}>
+        <Button variant="outline-dark" onClick={() => router.back()}>
           뒤로 가기
         </Button>
       </div>
@@ -292,6 +293,12 @@ export default function ConsultingClientDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* 컨설팅 보고서 업로드 */}
+      <ReportUploadSection
+        userId={clientId}
+        sessions={sessions.map((s) => ({ session_number: s.session_number, status: s.status }))}
+      />
 
       {/* 컨설팅 정보 */}
       <Card>

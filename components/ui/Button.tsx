@@ -3,7 +3,7 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "link";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "link" | "outline-dark" | "ghost-dark";
   size?: "sm" | "md" | "lg" | "xl";
   children: ReactNode;
   fullWidth?: boolean;
@@ -26,6 +26,9 @@ export default function Button({
     outline: "border-2 border-white/20 text-white hover:bg-white/5 hover:border-white/40 focus-visible:ring-white/50",
     ghost: "text-white hover:bg-white/10 focus-visible:ring-white/30",
     link: "text-white hover:text-primary-300 underline-offset-4 hover:underline focus-visible:ring-white/30",
+    // 밝은 배경용 변형
+    "outline-dark": "border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 focus-visible:ring-gray-400",
+    "ghost-dark": "text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-300",
   };
 
   const sizes = {

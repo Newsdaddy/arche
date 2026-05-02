@@ -61,7 +61,7 @@ export default function MembersPage() {
                 placeholder="이름 또는 이메일 검색"
                 className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-transparent"
               />
-              <Button type="submit" variant="outline" size="sm">
+              <Button type="submit" variant="outline-dark" size="sm">
                 검색
               </Button>
             </form>
@@ -99,7 +99,7 @@ export default function MembersPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-6">
                 <Button
-                  variant="outline"
+                  variant="outline-dark"
                   size="sm"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
@@ -110,7 +110,7 @@ export default function MembersPage() {
                   {page} / {totalPages}
                 </span>
                 <Button
-                  variant="outline"
+                  variant="outline-dark"
                   size="sm"
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}

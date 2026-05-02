@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { isAdmin as checkIsAdmin } from "@/lib/config/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 import AdminStatsCards from "@/components/admin/AdminStatsCards";
 import Button from "@/components/ui/Button";
 import { AdminStats } from "@/types/admin";
-
-const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
 
 export default function AdminLayout({
   children,
@@ -31,7 +30,7 @@ export default function AdminLayout({
         return;
       }
 
-      if (!ADMIN_EMAILS.includes(user.email || "")) {
+      if (!checkIsAdmin(user.email)) {
         setError("접근 권한이 없습니다.");
         setIsLoading(false);
         return;
@@ -90,7 +89,7 @@ export default function AdminLayout({
   }
 
   return (
-    <main className="flex-1 px-6 py-8">
+    <main className="flex-1 px-6 py-8 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
         <div className="flex items-center justify-between mb-6">
@@ -98,7 +97,7 @@ export default function AdminLayout({
             <p className="text-accent font-semibold tracking-widest text-sm">ARCHE ADMIN</p>
             <h1 className="text-2xl font-bold text-gray-900">관리자 대시보드</h1>
           </div>
-          <Button variant="outline" onClick={() => router.push("/")}>
+          <Button variant="outline-dark" onClick={() => router.push("/")}>
             홈으로
           </Button>
         </div>

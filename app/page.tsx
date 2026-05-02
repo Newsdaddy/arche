@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
-import Card, { CardContent } from "@/components/ui/Card";
 
 interface CourseType {
   id: "1h" | "2h" | "3h";

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/config/admin";
 import { DiagnosisResult } from "@/types/diagnosis";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
   try {
@@ -25,12 +27,30 @@ export async function POST(request: Request) {
       );
     }
 
+    // Impersonation 체크: 어드민이 대행 모드인 경우 대상 사용자 ID 사용
+    let targetUserId = user.id;
+    const cookieStore = await cookies();
+    const impersonatingUserId = cookieStore.get("impersonating_user_id")?.value;
+
+    if (impersonatingUserId && isAdmin(user.email)) {
+      // 대상 사용자 존재 확인
+      const { data: targetUser } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", impersonatingUserId)
+        .single();
+
+      if (targetUser) {
+        targetUserId = impersonatingUserId;
+      }
+    }
+
     // persona_results 테이블에 저장
     const { data, error } = await supabase
       .from("persona_results")
       .upsert(
         {
-          user_id: user.id,
+          user_id: targetUserId,
           diagnosis_type: result.diagnosisType,
           archetype: result.archetype.id,
           archetype_name: result.archetype.name,
@@ -72,6 +92,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       id: data.id,
+      impersonated: targetUserId !== user.id,
     });
   } catch (error) {
     console.error("결과 저장 실패:", error);
@@ -97,10 +118,19 @@ export async function GET() {
       );
     }
 
+    // Impersonation 체크
+    let targetUserId = user.id;
+    const cookieStore = await cookies();
+    const impersonatingUserId = cookieStore.get("impersonating_user_id")?.value;
+
+    if (impersonatingUserId && isAdmin(user.email)) {
+      targetUserId = impersonatingUserId;
+    }
+
     const { data, error } = await supabase
       .from("persona_results")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", targetUserId)
       .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(1)

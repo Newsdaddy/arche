@@ -6,7 +6,7 @@ interface CardProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
-  variant?: "default" | "elevated" | "feature" | "muted";
+  variant?: "default" | "elevated" | "feature" | "muted" | "light";
   hoverable?: boolean;
 }
 
@@ -15,6 +15,8 @@ const cardVariants = {
   elevated: "bg-dark-lighter shadow-soft border border-white/10",
   feature: "bg-dark-lighter border border-white/10 hover:border-white/30 hover:shadow-glow",
   muted: "bg-dark-100 border border-white/5",
+  // 밝은 배경용 변형
+  light: "bg-white border border-gray-200 shadow-sm",
 };
 
 export default function Card({
@@ -52,8 +54,8 @@ interface CardTitleProps {
   className?: string;
 }
 
-export function CardTitle({ children, className = "" }: CardTitleProps) {
-  return <h3 className={`text-h3 text-white ${className}`}>{children}</h3>;
+export function CardTitle({ children, className = "", dark = false }: CardTitleProps & { dark?: boolean }) {
+  return <h3 className={`text-h3 ${dark ? "text-gray-900" : "text-white"} ${className}`}>{children}</h3>;
 }
 
 interface CardDescriptionProps {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AdminMember } from "@/types/admin";
 
 interface MemberTableProps {
@@ -10,6 +11,7 @@ interface MemberTableProps {
 }
 
 export default function MemberTable({ members, showCustomerType = false, onMemberUpdate }: MemberTableProps) {
+  const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const handleSetCustomerType = async (memberId: string, action: string) => {
@@ -102,16 +104,26 @@ export default function MemberTable({ members, showCustomerType = false, onMembe
               className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
             >
               <td className="py-3 px-4">
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => router.push(`/admin/members/${member.id}`)}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left"
+                >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-purple-400 flex items-center justify-center text-white text-sm font-medium">
                     {(member.fullName || member.email)[0].toUpperCase()}
                   </div>
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 hover:text-accent">
                     {member.fullName || "-"}
                   </span>
-                </div>
+                </button>
               </td>
-              <td className="py-3 px-4 text-gray-600">{member.email}</td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => router.push(`/admin/members/${member.id}`)}
+                  className="text-gray-600 hover:text-accent transition-colors"
+                >
+                  {member.email}
+                </button>
+              </td>
               <td className="py-3 px-4">
                 <div className="flex flex-wrap gap-1">
                   {member.socialChannels.length > 0

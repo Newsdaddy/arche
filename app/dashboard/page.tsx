@@ -6,6 +6,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import ReportsSection from "@/components/dashboard/ReportsSection";
+import SocialActivitySection from "@/components/dashboard/SocialActivitySection";
 
 interface UsageStats {
   // 구독 정보
@@ -325,6 +327,12 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* 컨설팅 보고서 (컨설팅 고객만 표시) */}
+        <ReportsSection />
+
+        {/* 소셜미디어 활동 */}
+        <SocialActivitySection />
 
         {/* 빠른 액션 */}
         <div className="grid grid-cols-2 gap-4">

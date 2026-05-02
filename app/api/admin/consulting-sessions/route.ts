@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-
-const ADMIN_EMAILS = ["editorjin0326@gmail.com"];
+import { isAdmin } from "@/lib/config/admin";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user || !ADMIN_EMAILS.includes(user.email || "")) {
+  if (!user || !isAdmin(user.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -59,7 +58,7 @@ export async function PUT(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user || !ADMIN_EMAILS.includes(user.email || "")) {
+  if (!user || !isAdmin(user.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
