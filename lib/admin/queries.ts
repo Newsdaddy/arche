@@ -84,19 +84,22 @@ export async function getMembers(options?: {
 
   // 회원들의 페르소나 분석 결과 조회
   const memberIds = (data || []).map((row) => row.id);
-  const { data: personaResults } = await supabase
-    .from('persona_results')
-    .select('id, user_id, diagnosis_type')
-    .in('user_id', memberIds)
-    .eq('is_active', true);
-
-  // 페르소나 결과를 user_id로 매핑 (가장 최근 것만)
   const personaMap = new Map<string, { id: string; diagnosisType: 'deep' | 'quick' }>();
-  personaResults?.forEach((pr) => {
-    if (!personaMap.has(pr.user_id)) {
-      personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
-    }
-  });
+
+  if (memberIds.length > 0) {
+    const { data: personaResults } = await supabase
+      .from('persona_results')
+      .select('id, user_id, diagnosis_type')
+      .in('user_id', memberIds)
+      .eq('is_active', true);
+
+    // 페르소나 결과를 user_id로 매핑 (가장 최근 것만)
+    personaResults?.forEach((pr) => {
+      if (!personaMap.has(pr.user_id)) {
+        personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
+      }
+    });
+  }
 
   const members: AdminMember[] = (data || []).map((row) => {
     const persona = personaMap.get(row.id);
@@ -181,18 +184,20 @@ export async function getPaidMembers(options?: {
   });
 
   // 페르소나 분석 결과 조회
-  const { data: personaResults } = await supabase
-    .from('persona_results')
-    .select('id, user_id, diagnosis_type')
-    .in('user_id', memberIds)
-    .eq('is_active', true);
-
   const personaMap = new Map<string, { id: string; diagnosisType: 'deep' | 'quick' }>();
-  personaResults?.forEach((pr) => {
-    if (!personaMap.has(pr.user_id)) {
-      personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
-    }
-  });
+  if (memberIds.length > 0) {
+    const { data: personaResults } = await supabase
+      .from('persona_results')
+      .select('id, user_id, diagnosis_type')
+      .in('user_id', memberIds)
+      .eq('is_active', true);
+
+    personaResults?.forEach((pr) => {
+      if (!personaMap.has(pr.user_id)) {
+        personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
+      }
+    });
+  }
 
   const members: AdminPaidMember[] = (data || []).map((row) => {
     const sub = subscriptionMap.get(row.id);
@@ -353,18 +358,20 @@ export async function getConsultingClients(options?: {
   });
 
   // 페르소나 분석 결과 조회
-  const { data: personaResults } = await supabase
-    .from('persona_results')
-    .select('id, user_id, diagnosis_type')
-    .in('user_id', userIds)
-    .eq('is_active', true);
-
   const personaMap = new Map<string, { id: string; diagnosisType: 'deep' | 'quick' }>();
-  personaResults?.forEach((pr) => {
-    if (!personaMap.has(pr.user_id)) {
-      personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
-    }
-  });
+  if (userIds.length > 0) {
+    const { data: personaResults } = await supabase
+      .from('persona_results')
+      .select('id, user_id, diagnosis_type')
+      .in('user_id', userIds)
+      .eq('is_active', true);
+
+    personaResults?.forEach((pr) => {
+      if (!personaMap.has(pr.user_id)) {
+        personaMap.set(pr.user_id, { id: pr.id, diagnosisType: pr.diagnosis_type });
+      }
+    });
+  }
 
   const clients: ConsultingClient[] = profiles.map((profile) => {
     const userSessions = sessionMap.get(profile.id) || [];
