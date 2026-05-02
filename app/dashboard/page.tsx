@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { isAdmin } from "@/lib/config/admin";
 import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import ReportsSection from "@/components/dashboard/ReportsSection";
@@ -36,6 +37,7 @@ const PLAN_LIMITS = {
   pass_1m: { dailyContent: 100, diagnosis: 1, report: 1 },
   pass_3m: { dailyContent: 100, diagnosis: 3, report: 3 },
   pass_12m: { dailyContent: 100, diagnosis: 12, report: 12 },
+  admin: { dailyContent: 9999, diagnosis: 9999, report: 9999 },
 };
 
 export default function DashboardPage() {
@@ -102,15 +104,18 @@ export default function DashboardPage() {
         .eq("user_id", user.id)
         .eq("usage_type", "report_download");
 
+      // 어드민 체크
+      const userIsAdmin = isAdmin(user.email);
+
       // 플랜 정보 계산
-      const isPro = subscription?.status === "active" && subscription.plan === "pro";
-      const planId = subscription?.plan_id || "free";
+      const isPro = userIsAdmin || (subscription?.status === "active" && subscription.plan === "pro");
+      const planId = userIsAdmin ? "admin" : (subscription?.plan_id || "free");
       const limits = PLAN_LIMITS[planId as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
 
       // 남은 기간 계산
       let daysRemaining: number | null = null;
       let expiresAt: string | null = null;
-      if (isPro && subscription?.current_period_end) {
+      if (isPro && subscription?.current_period_end && !userIsAdmin) {
         expiresAt = subscription.current_period_end;
         const endDate = new Date(subscription.current_period_end);
         const now = new Date();
@@ -119,7 +124,8 @@ export default function DashboardPage() {
 
       // 플랜 이름 결정
       let planName = "무료";
-      if (planId === "pass_1m") planName = "1개월권";
+      if (userIsAdmin) planName = "관리자";
+      else if (planId === "pass_1m") planName = "1개월권";
       else if (planId === "pass_3m") planName = "3개월권";
       else if (planId === "pass_12m") planName = "12개월권";
 
@@ -129,7 +135,7 @@ export default function DashboardPage() {
         daysRemaining,
         expiresAt,
         contentUsedToday: contentTodayCount || 0,
-        contentLimitToday: isPro ? limits.dailyContent : PLAN_LIMITS.free.dailyContent,
+        contentLimitToday: limits.dailyContent,
         contentTotalUsed: contentTotalCount || 0,
         diagnosisUsed: diagnosisCount || 0,
         diagnosisLimit: limits.diagnosis,
