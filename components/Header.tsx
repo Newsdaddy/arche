@@ -7,8 +7,13 @@ import { createClient } from "@/lib/supabase/client";
 import { isAdmin as checkIsAdmin } from "@/lib/config/admin";
 import Button from "@/components/ui/Button";
 
-// 컨설팅 드롭다운 메뉴 아이템
-const consultingItems = [
+// AX 그룹 드롭다운 메뉴 아이템 (워크샵 + 컨설팅 — 개인 항목은 제외)
+const groupItems = [
+  {
+    label: "AX 워크샵",
+    href: "/",
+    description: "기업·팀 대상 실무 AX 세미나",
+  },
   {
     label: "AX 1:1 컨설팅",
     href: "/consulting/ax",
@@ -64,26 +69,16 @@ export default function Header() {
 
           {/* 데스크톱 네비게이션 */}
           <nav className="hidden lg:flex items-center gap-8 ml-36">
-            {/* AX 워크샵 (메인) */}
-            <Link
-              href="/"
-              className={`px-1 py-2 text-body font-medium transition-colors ${
-                isActive("/") && pathname === "/" ? "text-white" : "text-primary-400 hover:text-white"
-              }`}
-            >
-              AX 워크샵
-            </Link>
-
-            {/* 컨설팅 드롭다운 */}
+            {/* AX 그룹 드롭다운 (워크샵 + 컨설팅) */}
             <div
               className="relative"
               onMouseEnter={() => setIsConsultingOpen(true)}
               onMouseLeave={() => setIsConsultingOpen(false)}
             >
               <button className={`flex items-center gap-1 px-1 py-2 text-body font-medium transition-colors ${
-                isActive("/persona") || isActive("/consulting") || isActive("/diagnosis") ? "text-white" : "text-primary-400 hover:text-white"
+                (pathname === "/" || isActive("/persona") || isActive("/consulting") || isActive("/diagnosis")) ? "text-white" : "text-primary-400 hover:text-white"
               }`}>
-                컨설팅
+                AX 그룹
                 <svg className={`w-4 h-4 transition-transform ${isConsultingOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -92,7 +87,7 @@ export default function Header() {
               {/* 드롭다운 메뉴 */}
               <div className={`absolute top-full left-0 pt-2 transition-all duration-200 ${isConsultingOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
                 <div className="bg-dark-lighter rounded-2xl shadow-soft border border-white/10 p-2 min-w-[280px]">
-                  {consultingItems.map((item) => (
+                  {groupItems.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
@@ -106,24 +101,24 @@ export default function Header() {
               </div>
             </div>
 
-            {/* 1:1 트레이닝 */}
+            {/* AX 개인 (1:1 트레이닝) */}
             <Link
               href="/training"
               className={`px-1 py-2 text-body font-medium transition-colors ${
                 isActive("/training") ? "text-white" : "text-primary-400 hover:text-white"
               }`}
             >
-              1:1 트레이닝
+              AX 개인
             </Link>
 
-            {/* 자료실 */}
+            {/* AX 자료실 */}
             <Link
               href="/resources"
               className={`px-1 py-2 text-body font-medium transition-colors ${
                 isActive("/resources") ? "text-white" : "text-primary-400 hover:text-white"
               }`}
             >
-              자료실
+              AX 자료실
             </Link>
 
             {/* About */}
@@ -193,21 +188,10 @@ export default function Header() {
         {isMenuOpen && (
           <div className="lg:hidden py-4 border-t border-white/10 animate-fade-in">
             <nav className="flex flex-col gap-1">
-              {/* AX 워크샵 */}
-              <Link
-                href="/"
-                onClick={() => setIsMenuOpen(false)}
-                className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
-                  pathname === "/" ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                AX 워크샵
-              </Link>
-
-              {/* 컨설팅 서브메뉴 */}
+              {/* AX 그룹 서브메뉴 (워크샵 + 컨설팅) */}
               <div className="px-4 py-2">
-                <p className="text-caption text-primary-500 uppercase tracking-wider mb-2">컨설팅</p>
-                {consultingItems.map((item) => (
+                <p className="text-caption text-primary-500 uppercase tracking-wider mb-2">AX 그룹</p>
+                {groupItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -219,7 +203,7 @@ export default function Header() {
                 ))}
               </div>
 
-              {/* 1:1 트레이닝 */}
+              {/* AX 개인 (1:1 트레이닝) */}
               <Link
                 href="/training"
                 onClick={() => setIsMenuOpen(false)}
@@ -227,10 +211,10 @@ export default function Header() {
                   isActive("/training") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                1:1 트레이닝
+                AX 개인
               </Link>
 
-              {/* 자료실 */}
+              {/* AX 자료실 */}
               <Link
                 href="/resources"
                 onClick={() => setIsMenuOpen(false)}
@@ -238,7 +222,7 @@ export default function Header() {
                   isActive("/resources") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                자료실
+                AX 자료실
               </Link>
 
               {/* About */}
