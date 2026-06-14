@@ -100,22 +100,8 @@ export default function TrainingPage() {
           내 업무에 맞는 첫 AI 에이전트를 직접 만들 수 있게 1:1로 함께 셋업합니다.
         </p>
 
-        <div className="inline-flex flex-col items-center gap-1 mb-8">
-          <span className="text-4xl font-bold">
-            ₩{price.toLocaleString("ko-KR")}
-          </span>
-          <span className="text-small text-primary-400">
-            {sessionMinutes}분 × {sessionCount}회 (총 {Math.round(totalMinutes / 60)}시간) · 구글밋 진행
-          </span>
-        </div>
-
-        <div className="flex justify-center">
-          <Button size="xl" onClick={handleBuy} disabled={submitting}>
-            {submitting ? "이동 중..." : "결제하고 일정 잡기"}
-          </Button>
-        </div>
-        <p className="text-caption text-primary-500 mt-4">
-          결제 후 1·2회차 희망 시간을 제출하시면, 담당자가 확정 일시와 구글밋 링크를 메일로 보내드립니다.
+        <p className="text-small text-primary-400">
+          {sessionMinutes}분 × {sessionCount}회 (총 {Math.round(totalMinutes / 60)}시간) · 구글밋 진행
         </p>
       </section>
 
