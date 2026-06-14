@@ -46,6 +46,11 @@ export default function Footer() {
             <h3 className="font-semibold text-white mb-4">안내</h3>
             <ul className="space-y-2">
               <li>
+                <Link href="/resources" className="text-body text-primary-500 hover:text-white transition-colors">
+                  자료실
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="text-body text-primary-500 hover:text-white transition-colors">
                   About
                 </Link>

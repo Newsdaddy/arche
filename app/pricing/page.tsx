@@ -134,6 +134,22 @@ export default function PricingPage() {
           </p>
         </div>
 
+        {/* 1:1 트레이닝 상품 프로모 */}
+        <Link href="/training" className="block">
+          <div className="border-2 border-accent bg-accent/5 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:bg-accent/10 transition-colors">
+            <div>
+              <p className="text-accent font-semibold text-small mb-1">1:1 온라인 트레이닝</p>
+              <p className="text-primary font-bold text-lg">
+                클로드코드 환경 셋업 + AI 에이전트 제작 기초
+              </p>
+              <p className="text-gray-500 text-small mt-1">
+                90분 × 2회 (총 3시간) · 구글밋 진행 · ₩200,000
+              </p>
+            </div>
+            <span className="text-accent font-semibold whitespace-nowrap">자세히 보기 →</span>
+          </div>
+        </Link>
+
         {plansError && (
           <p className="text-center text-red-600 text-small">{plansError}</p>
         )}

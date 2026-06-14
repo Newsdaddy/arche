@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import ReportsSection from "@/components/dashboard/ReportsSection";
 import SocialActivitySection from "@/components/dashboard/SocialActivitySection";
+import BookingsSection from "@/components/BookingsSection";
 
 interface UsageStats {
   // 구독 정보
@@ -182,6 +183,9 @@ export default function DashboardPage() {
             로그아웃
           </button>
         </div>
+
+        {/* 트레이닝 예약 (있을 때만 표시) */}
+        <BookingsSection />
 
         {/* 구독 상태 카드 */}
         <Card className={stats.plan === "pro" ? "border-accent border-2 bg-accent/5" : "border-gray-700"}>

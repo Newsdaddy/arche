@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 interface CourseType {
   id: "1h" | "2h" | "3h";
@@ -58,7 +59,15 @@ const COURSES: CourseType[] = [
   },
 ];
 
-// 후기
+// 신뢰 지표 (USP-실무AX세미나.md 기준 — 임의 수치 금지)
+const STATS = [
+  { value: "10+", label: "개인 컨설팅 완료" },
+  { value: "1:1~60+", label: "인원수 맞춤 세미나" },
+  { value: "4주", label: "강의 후 사후 Q&A 지원" },
+];
+
+// 후기 — 실제 수강생 후기만 사용합니다. (가공/임의 후기 금지)
+// 새 후기를 받으면 아래 배열에 { name, role, company, content } 형태로 추가하세요.
 const TESTIMONIALS = [
   {
     name: "신OO",
@@ -77,6 +86,13 @@ const TESTIMONIALS = [
     role: "대표",
     company: "1인 기업",
     content: "혼자서 여러 업무를 처리해야 하는데, AX 적용 후 시간이 많이 절약되었습니다.",
+  },
+  {
+    name: "김OO",
+    role: "",
+    company: "기업교육업",
+    content:
+      "난무하는 AI 강의에 피로도가 높았는데, 강사님 시차를 극복하시고 편안하고 정확한 딕션으로 긴 시간 실속있는 강의 해주셔서 고맙습니다. 더 업데이팅이 되어야하겠지만, 궁금했던 부분이 많이 해소되었습니다.",
   },
 ];
 
@@ -279,6 +295,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 1:1 트레이닝 상품 Section */}
+      <section className="py-20" style={{ backgroundColor: "#000000" }}>
+        <div className="container-wide">
+          <div className="border-2 border-accent bg-accent/5 p-8 sm:p-12 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+            <div>
+              <p className="text-accent text-sm font-semibold tracking-wider mb-3">
+                1:1 온라인 트레이닝
+              </p>
+              <h2 className="text-3xl font-bold text-white mb-3">
+                클로드코드 환경 셋업 + AI 에이전트 제작 기초
+              </h2>
+              <p className="text-primary-300 max-w-xl">
+                비개발자도 내 컴퓨터에서 터미널로 Claude Code를 쓰고, 내 업무에 맞는
+                첫 AI 에이전트를 직접 만들 수 있게 1:1로 함께 셋업합니다.
+              </p>
+              <p className="text-primary-400 text-sm mt-3">
+                90분 × 2회 (총 3시간) · 구글밋 진행 · ₩200,000
+              </p>
+            </div>
+            <Link href="/training" className="shrink-0">
+              <Button size="xl">자세히 보고 신청하기</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Process Section */}
       <section className="py-20" style={{ backgroundColor: "#f9fafb" }}>
         <div className="container-wide">
@@ -324,18 +366,35 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="py-20" style={{ backgroundColor: "#ffffff" }}>
         <div className="container-wide">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <p className="text-accent text-sm font-medium tracking-wider mb-4">TESTIMONIALS</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">수강 후기</h2>
+            <p className="text-gray-500 mt-4">비개발자 실무진이 직접 경험한 변화입니다</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+          {/* 신뢰 지표 바 */}
+          <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-14">
+            {STATS.map((stat) => (
+              <div key={stat.label} className="text-center px-2">
+                <p className="text-3xl md:text-4xl font-bold text-accent">{stat.value}</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-2">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
             {TESTIMONIALS.map((item, i) => (
-              <div key={i} className="bg-gray-50 rounded-2xl p-6 flex flex-col h-full">
+              <div
+                key={i}
+                className="bg-gray-50 border border-gray-100 rounded-2xl p-6 flex flex-col h-full hover:border-gray-200 transition-colors"
+              >
+                <svg className="w-8 h-8 text-accent/20 mb-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
+                </svg>
                 <p className="text-gray-700 leading-relaxed flex-1">&ldquo;{item.content}&rdquo;</p>
                 <div className="mt-6 pt-4 border-t border-gray-200">
                   <p className="font-semibold text-gray-900">{item.name}</p>
-                  <p className="text-sm text-gray-500">{item.role}, {item.company}</p>
+                  <p className="text-sm text-gray-500">{[item.role, item.company].filter(Boolean).join(", ")}</p>
                 </div>
               </div>
             ))}

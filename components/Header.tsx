@@ -106,6 +106,26 @@ export default function Header() {
               </div>
             </div>
 
+            {/* 1:1 트레이닝 */}
+            <Link
+              href="/training"
+              className={`px-1 py-2 text-body font-medium transition-colors ${
+                isActive("/training") ? "text-white" : "text-primary-400 hover:text-white"
+              }`}
+            >
+              1:1 트레이닝
+            </Link>
+
+            {/* 자료실 */}
+            <Link
+              href="/resources"
+              className={`px-1 py-2 text-body font-medium transition-colors ${
+                isActive("/resources") ? "text-white" : "text-primary-400 hover:text-white"
+              }`}
+            >
+              자료실
+            </Link>
+
             {/* About */}
             <Link
               href="/about"
@@ -198,6 +218,28 @@ export default function Header() {
                   </Link>
                 ))}
               </div>
+
+              {/* 1:1 트레이닝 */}
+              <Link
+                href="/training"
+                onClick={() => setIsMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
+                  isActive("/training") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                1:1 트레이닝
+              </Link>
+
+              {/* 자료실 */}
+              <Link
+                href="/resources"
+                onClick={() => setIsMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
+                  isActive("/resources") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                자료실
+              </Link>
 
               {/* About */}
               <Link

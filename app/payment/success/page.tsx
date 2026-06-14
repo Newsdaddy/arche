@@ -10,6 +10,8 @@ function SuccessInner() {
   const [status, setStatus] = useState<"loading" | "ok" | "err">("loading");
   const [message, setMessage] = useState("");
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
+  const [kind, setKind] = useState<"subscription" | "product">("subscription");
+  const [bookingId, setBookingId] = useState<string | null>(null);
   const once = useRef(false);
 
   useEffect(() => {
@@ -43,7 +45,9 @@ function SuccessInner() {
       const json = (await res.json()) as {
         error?: string;
         ok?: boolean;
+        kind?: "subscription" | "product";
         expiresAt?: string;
+        bookingId?: string | null;
       };
 
       if (!res.ok) {
@@ -53,7 +57,9 @@ function SuccessInner() {
       }
 
       setStatus("ok");
+      setKind(json.kind ?? "subscription");
       setExpiresAt(json.expiresAt ?? null);
+      setBookingId(json.bookingId ?? null);
     })();
   }, [searchParams]);
 
@@ -71,7 +77,36 @@ function SuccessInner() {
           </Link>
         </>
       )}
-      {status === "ok" && (
+      {status === "ok" && kind === "product" && (
+        <>
+          <h1 className="text-h2 text-primary mb-4">결제가 완료되었습니다</h1>
+          <p className="text-body text-gray-600 mb-8">
+            이제 1·2회차 희망 일정을 알려주세요. 담당자가 확인 후 구글밋 링크와
+            확정 일시를 메일로 보내드립니다.
+          </p>
+          <div className="flex flex-col gap-3 w-full">
+            {bookingId ? (
+              <Link href={`/booking/${bookingId}`} className="w-full">
+                <Button size="lg" fullWidth>
+                  일정 신청하기
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/dashboard" className="w-full">
+                <Button size="lg" fullWidth>
+                  대시보드에서 일정 신청
+                </Button>
+              </Link>
+            )}
+            <Link href="/dashboard" className="w-full">
+              <Button size="lg" variant="outline" fullWidth>
+                대시보드
+              </Button>
+            </Link>
+          </div>
+        </>
+      )}
+      {status === "ok" && kind === "subscription" && (
         <>
           <h1 className="text-h2 text-primary mb-4">결제가 완료되었습니다</h1>
           <p className="text-body text-gray-600 mb-2">

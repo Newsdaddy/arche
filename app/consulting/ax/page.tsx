@@ -529,6 +529,27 @@ export default function AXConsultingPage() {
         </div>
       </section>
 
+      {/* 설문 바로가기 */}
+      <section className="py-16 bg-gray-50 border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="text-accent text-sm font-medium tracking-wider mb-4">SURVEY</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            세미나 설문조사
+          </h2>
+          <p className="text-gray-500 mb-8">
+            세미나 참석자분들은 아래 버튼을 통해 설문에 참여해주세요.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/survey"
+              className="inline-flex items-center justify-center px-8 h-14 bg-accent text-white font-semibold hover:bg-accent/90 transition-colors"
+            >
+              설문조사 참여하기
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 bg-accent">
         <div className="max-w-4xl mx-auto px-6 text-center">

@@ -21,6 +21,13 @@ function PaymentInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const planId = searchParams.get("planId");
+  const productId = searchParams.get("productId");
+  const isProduct = !!productId;
+  // 결제 대상이 없는 경우를 위한 통합 식별자
+  const target = productId ?? planId;
+  const targetQuery = isProduct
+    ? `productId=${encodeURIComponent(productId ?? "")}`
+    : `planId=${encodeURIComponent(planId ?? "")}`;
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,8 +43,8 @@ function PaymentInner() {
   const checkoutStarted = useRef(false);
 
   useEffect(() => {
-    if (!planId) {
-      setError("플랜이 선택되지 않았습니다.");
+    if (!target) {
+      setError("결제 대상이 선택되지 않았습니다.");
       setLoading(false);
       return;
     }
@@ -52,16 +59,19 @@ function PaymentInner() {
       } = await supabase.auth.getUser();
       if (!user) {
         router.replace(
-          `/login?redirect=${encodeURIComponent(`/payment?planId=${planId}`)}`
+          `/login?redirect=${encodeURIComponent(`/payment?${targetQuery}`)}`
         );
         return;
       }
 
-      const res = await fetch("/api/payments/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId }),
-      });
+      const res = await fetch(
+        isProduct ? "/api/orders/checkout" : "/api/payments/checkout",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(isProduct ? { productId } : { planId }),
+        }
+      );
       const json = (await res.json()) as CheckoutResponse & { error?: string };
       if (!res.ok) {
         setError(json.error ?? "결제 준비에 실패했습니다.");
@@ -76,7 +86,7 @@ function PaymentInner() {
       });
       setLoading(false);
     })();
-  }, [planId, router]);
+  }, [target, targetQuery, isProduct, planId, productId, router]);
 
   useEffect(() => {
     if (!checkout) return;
@@ -146,7 +156,7 @@ function PaymentInner() {
     }
   };
 
-  if (!planId) {
+  if (!target) {
     return (
       <main className="flex-1 flex items-center justify-center px-6">
         <p className="text-gray-600">잘못된 접근입니다.</p>
