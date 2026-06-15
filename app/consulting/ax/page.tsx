@@ -209,7 +209,7 @@ export default function AXConsultingPage() {
             <p className="text-lg text-white/60 mb-10 max-w-xl">
               &ldquo;어디서부터 시작해야 할지 모르겠다&rdquo;<br />
               귀사 비즈니스에 맞는 AI 셋업부터 루틴 설계까지,<br />
-              1:1로 함께 만들어갑니다.
+              맞춤으로 함께 만들어갑니다.
             </p>
             <div className="flex flex-wrap gap-4">
               <a
