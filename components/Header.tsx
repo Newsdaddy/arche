@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isAdmin as checkIsAdmin } from "@/lib/config/admin";
 import Button from "@/components/ui/Button";
 
-// AX 그룹 드롭다운 메뉴 아이템 (워크샵 + 컨설팅 — 개인 항목은 제외)
+// AX 그룹 드롭다운 메뉴 아이템 (기업·팀 대상 — 개인 항목은 제외)
 const groupItems = [
   {
     label: "AX 워크샵",
@@ -18,6 +18,15 @@ const groupItems = [
     label: "AX 1:1 컨설팅",
     href: "/consulting/ax",
     description: "AI 업무 위임 셋업 및 루틴 설계",
+  },
+];
+
+// AX 개인 드롭다운 메뉴 아이템 (1:1 서비스)
+const individualItems = [
+  {
+    label: "1:1 트레이닝",
+    href: "/training",
+    description: "클로드코드 셋업 + AI 에이전트 제작 기초",
   },
   {
     label: "소셜페르소나 컨설팅",
@@ -32,6 +41,7 @@ export default function Header() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConsultingOpen, setIsConsultingOpen] = useState(false);
+  const [isIndividualOpen, setIsIndividualOpen] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
@@ -69,14 +79,14 @@ export default function Header() {
 
           {/* 데스크톱 네비게이션 */}
           <nav className="hidden lg:flex items-center gap-8 ml-36">
-            {/* AX 그룹 드롭다운 (워크샵 + 컨설팅) */}
+            {/* AX 그룹 드롭다운 (기업·팀 대상) */}
             <div
               className="relative"
               onMouseEnter={() => setIsConsultingOpen(true)}
               onMouseLeave={() => setIsConsultingOpen(false)}
             >
               <button className={`flex items-center gap-1 px-1 py-2 text-body font-medium transition-colors ${
-                (pathname === "/" || isActive("/persona") || isActive("/consulting") || isActive("/diagnosis")) ? "text-white" : "text-primary-400 hover:text-white"
+                (pathname === "/" || isActive("/consulting")) ? "text-white" : "text-primary-400 hover:text-white"
               }`}>
                 AX 그룹
                 <svg className={`w-4 h-4 transition-transform ${isConsultingOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,15 +111,37 @@ export default function Header() {
               </div>
             </div>
 
-            {/* AX 개인 (1:1 트레이닝) */}
-            <Link
-              href="/training"
-              className={`px-1 py-2 text-body font-medium transition-colors ${
-                isActive("/training") ? "text-white" : "text-primary-400 hover:text-white"
-              }`}
+            {/* AX 개인 드롭다운 (1:1 서비스) */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsIndividualOpen(true)}
+              onMouseLeave={() => setIsIndividualOpen(false)}
             >
-              AX 개인
-            </Link>
+              <button className={`flex items-center gap-1 px-1 py-2 text-body font-medium transition-colors ${
+                (isActive("/training") || isActive("/persona") || isActive("/diagnosis")) ? "text-white" : "text-primary-400 hover:text-white"
+              }`}>
+                AX 개인
+                <svg className={`w-4 h-4 transition-transform ${isIndividualOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* 드롭다운 메뉴 */}
+              <div className={`absolute top-full left-0 pt-2 transition-all duration-200 ${isIndividualOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                <div className="bg-dark-lighter rounded-2xl shadow-soft border border-white/10 p-2 min-w-[280px]">
+                  {individualItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex flex-col gap-1 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors"
+                    >
+                      <span className="text-body font-semibold text-white">{item.label}</span>
+                      <span className="text-small text-primary-400">{item.description}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             {/* AX 자료실 */}
             <Link
@@ -188,7 +220,7 @@ export default function Header() {
         {isMenuOpen && (
           <div className="lg:hidden py-4 border-t border-white/10 animate-fade-in">
             <nav className="flex flex-col gap-1">
-              {/* AX 그룹 서브메뉴 (워크샵 + 컨설팅) */}
+              {/* AX 그룹 서브메뉴 (기업·팀 대상) */}
               <div className="px-4 py-2">
                 <p className="text-caption text-primary-500 uppercase tracking-wider mb-2">AX 그룹</p>
                 {groupItems.map((item) => (
@@ -203,16 +235,20 @@ export default function Header() {
                 ))}
               </div>
 
-              {/* AX 개인 (1:1 트레이닝) */}
-              <Link
-                href="/training"
-                onClick={() => setIsMenuOpen(false)}
-                className={`px-4 py-3 rounded-lg text-body font-medium transition-colors ${
-                  isActive("/training") ? "bg-white/10 text-white" : "text-primary-400 hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                AX 개인
-              </Link>
+              {/* AX 개인 서브메뉴 (1:1 서비스) */}
+              <div className="px-4 py-2">
+                <p className="text-caption text-primary-500 uppercase tracking-wider mb-2">AX 개인</p>
+                {individualItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-body text-primary-400 hover:bg-white/5 hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
 
               {/* AX 자료실 */}
               <Link
