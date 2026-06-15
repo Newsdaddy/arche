@@ -116,7 +116,7 @@ export default function AboutPage() {
               지금 당장 시작할 준비가 되셨나요?
             </h2>
             <p className="text-white/50">
-              AX 워크숍과 1:1 컨설팅으로 업무를 바꿔보세요.
+              AX 워크숍과 맞춤 컨설팅으로 업무를 바꿔보세요.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -130,7 +130,7 @@ export default function AboutPage() {
               href="/consulting/ax"
               className="px-8 py-4 border border-white/30 hover:border-white/60 text-white font-semibold transition-colors whitespace-nowrap text-center"
             >
-              1:1 컨설팅 알아보기
+              맞춤 컨설팅 알아보기
             </Link>
           </div>
         </div>

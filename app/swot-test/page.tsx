@@ -589,7 +589,7 @@ export default function SwotTestPage() {
                 구체적인 실행 계획을 수립해보세요.
               </p>
               <Button onClick={() => router.push("/consulting")}>
-                1:1 컨설팅 알아보기 →
+                맞춤 컨설팅 알아보기 →
               </Button>
             </CardContent>
           </Card>

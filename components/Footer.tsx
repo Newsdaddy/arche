@@ -30,7 +30,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/consulting/ax" className="text-body text-primary-500 hover:text-white transition-colors">
-                  AX 1:1 컨설팅
+                  AX 맞춤 컨설팅
                 </Link>
               </li>
               <li>

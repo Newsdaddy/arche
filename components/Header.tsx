@@ -15,7 +15,7 @@ const groupItems = [
     description: "기업·팀 대상 실무 AX 세미나",
   },
   {
-    label: "AX 1:1 컨설팅",
+    label: "AX 맞춤 컨설팅",
     href: "/consulting/ax",
     description: "AI 업무 위임 셋업 및 루틴 설계",
   },
