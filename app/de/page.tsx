@@ -153,18 +153,15 @@ export default function GermanLanding() {
     setSubmitting(true);
     setError("");
     try {
-      const osLabel = form.os === "mac" ? "macOS" : "Windows";
-      const res = await fetch("/api/consulting/ax/inquiry", {
+      const res = await fetch("/api/de/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: `${form.vorname} ${form.nachname}`,
+          vorname: form.vorname,
+          nachname: form.nachname,
           email: form.email,
-          company: "",
-          courseType: "de-claudecode",
-          attendees: osLabel, // 운영체제
-          preferredDate: form.wunsch,
-          message: `[DE / arche.ai.kr/de · Claude Code 1:1]\nBetriebssystem: ${osLabel}${form.wunsch ? `\nWunschtermin: ${form.wunsch}` : ""}`,
+          os: form.os,
+          preferredTime: form.wunsch,
         }),
       });
       if (!res.ok) throw new Error("request failed");
