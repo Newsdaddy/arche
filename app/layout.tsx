@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import ImpersonationBanner from "@/components/admin/ImpersonationBanner";
 
 const notoSansKR = Noto_Sans_KR({
@@ -32,9 +31,9 @@ export default function RootLayout({
       <body className={`${notoSansKR.variable} font-sans antialiased bg-dark text-white`}>
         <ImpersonationBanner />
         <div className="min-h-screen flex flex-col">
-          <Header />
+          <SiteHeader />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <SiteFooter />
         </div>
       </body>
     </html>
