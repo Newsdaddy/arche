@@ -204,15 +204,6 @@ export default function GermanLanding() {
           <p className="mb-4 max-w-2xl text-lg text-white/70">{HERO.body}</p>
           <p className="mb-10 max-w-2xl text-lg text-white/70">{HERO.body2}</p>
 
-          {/* 가격 강조 미니 배지 */}
-          <div className="mb-10 inline-flex items-center gap-3 border border-white/15 bg-white/5 px-5 py-3">
-            <span className="text-white/40 line-through">{PRICE.regular}</span>
-            <span className="text-2xl font-bold" style={{ color: ACCENT }}>
-              {PRICE.promo}
-            </span>
-            <span className="text-sm text-white/60">· {PRICE.unit} · nur im Juni</span>
-          </div>
-
           <div className="flex flex-row flex-wrap gap-4">
             <a
               href="#anmeldung"
