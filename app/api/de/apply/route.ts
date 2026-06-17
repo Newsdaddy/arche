@@ -42,6 +42,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const osLabel = os === "mac" ? "macOS" : "Windows";
+
     // 이메일 알림 (Resend) — 설정된 경우에만
     if (process.env.RESEND_API_KEY) {
       try {
@@ -49,6 +51,30 @@ export async function POST(request: Request) {
       } catch (emailError) {
         console.error("DE 신청 이메일 알림 실패:", emailError);
         // 이메일 실패해도 신청은 성공 처리
+      }
+    }
+
+    // 구글 시트 자동 연동 (Apps Script 웹앱) — 설정된 경우에만
+    if (process.env.GOOGLE_SHEETS_WEBHOOK_URL) {
+      try {
+        await fetch(process.env.GOOGLE_SHEETS_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            secret: process.env.GOOGLE_SHEETS_WEBHOOK_SECRET || "",
+            created_at: result.created_at,
+            vorname,
+            nachname,
+            email,
+            os: osLabel,
+            preferred_time: preferredTime || "",
+            status: "new",
+            source: "arche.ai.kr/de",
+          }),
+        });
+      } catch (sheetError) {
+        console.error("DE 신청 구글시트 연동 실패:", sheetError);
+        // 시트 실패해도 신청은 성공 처리
       }
     }
 
