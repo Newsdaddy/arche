@@ -32,6 +32,15 @@ interface ResourceItem {
  */
 const RESOURCES: ResourceItem[] = [
   {
+    title: "윈도우 클로드코드 설치 가이드",
+    description:
+      "데스크톱 앱 말고 터미널에서. GitHub·Git·Cursor·Node.js·클로드코드·스킬까지 7단계 설치 총정리.",
+    fileType: "PDF",
+    fileSize: "1.1MB",
+    href: "/downloads/claude-code-windows-setup-guide.pdf",
+    available: true,
+  },
+  {
     title: "AX 워크숍 소개서",
     description: "1·2·3시간 프로그램 구성과 진행 방식을 한눈에 담은 소개 자료입니다.",
     fileType: "PDF",
