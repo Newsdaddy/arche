@@ -43,6 +43,9 @@ export function PluginInstallCard() {
         </a>
       </div>
 
+      <p className="text-xs text-accent/90 mb-2 font-medium">
+        ⚠️ 한꺼번에 붙여넣지 마세요. <span className="text-white/70">아래 3줄을 한 줄씩 순서대로</span> 입력하세요 (각 줄 실행 완료 후 다음 줄).
+      </p>
       <div className="relative">
         <pre className="bg-black/60 border border-white/10 rounded-xl p-5 pr-28 text-sm text-white/90 font-mono overflow-x-auto whitespace-pre">
 {COMMANDS}
@@ -56,7 +59,10 @@ export function PluginInstallCard() {
         </button>
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/45">
+      <p className="mt-5 text-xs text-white/50">
+        마지막 <span className="font-mono text-white/70">/create-erp</span> 를 실행하면 아래가 순서대로 진행됩니다:
+      </p>
+      <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/45">
         <span>① 대시보드 생성</span>
         <span>② Supabase 연결 (계정 필요)</span>
         <span>③ 로컬 확인</span>
