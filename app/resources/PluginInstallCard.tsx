@@ -23,26 +23,16 @@ export function PluginInstallCard() {
 
   return (
     <div className="bg-gradient-to-br from-accent/10 to-white/5 border border-accent/30 rounded-2xl p-6 md:p-8 mb-10">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-        <div>
-          <span className="inline-block text-xs font-semibold text-accent border border-accent/40 rounded-full px-3 py-1 mb-3">
-            CLAUDE CODE 플러그인
-          </span>
-          <h2 className="text-2xl font-bold text-white mb-2">뉴스대디 ERP 스타터</h2>
-          <p className="text-sm text-white/60 leading-relaxed max-w-2xl">
-            Claude Code에 아래 명령어를 입력하면 사업 운영 대시보드(딜·견적/인보이스·세금계산서·법무·서비스·재무)가
-            생성되고, Supabase(DB)와 Vercel(배포)까지 순차로 연결됩니다. 전부 가상 데이터로 시작하며, 이후 자신의
-            Claude Code로 자유롭게 수정할 수 있습니다.
-          </p>
-        </div>
-        <a
-          href="https://github.com/Newsdaddy/newsdaddy-erp-plugin"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 text-xs text-white/40 hover:text-white/70 underline underline-offset-4"
-        >
-          플러그인 코드 보기 (선택)
-        </a>
+      <div className="mb-6">
+        <span className="inline-block text-xs font-semibold text-accent border border-accent/40 rounded-full px-3 py-1 mb-3">
+          CLAUDE CODE 플러그인
+        </span>
+        <h2 className="text-2xl font-bold text-white mb-2">뉴스대디 ERP 스타터</h2>
+        <p className="text-sm text-white/60 leading-relaxed max-w-2xl">
+          Claude Code에 아래 명령어를 입력하면 사업 운영 대시보드(딜·견적/인보이스·세금계산서·법무·서비스·재무)가
+          생성되고, Supabase(DB)와 Vercel(배포)까지 순차로 연결됩니다. 전부 가상 데이터로 시작하며, 이후 자신의
+          Claude Code로 자유롭게 수정할 수 있습니다.
+        </p>
       </div>
 
       <p className="text-xs text-accent/90 mb-3 font-medium">
