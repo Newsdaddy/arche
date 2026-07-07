@@ -5,7 +5,7 @@ import { useState } from "react";
 const STEPS = [
   { cmd: "/plugin marketplace add Newsdaddy/newsdaddy-erp-plugin", note: "마켓플레이스 등록" },
   { cmd: "/plugin install newsdaddy-erp", note: "플러그인 설치" },
-  { cmd: "/create-erp", note: "대시보드 구축 시작" },
+  { cmd: "/newsdaddy-erp:create-erp", note: "대시보드 구축 시작" },
 ];
 
 export function PluginInstallCard() {
