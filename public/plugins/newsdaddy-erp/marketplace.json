@@ -1,0 +1,18 @@
+{
+  "name": "newsdaddy",
+  "owner": {
+    "name": "뉴스대디 (아르케인텔리전스 / Arche Intelligence)"
+  },
+  "description": "뉴스대디 도구 마켓플레이스",
+  "plugins": [
+    {
+      "name": "newsdaddy-erp",
+      "description": "뉴스대디 ERP 스타터 — /create-erp 한 번으로 운영 대시보드(딜·견적/인보이스·세금계산서·법무·서비스·재무) 스캐폴딩 + Supabase·Vercel 순차 연결",
+      "version": "0.1.0",
+      "source": {
+        "source": "https",
+        "url": "https://arche.ai.kr/plugins/newsdaddy-erp/newsdaddy-erp.tar.gz"
+      }
+    }
+  ]
+}

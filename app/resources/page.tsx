@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PluginInstallCard } from "./PluginInstallCard";
 
 export const metadata: Metadata = {
   title: "자료실 | Arche 아르케",
@@ -111,6 +112,9 @@ export default function ResourcesPage() {
       {/* Resource list */}
       <section className="py-16" style={{ backgroundColor: "#0a0a0a" }}>
         <div className="container-wide">
+          {/* Claude Code 플러그인 (뉴스대디 ERP) — 명령어 복붙 설치 */}
+          <PluginInstallCard />
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {RESOURCES.map((item) => (
               <div
