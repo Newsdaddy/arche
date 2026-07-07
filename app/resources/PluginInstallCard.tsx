@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const COMMANDS = `/plugin marketplace add https://arche.ai.kr/plugins/newsdaddy-erp/marketplace.json
+const COMMANDS = `/plugin marketplace add Newsdaddy/newsdaddy-erp-plugin
 /plugin install newsdaddy-erp
 /create-erp`;
 
@@ -34,11 +34,12 @@ export function PluginInstallCard() {
           </p>
         </div>
         <a
-          href="/plugins/newsdaddy-erp/newsdaddy-erp.tar.gz"
-          download
+          href="https://github.com/Newsdaddy/newsdaddy-erp-plugin"
+          target="_blank"
+          rel="noopener noreferrer"
           className="shrink-0 text-xs text-white/40 hover:text-white/70 underline underline-offset-4"
         >
-          플러그인 파일 직접 받기 (.tar.gz)
+          플러그인 코드 보기 (선택)
         </a>
       </div>
 
