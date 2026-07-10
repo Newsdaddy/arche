@@ -45,42 +45,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Founder Section */}
-      <section className="py-20" style={{ backgroundColor: "#f9fafb" }}>
-        <div className="container-wide">
-          <div className="max-w-3xl">
-            <p className="text-accent text-sm font-medium tracking-wider mb-4">FOUNDER</p>
-
-            <div className="mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">정병진</h3>
-              <p className="text-accent font-medium mb-4">아르케인텔리전스 대표</p>
-
-              <div className="mb-6">
-                <p className="text-sm text-gray-500 mb-2">주요 경력</p>
-                <ul className="space-y-1 text-gray-600">
-                  <li>• ECDB APAC Country Head</li>
-                  <li>• Statista Sr. Business Development Manager</li>
-                  <li>• YTN 뉴스앵커</li>
-                  <li>• BBC Science Korea 편집장</li>
-                </ul>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <a href="https://www.instagram.com/newsdaddy.ai/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors">
-                  인스타그램
-                </a>
-                <a href="https://maily.so/newsdaddyai" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors">
-                  뉴스레터
-                </a>
-                <a href="https://www.linkedin.com/in/valueforyourbiz" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors">
-                  링크드인
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Message Section */}
       <section className="py-20" style={{ backgroundColor: "#ffffff" }}>
         <div className="container-wide">

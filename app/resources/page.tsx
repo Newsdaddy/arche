@@ -33,6 +33,15 @@ interface ResourceItem {
  */
 const RESOURCES: ResourceItem[] = [
   {
+    title: "Claude 기초 완전정복",
+    description:
+      "클로드코드를 처음 시작하는 분을 위한 기초 완전정복 가이드. 설치부터 실무 활용까지 한 권에 담았습니다.",
+    fileType: "PDF",
+    fileSize: "1.0MB",
+    href: "/downloads/claude-basics-complete-newsdaddy.pdf",
+    available: true,
+  },
+  {
     title: "윈도우 클로드코드 설치 가이드",
     description:
       "데스크톱 앱 말고 터미널에서. GitHub·Git·Cursor·Node.js·클로드코드·스킬까지 7단계 설치 총정리.",
