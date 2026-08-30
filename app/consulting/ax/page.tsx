@@ -474,61 +474,6 @@ export default function AXConsultingPage() {
         </div>
       </section>
 
-      {/* 강사 소개 */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <p className="text-accent text-sm font-medium tracking-wider mb-4">CONSULTANT</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">컨설턴트 소개</h2>
-          </div>
-
-          <div className="bg-gray-50 rounded-2xl p-8">
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">정병진</h3>
-              <p className="text-gray-500">아르케인텔리전스 대표 | 뉴스대디 운영</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3">AI 실무 경험</h4>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    AI 에이전트 22개 팀 구축, 직접 업무에 활용 중
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    PPT 번역 5-6시간 → 5분, 방송 대본 3시간 → 1시간
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    뉴스레터 &apos;뉴스대디&apos; 구독자 600명+
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3">강의/컨설팅 경력</h4>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    AGC Asia Pacific 한국 지사화 - AX 가능 분야 강의
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    해외교민 리딩클럽 &apos;디카피텔&apos; - 바이브코딩 강의 및 컨설팅
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    비개발자 대상 실용적 AI 활용 교육 전문
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 설문 바로가기 */}
       <section className="py-16 bg-gray-50 border-t border-gray-200">
         <div className="max-w-4xl mx-auto px-6 text-center">

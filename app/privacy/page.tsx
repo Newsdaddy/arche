@@ -256,9 +256,8 @@ export default function PrivacyPage() {
               <div className="bg-accent/5 rounded-lg p-4">
                 <p className="font-semibold text-gray-800">개인정보 보호책임자</p>
                 <ul className="mt-2 space-y-1 text-gray-700">
-                  <li>성명: 병진</li>
                   <li>직책: 대표</li>
-                  <li>이메일: contact@arche.kr (예시)</li>
+                  <li>이메일: ceo@arche.ai.kr</li>
                 </ul>
               </div>
             </section>

@@ -100,7 +100,7 @@ export default function ConsultingSection() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            💬 정병진 파트너에게 문의하기
+            💬 파트너에게 문의하기
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -334,7 +334,7 @@ function InquiryModal({
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">💬 정병진 파트너에게 문의하기</h2>
+          <h2 className="text-lg font-bold">💬 파트너에게 문의하기</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             ✕
           </button>

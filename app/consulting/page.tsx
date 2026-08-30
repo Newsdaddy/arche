@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 
@@ -35,7 +34,7 @@ const TESTIMONIALS: Testimonial[] = [
     plan: "성장 컨설팅",
     before: "팔로워 800명",
     after: "팔로워 1.2만명",
-    review: "막연하게 올리던 콘텐츠에 방향이 생겼어요. 병진님이 알려주신 릴스 전략대로 했더니 3개월 만에 팔로워가 15배 늘었습니다!",
+    review: "막연하게 올리던 콘텐츠에 방향이 생겼어요. 컨설팅에서 알려주신 릴스 전략대로 했더니 3개월 만에 팔로워가 15배 늘었습니다!",
     rating: 5,
   },
   {
@@ -220,37 +219,6 @@ export default function ConsultingPage() {
             그 첫 시작을 함께합니다.
           </p>
         </div>
-
-        {/* 컨설턴트 소개 */}
-        <Card className="bg-gradient-to-br from-accent/5 to-accent/10">
-          <CardContent>
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src="/profile-byungjin.png"
-                  alt="정병진 파트너"
-                  width={96}
-                  height={96}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <h2 className="text-h2 text-primary">정병진 파트너</h2>
-                <p className="text-body text-gray-600 mt-2">
-                  2019년부터 닉네임 &apos;뉴스대디&apos;로 활동.<br />
-                  인스타그램, 뉴스레터, 유튜브, 링크드인에서 총 1.2만 팔로워와 함께 성장 중입니다.<br />
-                  독일 IT기업 B2B 솔루션 컨설턴트, YTN 뉴스앵커, 부산MBC 아나운서, 매일경제TV 앵커 역임
-                </p>
-                <div className="flex flex-wrap gap-3 mt-4 justify-center md:justify-start">
-                  <a href="https://www.instagram.com/newsdaddy.ai/" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">인스타그램</a>
-                  <a href="https://maily.so/newsdaddyai" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">뉴스레터</a>
-                  <a href="https://www.youtube.com/@newsdaddy" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">유튜브</a>
-                  <a href="https://www.linkedin.com/in/valueforyourbiz" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-700 text-sm font-medium underline">링크드인</a>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* 8주 커리큘럼 */}
         {!selectedPlan && (
