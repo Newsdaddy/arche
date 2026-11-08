@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PluginInstallCard } from "./PluginInstallCard";
+import { PcCleanupCard } from "./PcCleanupCard";
 
 export const metadata: Metadata = {
   title: "자료실 | Arche 아르케",
@@ -123,6 +124,9 @@ export default function ResourcesPage() {
         <div className="container-wide">
           {/* Claude Code 플러그인 (뉴스대디 ERP) — 명령어 복붙 설치 */}
           <PluginInstallCard />
+
+          {/* Claude Code 플러그인 (PC 용량 정리) — 맥·윈도우 탭 */}
+          <PcCleanupCard />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {RESOURCES.map((item) => (
