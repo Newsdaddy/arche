@@ -1,0 +1,19 @@
+{
+  "name": "arche-windows",
+  "owner": {
+    "name": "아르케인텔리전스 (Arche Intelligence)"
+  },
+  "description": "아르케인텔리전스 도구 모음",
+  "plugins": [
+    {
+      "name": "pc-cleanup",
+      "version": "1.0.0",
+      "description": "윈도우 PC 용량 정리: 캐시·중복 사본·오래 안 쓴 파일을 찾아 화면으로 보여주고, '실행' 버튼을 눌러야만 정리합니다",
+      "source": {
+        "source": "archive",
+        "url": "https://arche.ai.kr/plugins/pc-cleanup/windows/pc-cleanup.zip",
+        "sha256": "9f425a0303a00c3d22f732f691f77e7201e11e7479d4da02dfce5d42c1c03306"
+      }
+    }
+  ]
+}

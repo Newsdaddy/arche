@@ -1,0 +1,19 @@
+{
+  "name": "arche-mac",
+  "owner": {
+    "name": "아르케인텔리전스 (Arche Intelligence)"
+  },
+  "description": "아르케인텔리전스 도구 모음",
+  "plugins": [
+    {
+      "name": "pc-cleanup",
+      "version": "1.0.0",
+      "description": "맥 용량 정리: 캐시·중복 사본·오래 안 쓴 파일을 찾아 화면으로 보여주고, '실행' 버튼을 눌러야만 정리합니다",
+      "source": {
+        "source": "archive",
+        "url": "https://arche.ai.kr/plugins/pc-cleanup/mac/pc-cleanup.zip",
+        "sha256": "a716d34790dee2c608990bcb5de82eb7917bb1402553d8e82031193fa0e85fc3"
+      }
+    }
+  ]
+}
